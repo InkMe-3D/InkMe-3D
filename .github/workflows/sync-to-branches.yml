@@ -33,29 +33,32 @@ jobs:
           FOLDER=${{ matrix.folder }}
           BRANCH=$FOLDER
 
-          echo "📦 Syncing $FOLDER to $BRANCH"
+          echo "📦 Syncing folder '$FOLDER' to branch '$BRANCH'"
 
-          # Fetch from origin
+          # Copy folder content into temp
+          cp -r "$FOLDER" temp-folder
+
+          # Fetch & checkout target branch
           git fetch origin
-
-          # Kiểm tra branch đã tồn tại hay chưa
           if git show-ref --verify --quiet refs/remotes/origin/$BRANCH; then
-            echo "✅ Branch $BRANCH exists. Checkout and sync..."
+            echo "✅ Branch $BRANCH exists. Checking out..."
             git checkout -B "$BRANCH" "origin/$BRANCH"
           else
             echo "🆕 Branch $BRANCH does not exist. Creating..."
             git checkout -b "$BRANCH"
           fi
 
-          # Xoá hết file cũ (trừ .git)
+          # Remove all files except .git
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
 
-          # Copy nội dung mới từ folder tương ứng
-          cp -r "$FOLDER"/. .
+          # Move files from temp folder into current branch
+          cp -r temp-folder/. ./
+          rm -rf temp-folder
 
-          # Commit nếu có thay đổi
+          # Commit and push if there are changes
           git add .
           git diff --cached --quiet || git commit -m "🔁 Sync from main: $FOLDER"
-
-          # Push
           git push origin "$BRANCH"
+
+      - name: ✅ Done
+        run: echo "✅ All done syncing ${{ matrix.folder }}!"
