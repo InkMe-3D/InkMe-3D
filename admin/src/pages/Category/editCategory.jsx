@@ -132,7 +132,7 @@ const EditCategory = () => {
 
           
             postData(apiEndPoint, formdata).then((res) => {
-                console.log(res);
+               
             });
 
         } catch (error) {
