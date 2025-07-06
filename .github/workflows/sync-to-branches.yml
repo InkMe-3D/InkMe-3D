@@ -1,0 +1,52 @@
+name: Sync folders to deploy branches
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'admin/**'
+      - 'client/**'
+      - 'server/**'
+      - '3d-custom/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        folder: [admin, client, server, 3d-custom]
+
+    steps:
+      - name: ⬇️ Checkout main branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # để có thể checkout nhánh khác
+
+      - name: ⚙️ Set Git info
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: 🚚 Sync ${{ matrix.folder }} to branch ${{ matrix.folder }}
+        run: |
+          FOLDER=${{ matrix.folder }}
+          BRANCH=$FOLDER
+
+          echo "📦 Syncing $FOLDER to $BRANCH branch"
+
+          # Tạo nhánh local nếu chưa có
+          git fetch origin $BRANCH || git checkout -b $BRANCH
+
+          # Xóa hết, copy lại folder
+          git checkout $BRANCH
+          rm -rf *
+          cp -r $FOLDER/* .
+
+          # Commit & push
+          git add .
+          git commit -m "🔁 Sync from main: $FOLDER" || echo "No changes"
+          git push origin $BRANCH
+
+      - name: ✅ Done
+        run: echo "All folders synced!"
