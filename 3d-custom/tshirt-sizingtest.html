@@ -40,6 +40,181 @@
 
   <link rel="stylesheet" type="text/css" href="tshirt-sizingtest.css" />
 
+  <style>
+    /* URL Loading Overlay */
+    .url-loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      backdrop-filter: blur(5px);
+    }
+
+    .url-loading-popup {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      animation: fadeInScale 0.3s ease-out;
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .url-loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #4d97e7;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .url-loading-text {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .url-loading-subtitle {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .url-loading-progress {
+      width: 100%;
+      height: 6px;
+      background: #f0f0f0;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+
+    .url-loading-progress-bar {
+      height: 100%;
+      background: linear-gradient(45deg, #4d97e7, #2196f3);
+      border-radius: 3px;
+      animation: progress 2s ease-in-out infinite;
+    }
+
+    @keyframes progress {
+      0% {
+        width: 0%;
+      }
+
+      50% {
+        width: 70%;
+      }
+
+      100% {
+        width: 100%;
+      }
+    }
+
+    .url-loading-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .url-loading-dots span {
+      width: 8px;
+      height: 8px;
+      background: #4d97e7;
+      border-radius: 50%;
+      animation: loading-dots 1.4s infinite ease-in-out;
+    }
+
+    .url-loading-dots span:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .url-loading-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .url-loading-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes loading-dots {
+
+      0%,
+      80%,
+      100% {
+        transform: scale(0);
+        opacity: 0.5;
+      }
+
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Success/Error States */
+    .url-loading-success {
+      color: #4caf50;
+    }
+
+    .url-loading-error {
+      color: #f44336;
+    }
+
+    .url-loading-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+    }
+
+    .url-loading-icon.success {
+      background: #e8f5e8;
+      color: #4caf50;
+      font-size: 30px;
+    }
+
+    .url-loading-icon.error {
+      background: #ffebee;
+      color: #f44336;
+      font-size: 30px;
+    }
+  </style>
 
 </head>
 
@@ -237,6 +412,26 @@
         style="width: 20px; height: 20px; filter: brightness(0) invert(1)" />
       Tải ảnh đã xóa nền
     </button>
+  </div>
+
+  <!-- URL Loading Overlay -->
+  <div class="url-loading-overlay" id="urlLoadingOverlay" style="display: none;">
+    <div class="url-loading-popup">
+      <div class="url-loading-spinner" id="urlLoadingSpinner"></div>
+      <div class="url-loading-icon" id="urlLoadingIcon" style="display: none;">
+        <span id="urlLoadingIconText">✓</span>
+      </div>
+      <div class="url-loading-text" id="urlLoadingText">Đang tải thiết kế...</div>
+      <div class="url-loading-subtitle" id="urlLoadingSubtitle">Vui lòng chờ trong giây lát</div>
+      <div class="url-loading-progress" id="urlLoadingProgress">
+        <div class="url-loading-progress-bar"></div>
+      </div>
+      <div class="url-loading-dots" id="urlLoadingDots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
   </div>
 
 
