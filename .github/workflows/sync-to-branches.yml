@@ -61,6 +61,14 @@ jobs:
           cp -r /tmp/temp-folder/. ./
           rm -rf /tmp/temp-folder
 
+          # 👉 Nếu đang sync folder 3d-custom, thay đổi URL API
+          if [ "$FOLDER" = "3d-custom" ]; then
+          echo "🔧 Replacing API URL in 3d-custom files..."
+           find . -type f \( -name "*.js" -o -name "*.html" \) -exec \
+          sed -i 's|http://localhost:4000|https://inkme-3d-server-production.up.railway.app|g' {} +
+           echo "✅ Replaced API base URL for deploy"
+          fi
+
           # Commit and push if there are changes
           git add .
           git diff --cached --quiet || git commit -m "🔁 Sync from main: $FOLDER"
