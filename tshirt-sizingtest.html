@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<!-- __V3D_PUZZLES__ - enable Puzzles button in the App Manager -->
+<!-- __V3D_TEMPLATE__ - template-based file; delete this line to prevent this file from being updated -->
+<html lang="en">
+
+<head>
+  <title>Verge3D Web Interactive</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+  <!-- Search Engines -->
+  <meta name="description"
+    content="Interactive 3D Web application made with Verge3D. Immerse yourself in amazing graphics experience offered by state-of-the art WebGL and HTML5 technologies." />
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Verge3D Web Interactive" />
+  <meta name="twitter:description"
+    content="Interactive 3D Web application made with Verge3D. Immerse yourself in amazing graphics experience offered by state-of-the art WebGL and HTML5 technologies." />
+  <meta name="twitter:image:src" content="https://cdn.soft8soft.com/images/player_socials.jpg" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Verge3D Web Interactive" />
+  <meta property="og:description"
+    content="Interactive 3D Web application made with Verge3D. Immerse yourself in amazing graphics experience offered by state-of-the art WebGL and HTML5 technologies." />
+  <meta property="og:image" content="https://cdn.soft8soft.com/images/player_socials.jpg" />
+  <meta property="og:type" content="website" />
+
+  <meta name="generator" content="Verge3D 4.5.1" />
+
+  <!-- favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="media/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="media/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="media/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="media/favicon-16x16.png" />
+  <link rel="manifest" href="media/manifest.json" />
+  <link rel="mask-icon" href="media/safari-pinned-tab.svg" color="#0048a5" />
+  <meta name="theme-color" content="#ffffff" />
+
+  <script src="v3d.js"></script>
+  <script src="tshirt-sizingtest.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="tshirt-sizingtest.css" />
+
+
+</head>
+
+<body>
+  <!-- Cart Button Section -->
+  <div class="cart-section">
+    <button id="cart_button" class="cart-button">
+      <svg class="cart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+        style="width: 18px; height: 18px; fill: currentColor;">
+        <path
+          d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+      </svg>
+      Thêm vào giỏ hàng
+    </button>
+  </div>
+
+  <!-- Cart loading overlay -->
+  <div class="cart-loading-overlay" id="cartLoadingOverlay">
+    <div class="cart-loading-popup">
+      <div class="cart-loading-spinner"></div>
+      <div class="cart-loading-text">Đang thêm vào giỏ hàng...</div>
+    </div>
+  </div>
+
+  <div id="v3d-container">
+    <!-- Remove BG Popup Trigger Button -->
+    <!-- (Removed floating button and popup from here) -->
+    <div id="fullscreen-button" class="fullscreen-button fullscreen-open" title="Toggle fullscreen mode"></div>
+    <div id="myClass" style="
+          position: fixed;
+          bottom: 0px;
+          height: fit-content;
+          display: block;
+        ">
+      <input type="checkbox" class="cl-input-responsive" id="inputResponsive" />
+      <div class="cf_drawer" id="cf_drawer1">
+        <div class="cf_canvas__wrapper" id="cf_root1" style="width: 100%; height: 100%">
+          <div class="konvajs-content" role="presentation" style="
+                position: relative;
+                user-select: none;
+                width: 450px;
+                height: 450px;
+                background-image: url('./canvas_bg/placementguide.jpg');
+                background-size: cover;
+              ">
+            <canvas width="3600" height="3600" id="cf_canvas1" data-stage="cf_stage1" style="
+                  padding: 0px;
+                  margin: 0px;
+                  border: 0px;
+                  background: transparent;
+                  position: absolute;
+                  top: 0px;
+                  left: 0px;
+                  width: 450px;
+                  height: 450px;
+                  display: block;
+                "></canvas>
+          </div>
+          <div class="cf_tools-container">
+            <div class="cf_tools-toggle"></div>
+            <div class="cf_tools-wrapper">
+              <div class="cf_block cf_drawing">
+                <input id="cf_drawing-enable1" type="checkbox" class="cf_drawing-enable" data-stage="cf_stage1" />
+                <label class="cf_label cf_label-checkbox" for="cf_drawing-enable1"></label>
+
+                <input id="cf_drawing-color1" type="color" class="cf_drawing-color" data-stage="cf_stage1" />
+                <label class="cf_label cf_label-color" for="cf_drawing-color1"></label>
+
+                <input id="cf_drawing-size1" type="number" class="cf_drawing-size" step="0.1" min="0.1" value="1"
+                  data-stage="cf_stage1" />
+                <label class="cf_label cf_label-number" for="cf_drawing-size1"></label>
+                <button id="closecanvas" class="cf_button" style="margin-left: 220px">
+                  X
+                </button>
+              </div>
+              <div class="cf_block cf_text">
+                <button class="cf_button cf_text-add">Thêm chữ</button>
+
+                <input type="color" class="cf_text-color" data-stage="cf_stage1" />
+                <label class="cf_label cf_label-color"></label>
+
+                <input type="number" class="cf_text-size" step="1" min="1" value="12" data-stage="cf_stage1" />
+                <label class="cf_label cf_label-number"></label>
+
+                <div class="cf_row" style="margin-top: 6px">
+                  <select class="cf_input cf_text-font" style="margin-left: 8px">
+                    <option value="Arial">Arial</option>
+                    <option value="Courier">Courier</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="'Roboto', sans-serif" selected="">
+                      Roboto
+                    </option>
+                    <option value="Times New Roman">Times New Roman</option>
+                  </select>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: row">
+                <div class="cf_block cf_image">
+                  <label class="cf_button cf_image-wrapper">
+                    Thêm ảnh
+                    <input type="file" class="cf_image-source" />
+                  </label>
+                </div>
+                <div class="cf_block cf_image">
+                  <label class="cf_button cf_image-wrapper" id="remove-bg-button">
+                    Xóa nền ảnh
+                    <input type="file" class="cf_remove-bg-source" accept="image/*" />
+                  </label>
+                  <div id="remove-bg-loading" class="remove-bg-loading" style="display: none">
+                    <div class="loading-dots">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="cf_block cf_state-controls">
+                  <button id="exportButton" class="cf_button">
+                    Lưu thiết kế
+                  </button>
+                  <button id="importButton" class="cf_button">
+                    Tải thiết kế
+                  </button>
+                  <button class="cf_button cf_state-reset">
+                    Xóa thiết kế
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cf_context-menu" style="display: none">
+            <div class="cf_button cf_context-menu__button" data-action="up">
+              Lớp lên
+            </div>
+            <div class="cf_button cf_context-menu__button" data-action="down">
+              Lớp dưới
+            </div>
+            <div class="cf_button cf_context-menu__button" data-action="remove">
+              Xóa
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="myClass2"></div>
+  </div>
+
+
+  <script async src="https://docs.opencv.org/4.x/opencv.js"
+    onload="cv['onRuntimeInitialized']=()=>{window.opencvReady = true;}">
+    </script>
+
+  <div class="remove-bg-container" id="remove-bg-popup"
+    style="display: none; position: fixed; top: 100px; left: 50%; transform: translateX(-50%); background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.18); z-index: 9999; flex-direction: column; align-items: center; gap: 15px; max-width: 400px; width: 90%; animation: fadeIn 0.2s;">
+    <button id="close-remove-bg"
+      style="position: absolute; top: 10px; right: 10px; background: #f0f0f0; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 20px; color: #333; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">×</button>
+    <h3 style="margin: 0; color: #333">Xóa nền ảnh</h3>
+    <div style="display: flex; gap: 10px; width: 100%; justify-content: center">
+      <label class="remove-bg-button"
+        style="background: #4d97e7; color: white; padding: 10px 20px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.2s;">
+        <img src="images/upload-box-1--arrow-box-download-internet-network-server-up-upload.svg"
+          style="width: 20px; height: 20px; filter: brightness(0) invert(1)" />
+        Chọn ảnh
+        <input type="file" class="remove-bg-input" accept="image/*" style="display: none" />
+      </label>
+      <button class="remove-bg-process"
+        style="background: #4caf50; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; display: none;">Xóa
+        nền</button>
+    </div>
+    <div class="remove-bg-preview"
+      style="width: 100%; display: none; gap: 20px; justify-content: center; align-items: center; flex-wrap: wrap;">
+      <div class="preview-original" style="flex: 1; min-width: 150px; text-align: center">
+        <p style="margin: 0 0 10px 0; color: #666">Ảnh gốc</p>
+        <img style="max-width: 100%; max-height: 200px; border-radius: 4px" />
+      </div>
+      <div class="preview-result" style="flex: 1; min-width: 150px; text-align: center">
+        <p style="margin: 0 0 10px 0; color: #666">Ảnh đã xóa nền</p>
+        <img style="max-width: 100%; max-height: 200px; border-radius: 4px" />
+      </div>
+    </div>
+    <div class="remove-bg-loading" style="display: none; flex-direction: column; align-items: center; gap: 10px;">
+      <div class="loading-dots" style="display: flex; gap: 8px">
+        <span
+          style="width: 8px; height: 8px; background: #4d97e7; border-radius: 50%; animation: loading 1.4s infinite ease-in-out;"></span>
+        <span
+          style="width: 8px; height: 8px; background: #4d97e7; border-radius: 50%; animation: loading 1.4s infinite ease-in-out; animation-delay: 0.2s;"></span>
+        <span
+          style="width: 8px; height: 8px; background: #4d97e7; border-radius: 50%; animation: loading 1.4s infinite ease-in-out; animation-delay: 0.4s;"></span>
+      </div>
+      <p style="margin: 0; color: #666">Đang xử lý...</p>
+    </div>
+    <button class="remove-bg-add-to-canvas"
+      style="background: #4d97e7; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; display: none; align-items: center; gap: 8px;">
+      <img src="images/videoexport_1videoexport.png"
+        style="width: 20px; height: 20px; filter: brightness(0) invert(1)" />
+      Tải ảnh đã xóa nền
+    </button>
+  </div>
+
+
+
+</body>
+
+</html>
