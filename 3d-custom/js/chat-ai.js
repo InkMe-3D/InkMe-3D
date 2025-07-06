@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const imageUpload = document.getElementById("image-upload");
     const previewContainer = document.getElementById("preview-container");
 
-    const API_URL = "http://localhost:4000/api/ai/chat";
+    const API_URL = "https://inkme-3d-server-production.up.railway.app/api/ai/chat";
     let threadId = localStorage.getItem("threadId");
 
     let selectedImages = [];
