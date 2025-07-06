@@ -13738,7 +13738,7 @@ Thêm Ảnh
         formData.append('file', blob, filename); 
     
         console.log('🚀 Uploading layout to server...', { filename });
-        fetch('https://inkme-3d-server-production.up.railway.app/api/products/upload-file', {
+        fetch('http://localhost:4000/api/products/upload-file', {
           method: 'POST',
          headers: {
             'Authorization': authorization,
