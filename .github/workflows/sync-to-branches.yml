@@ -1,4 +1,4 @@
-name: Sync folders to deploy branches
+name: 🚀 Sync folders to deploy branches
 
 on:
   push:
@@ -18,35 +18,44 @@ jobs:
         folder: [admin, client, server, 3d-custom]
 
     steps:
-      - name: ⬇️ Checkout main branch
+      - name: ⬇️ Checkout main
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # để có thể checkout nhánh khác
+          fetch-depth: 0
 
-      - name: ⚙️ Set Git info
+      - name: ⚙️ Setup Git
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
 
-      - name: 🚚 Sync ${{ matrix.folder }} to branch ${{ matrix.folder }}
+      - name: 🚚 Sync ${{ matrix.folder }} to ${{ matrix.folder }} branch
         run: |
           FOLDER=${{ matrix.folder }}
           BRANCH=$FOLDER
 
-          echo "📦 Syncing $FOLDER to $BRANCH branch"
+          echo "📦 Syncing $FOLDER to $BRANCH"
 
-          # Tạo nhánh local nếu chưa có
-          git fetch origin $BRANCH || git checkout -b $BRANCH
+          # Fetch from origin
+          git fetch origin
 
-          # Xóa hết, copy lại folder
-          git checkout $BRANCH
-          rm -rf *
-          cp -r $FOLDER/* .
+          # Kiểm tra branch đã tồn tại hay chưa
+          if git show-ref --verify --quiet refs/remotes/origin/$BRANCH; then
+            echo "✅ Branch $BRANCH exists. Checkout and sync..."
+            git checkout -B "$BRANCH" "origin/$BRANCH"
+          else
+            echo "🆕 Branch $BRANCH does not exist. Creating..."
+            git checkout -b "$BRANCH"
+          fi
 
-          # Commit & push
+          # Xoá hết file cũ (trừ .git)
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+
+          # Copy nội dung mới từ folder tương ứng
+          cp -r "$FOLDER"/. .
+
+          # Commit nếu có thay đổi
           git add .
-          git commit -m "🔁 Sync from main: $FOLDER" || echo "No changes"
-          git push origin $BRANCH
+          git diff --cached --quiet || git commit -m "🔁 Sync from main: $FOLDER"
 
-      - name: ✅ Done
-        run: echo "All folders synced!"
+          # Push
+          git push origin "$BRANCH"
