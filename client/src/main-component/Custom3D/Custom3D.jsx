@@ -16,13 +16,13 @@ const Custom3D = () => {
             productId,
             authorization
         };
-        console.log(dataToSend);
+      
 
         const sendMessage = () => {
             if (iframeRef.current) {
                 iframeRef.current.contentWindow.postMessage(dataToSend, '*');
             }
-            console.log(iframeRef.current);
+           
         };
 
         // Đợi iframe load xong rồi mới gửi
