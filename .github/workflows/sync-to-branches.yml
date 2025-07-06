@@ -36,6 +36,11 @@ jobs:
           echo "📦 Syncing folder '$FOLDER' to branch '$BRANCH'"
 
           # Copy folder content into temp
+          if [ ! -d "$FOLDER" ]; then
+            echo "❌ Folder '$FOLDER' not found in branch 'main'."
+            exit 1
+          fi
+
           cp -r "$FOLDER" temp-folder
 
           # Fetch & checkout target branch
