@@ -64,7 +64,6 @@ const AddProductRams = () => {
     const handleChange = (event, value) => {
         context.setProgress(40);
         fetchDataFromApi(`/api/products?page=${value}`).then((res) => {
-            console.log(res);
             context.setProgress(100);
         })
     };
