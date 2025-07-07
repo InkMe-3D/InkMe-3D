@@ -48,8 +48,7 @@ router.post('/add', async (req, res) => {
         const cartItem = await Cart.find({
             productId: req.body.productId,
             userId: req.body.userId,
-            productColor: req.body.productColor,
-            productSize: req.body.productSize
+            inkmeFile: req.body.inkmeFile
         });
 
         if (cartItem.length === 0) {
@@ -89,14 +88,13 @@ router.post('/add', async (req, res) => {
     }
 });
 
-router.post('/',  async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         // Check if item with same product, color and size already exists
         const cartItem = await Cart.find({
             productId: req.body.productId,
             userId: req.body.userId,
-            productColor: req.body.productColor,
-            productSize: req.body.productSize
+            inkmeFile: req.body.inkmeFile
         });
 
         if (cartItem.length === 0) {
@@ -124,7 +122,8 @@ router.post('/',  async (req, res) => {
             res.status(201).json(cartList);
         } else {
             return res.status(401).json({
-                message: "Sản phẩm với màu sắc và kích thước này đã có trong giỏ hàng",
+                message: "Sản phẩm với màu sắc và kích thước này đã có trong giỏ hàng" + error,
+
                 status: false
             });
         }

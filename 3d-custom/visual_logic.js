@@ -13889,64 +13889,64 @@ Thêm Ảnh
               showUrlLoadingOverlay, updateUrlLoadingProgress, showUrlLoadingSuccess, showUrlLoadingError, hideUrlLoadingOverlay
             );
 
-      console.log('✅ Layout loaded successfully from URL');
-    } catch (error) {
-      console.error('❌ Error in processing loaded data:', error);
-      showUrlLoadingError('Lỗi xử lý', 'Không thể khôi phục thiết kế');
-      setTimeout(hideUrlLoadingOverlay, 1500);
-    }
-  },
-    function () {
-      console.error('❌ Failed to load layout from URL');
-      showUrlLoadingError('Lỗi kết nối', 'Không thể tải file từ link');
-      setTimeout(hideUrlLoadingOverlay, 1500);
-    },
-    false
+            console.log('✅ Layout loaded successfully from URL');
+          } catch (error) {
+            console.error('❌ Error in processing loaded data:', error);
+            showUrlLoadingError('Lỗi xử lý', 'Không thể khôi phục thiết kế');
+            setTimeout(hideUrlLoadingOverlay, 1500);
+          }
+        },
+        function () {
+          console.error('❌ Failed to load layout from URL');
+          showUrlLoadingError('Lỗi kết nối', 'Không thể tải file từ link');
+          setTimeout(hideUrlLoadingOverlay, 1500);
+        },
+        false
       );
-}
+    }
 
 
-// Function để tự động load layout khi có URL parameter
-function auto_load_from_url_params() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const layoutUrl = urlParams.get('layout');
+    // Function để tự động load layout khi có URL parameter
+    function auto_load_from_url_params() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const layoutUrl = urlParams.get('layout');
 
-  if (layoutUrl) {
-    console.log('🔄 Auto-loading layout from URL parameter:', layoutUrl);
+      if (layoutUrl) {
+        console.log('🔄 Auto-loading layout from URL parameter:', layoutUrl);
 
-    // Decode URL
-    const decodedUrl = decodeURIComponent(layoutUrl);
-    console.log('🔗 Decoded URL:', decodedUrl);
+        // Decode URL
+        const decodedUrl = decodeURIComponent(layoutUrl);
+        console.log('🔗 Decoded URL:', decodedUrl);
 
-    load_layout_from_url(decodedUrl);
-
-
-  } else {
-    console.log('ℹ️ No layout URL parameter found');
-  }
-}
-
-// Hoặc nếu app đã load rồi
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', auto_load_from_url_params);
-} else {
-  auto_load_from_url_params();
-}
+        load_layout_from_url(decodedUrl);
 
 
-function upload_layout_to_server() {
-  color = getMaterialColor("Base", "RGB", "CSS_HEX");
-  bgColor = getMaterialColor("env_sphere", "RGB", "CSS_HEX");
-  puffPrint = getMaterialValue("Base", "Value.003");
-  acidWash = getMaterialValue("Base", "Value.004");
+      } else {
+        console.log('ℹ️ No layout URL parameter found');
+      }
+    }
 
-  Function(
-    "app",
-    "v3d",
-    "puzzles",
-    "VARS",
-    "PROC",
-    `
+    // Hoặc nếu app đã load rồi
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', auto_load_from_url_params);
+    } else {
+      auto_load_from_url_params();
+    }
+
+
+    function upload_layout_to_server() {
+      color = getMaterialColor("Base", "RGB", "CSS_HEX");
+      bgColor = getMaterialColor("env_sphere", "RGB", "CSS_HEX");
+      puffPrint = getMaterialValue("Base", "Value.003");
+      acidWash = getMaterialValue("Base", "Value.004");
+
+      Function(
+        "app",
+        "v3d",
+        "puzzles",
+        "VARS",
+        "PROC",
+        `
         const state = VARS.currentSceneState;
     
         // Xử lý layer ảnh
@@ -14059,14 +14059,7 @@ function upload_layout_to_server() {
             background: white; padding: 0; border-radius: 10px; 
             max-width: 90%; max-height: 90%; overflow: auto;
           \`;
-          modalContent.innerHTML = linkHtml + \`
-            <div style="text-align: center; padding: 10px;">
-              <button onclick="this.closest('[style*=\"position: fixed\"]').remove()" 
-                      style="background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-                ❌ Đóng
-              </button>
-            </div>
-          \`;
+         
           
           modal.appendChild(modalContent);
           document.body.appendChild(modal);
@@ -14076,9 +14069,9 @@ function upload_layout_to_server() {
             productTitle: state.sceneName || 'InkMe Custom',
             images: [''],
             rating: '5',
-            price: 250000,
+            price: 189000,
             quantity: 1,
-            subTotal: 250000,
+            subTotal: 189000,
             productId: localStorage.getItem("productId") || 'lo-custom',
             productColor: '3D',
             productSize: '3D',
@@ -14097,9 +14090,9 @@ function upload_layout_to_server() {
               {
                 name: 'Size M',
                 image: 'https://dummyimage.com/100x100/ccc/000?text=S', 
-                price: 250000,
+                price: 189000,
                 quantity: 1,
-                subTotal: 250000
+                subTotal: 189000
               }
             ]
           };
@@ -14130,821 +14123,821 @@ function upload_layout_to_server() {
         state.savedImages = {};
         state.savedLayers = {};
         `
-  )(appInstance, v3d, PL, VARS, PROC);
-}
+      )(appInstance, v3d, PL, VARS, PROC);
+    }
 
-// dictGet puzzle
-function dictGet(dict, key, defaultValue) {
-  if (dict && typeof dict == "object")
-    return key in dict ? dict[key] : defaultValue;
-}
+    // dictGet puzzle
+    function dictGet(dict, key, defaultValue) {
+      if (dict && typeof dict == "object")
+        return key in dict ? dict[key] : defaultValue;
+    }
 
-// setMaterialColor puzzle
-function setMaterialColor(matName, colName, r, g, b, cssCode) {
-  var colors = PzLib.getMaterialEditableColors(matName);
+    // setMaterialColor puzzle
+    function setMaterialColor(matName, colName, r, g, b, cssCode) {
+      var colors = PzLib.getMaterialEditableColors(matName);
 
-  if (colors.indexOf(colName) < 0) return;
+      if (colors.indexOf(colName) < 0) return;
 
-  if (cssCode) {
-    var color = new v3d.Color(cssCode);
-    r = color.r;
-    g = color.g;
-    b = color.b;
-  }
+      if (cssCode) {
+        var color = new v3d.Color(cssCode);
+        r = color.r;
+        g = color.g;
+        b = color.b;
+      }
 
-  var mats = v3d.SceneUtils.getMaterialsByName(appInstance, matName);
+      var mats = v3d.SceneUtils.getMaterialsByName(appInstance, matName);
 
-  for (var i = 0; i < mats.length; i++) {
-    var mat = mats[i];
+      for (var i = 0; i < mats.length; i++) {
+        var mat = mats[i];
 
-    if (mat.isMeshNodeMaterial) {
-      var rgbIdx = mat.nodeRGBMap[colName];
-      mat.nodeRGB[rgbIdx].x = r;
-      mat.nodeRGB[rgbIdx].y = g;
-      mat.nodeRGB[rgbIdx].z = b;
+        if (mat.isMeshNodeMaterial) {
+          var rgbIdx = mat.nodeRGBMap[colName];
+          mat.nodeRGB[rgbIdx].x = r;
+          mat.nodeRGB[rgbIdx].y = g;
+          mat.nodeRGB[rgbIdx].z = b;
+        } else {
+          mat[colName].r = r;
+          mat[colName].g = g;
+          mat[colName].b = b;
+        }
+        mat.needsUpdate = true;
+
+        if (appInstance.scene !== null) {
+          if (mat === appInstance.scene.worldMaterial) {
+            appInstance.updateEnvironment(mat);
+          }
+        }
+      }
+    }
+
+    // toFixedPoint puzzle
+    function toFixedPoint(num, prec) {
+      prec = Math.pow(10, prec);
+      return Math.round(num * prec) / prec;
+    }
+
+    // setMaterialValue puzzle
+    function setMaterialValue(matName, valName, value) {
+      var values = PzLib.getMaterialEditableValues(matName);
+      if (values.indexOf(valName) < 0) return;
+
+      var mats = v3d.SceneUtils.getMaterialsByName(appInstance, matName);
+
+      for (var i = 0; i < mats.length; i++) {
+        var mat = mats[i];
+
+        if (mat.isMeshNodeMaterial) {
+          var valIdx = mat.nodeValueMap[valName];
+          mat.nodeValue[valIdx] = Number(value);
+        } else mat[valName] = Number(value);
+
+        if (appInstance.scene !== null) {
+          if (mat === appInstance.scene.worldMaterial) {
+            appInstance.updateEnvironment(mat);
+          }
+        }
+      }
+    }
+
+    // Describe this function...
+    function restore_other_parameters() {
+      color = dictGet(currentSceneState, "color");
+      setMaterialColor("Base", "RGB", 0, 0, 0, color);
+      setHTMLElemAttribute("value", color, "color-changer", true);
+      bgColor = dictGet(currentSceneState, "bgColor");
+      setMaterialColor("env_sphere", "RGB", 0, 0, 0, bgColor);
+      setHTMLElemAttribute("value", bgColor, "color-changer1", true);
+      puffPrint = toFixedPoint(dictGet(currentSceneState, "puffPrint"), 1);
+      setMaterialValue("Base", "Value.003", puffPrint);
+      acidWash = toFixedPoint(dictGet(currentSceneState, "acidWash"), 1);
+      setMaterialValue("Base", "Value.004", acidWash);
+      restore_garment_effect_sliders();
+    }
+
+    // Describe this function...
+    function restore_garment_effect_sliders() {
+      /* optional code. I wouldn't recomment to use it. Only if you can do the same in all other apps. */
+
+      Function(
+        "app",
+        "v3d",
+        "puzzles",
+        "VARS",
+        "PROC",
+        "const slider = parent.document.querySelector('#slider-single-2');" +
+        "\n" +
+        "slider.value = VARS.puffPrint;" +
+        "\n" +
+        "const parentNode = slider.closest('div');" +
+        "\n" +
+        "let elem = parentNode.getElementsByClassName('noUi-origin')[0];" +
+        "\n" +
+        "elem.style.transform = `translate(-${100 - (slider.value * 100)}%, 0px)`;" +
+        "\n" +
+        "elem = parentNode.getElementsByClassName('noUi-tooltip')[0];" +
+        "\n" +
+        "elem.innerHTML = slider.value;"
+      )(appInstance, v3d, PL, VARS, PROC);
+
+      Function(
+        "app",
+        "v3d",
+        "puzzles",
+        "VARS",
+        "PROC",
+        "const slider = parent.document.querySelector('#slider-single-3');" +
+        "\n" +
+        "slider.value = VARS.acidWash;" +
+        "\n" +
+        "const parentNode = slider.closest('div');" +
+        "\n" +
+        "let elem = parentNode.getElementsByClassName('noUi-origin')[0];" +
+        "\n" +
+        "elem.style.transform = `translate(-${100 - (slider.value * 100)}%, 0px)`;" +
+        "\n" +
+        "elem = parentNode.getElementsByClassName('noUi-tooltip')[0];" +
+        "\n" +
+        "elem.innerHTML = slider.value;"
+      )(appInstance, v3d, PL, VARS, PROC);
+    }
+
+    // getHTMLElemAttribute puzzle
+    function getHTMLElemAttribute(attr, id, isParent) {
+      var elem = PzLib.getElement(id, isParent);
+      return elem ? elem[attr] : "";
+    }
+
+    // show and hide puzzles
+    function changeVis(objSelector, bool) {
+      var objNames = PzLib.retrieveObjectNames(objSelector);
+
+      for (var i = 0; i < objNames.length; i++) {
+        var objName = objNames[i];
+        if (!objName) continue;
+        var obj = PzLib.getObjectByName(objName);
+        if (!obj) continue;
+        obj.visible = bool;
+        obj.resolveMultiMaterial().forEach(function (objR) {
+          objR.visible = bool;
+        });
+      }
+    }
+
+    function setScreenScale(factor) {
+      // already have maximum pixel ratio in HiDPI mode
+      if (!appInstance.useHiDPIRenderPass)
+        appInstance.renderer.setPixelRatio(factor);
+
+      if (appInstance.postprocessing)
+        appInstance.postprocessing.composer.setPixelRatio(factor);
+
+      // to update possible post-processing passes
+      appInstance.onResize();
+    }
+
+    // downloadFile puzzle
+    function downloadFile(contents, filename) {
+      if (!filename) return;
+
+      if (contents instanceof Promise) {
+        contents.then(
+          function (response) {
+            doDownload(response, filename);
+          },
+          function (error) { }
+        );
+      } else {
+        doDownload(contents, filename);
+      }
+
+      function doDownload(contents, filename) {
+        if (typeof contents !== "string") {
+          contents = PzLib.convertObjToJsonDataUrl(contents);
+        } else if (!PzLib.isDataUrl(contents) && !PzLib.isBlobUrl(contents)) {
+          contents = PzLib.convertObjToTextDataUrl(contents);
+        }
+
+        const link = document.createElement("a");
+        link.href = contents;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(() => {
+          document.body.removeChild(link);
+        }, 100);
+      }
+    }
+
+    // Describe this function...
+    function create_bg_canvas() {
+      if (getHTMLElemAttribute("innerHTML", "myClass2", false) == "") {
+        myDrawer3 = cf_drawInit(
+          ["QUERYSELECTOR", "#myClass2"],
+          "right",
+          400,
+          400,
+          4,
+          '{"add_draw_mode":true,"add_drawing_tools_mode":true,"add_image_upload_mode":true,"add_transform_mode":true,"add_text_mode":true}',
+          (stage, layer, isWrapperLayer = false) => {
+            try {
+              cf_stageBackgroundLayerImage(
+                "./canvas_bg/none.png",
+                stage,
+                layer,
+                isWrapperLayer
+              );
+            } catch (ex) { }
+          },
+          (stage, layer, isWrapperLayer = false) => {
+            try {
+              cf_stageBackgroundLayerImage(
+                "./canvas_bg/background.jpg",
+                stage,
+                layer,
+                isWrapperLayer
+              );
+            } catch (ex) { }
+          }
+        );
+        replaceTexture("camera_bg", "clouds.jpg", myDrawer3, function () { });
+      }
+    }
+
+    // Describe this function...
+    function remove_bg_canvas() {
+      setHTMLElemAttribute("innerHTML", "", "myClass2", false);
+    }
+
+    // setActiveCamera puzzle
+    function setActiveCamera(camName) {
+      var camera = PzLib.getObjectByName(camName);
+      if (!camera || !camera.isCamera || appInstance.getCamera() == camera)
+        return;
+      appInstance.setCamera(camera);
+    }
+
+    // Describe this function...
+    function dispatchEvent(eventName, valuesObject) {
+      var VARS = Object.defineProperties(
+        {},
+        {
+          loadSavedLayout: {
+            get: function () {
+              return loadSavedLayout;
+            },
+            set: function (val) {
+              loadSavedLayout = val;
+            },
+          },
+          openuv: {
+            get: function () {
+              return openuv;
+            },
+            set: function (val) {
+              openuv = val;
+            },
+          },
+          Controls_Hide: {
+            get: function () {
+              return Controls_Hide;
+            },
+            set: function (val) {
+              Controls_Hide = val;
+            },
+          },
+          myDrawer2: {
+            get: function () {
+              return myDrawer2;
+            },
+            set: function (val) {
+              myDrawer2 = val;
+            },
+          },
+          openuv2: {
+            get: function () {
+              return openuv2;
+            },
+            set: function (val) {
+              openuv2 = val;
+            },
+          },
+          currentSceneState: {
+            get: function () {
+              return currentSceneState;
+            },
+            set: function (val) {
+              currentSceneState = val;
+            },
+          },
+          color: {
+            get: function () {
+              return color;
+            },
+            set: function (val) {
+              color = val;
+            },
+          },
+          bgColor: {
+            get: function () {
+              return bgColor;
+            },
+            set: function (val) {
+              bgColor = val;
+            },
+          },
+          loadedData: {
+            get: function () {
+              return loadedData;
+            },
+            set: function (val) {
+              loadedData = val;
+            },
+          },
+          puffPrint: {
+            get: function () {
+              return puffPrint;
+            },
+            set: function (val) {
+              puffPrint = val;
+            },
+          },
+          acidWash: {
+            get: function () {
+              return acidWash;
+            },
+            set: function (val) {
+              acidWash = val;
+            },
+          },
+          value: {
+            get: function () {
+              return value;
+            },
+            set: function (val) {
+              value = val;
+            },
+          },
+          camera_bgs: {
+            get: function () {
+              return camera_bgs;
+            },
+            set: function (val) {
+              camera_bgs = val;
+            },
+          },
+          myDrawer3: {
+            get: function () {
+              return myDrawer3;
+            },
+            set: function (val) {
+              myDrawer3 = val;
+            },
+          },
+          imagebg: {
+            get: function () {
+              return imagebg;
+            },
+            set: function (val) {
+              imagebg = val;
+            },
+          },
+          tshirts: {
+            get: function () {
+              return tshirts;
+            },
+            set: function (val) {
+              tshirts = val;
+            },
+          },
+          anims: {
+            get: function () {
+              return anims;
+            },
+            set: function (val) {
+              anims = val;
+            },
+          },
+          eventName: {
+            get: function () {
+              return eventName;
+            },
+            set: function (val) {
+              eventName = val;
+            },
+          },
+          valuesObject: {
+            get: function () {
+              return valuesObject;
+            },
+            set: function (val) {
+              valuesObject = val;
+            },
+          },
+        }
+      );
+
+      Function(
+        "app",
+        "v3d",
+        "puzzles",
+        "VARS",
+        "PROC",
+        "window.top.dispatchEvent(new CustomEvent(VARS['eventName'], { detail: VARS['valuesObject'] || {} }));" +
+        "\n" +
+        ""
+      )(appInstance, v3d, PL, VARS, PROC);
+    }
+
+    /* Model Entrance Animation */
+
+    operateAnimation(
+      "PLAY",
+      "tshirt_pivot",
+      null,
+      null,
+      "LoopOnce",
+      1,
+      function () { },
+      false
+    );
+
+    createCSSRule(
+      "#myClass",
+      "position: absolute; bottom: 0; right: 0;",
+      false,
+      ""
+    );
+
+    /* Controlling Whether Image uploaded should be on background or garment */
+    openuv = false;
+    if (featureAvailable("MOBILE")) {
     } else {
-      mat[colName].r = r;
-      mat[colName].g = g;
-      mat[colName].b = b;
+      setHTMLElemStyle("display", "none", "myClass2", false);
     }
-    mat.needsUpdate = true;
-
-    if (appInstance.scene !== null) {
-      if (mat === appInstance.scene.worldMaterial) {
-        appInstance.updateEnvironment(mat);
+    eventHTMLElem("click", "upload_design", true, function (event) {
+      setHTMLElemStyle("display", "none", "myClass2", false);
+      openuv2 = false;
+      if (openuv == false) {
+        setHTMLElemStyle("display", "block", "myClass", false);
+        openuv = true;
+      } else {
+        setHTMLElemStyle("display", "none", "myClass", false);
+        openuv = false;
       }
-    }
-  }
-}
-
-// toFixedPoint puzzle
-function toFixedPoint(num, prec) {
-  prec = Math.pow(10, prec);
-  return Math.round(num * prec) / prec;
-}
-
-// setMaterialValue puzzle
-function setMaterialValue(matName, valName, value) {
-  var values = PzLib.getMaterialEditableValues(matName);
-  if (values.indexOf(valName) < 0) return;
-
-  var mats = v3d.SceneUtils.getMaterialsByName(appInstance, matName);
-
-  for (var i = 0; i < mats.length; i++) {
-    var mat = mats[i];
-
-    if (mat.isMeshNodeMaterial) {
-      var valIdx = mat.nodeValueMap[valName];
-      mat.nodeValue[valIdx] = Number(value);
-    } else mat[valName] = Number(value);
-
-    if (appInstance.scene !== null) {
-      if (mat === appInstance.scene.worldMaterial) {
-        appInstance.updateEnvironment(mat);
-      }
-    }
-  }
-}
-
-// Describe this function...
-function restore_other_parameters() {
-  color = dictGet(currentSceneState, "color");
-  setMaterialColor("Base", "RGB", 0, 0, 0, color);
-  setHTMLElemAttribute("value", color, "color-changer", true);
-  bgColor = dictGet(currentSceneState, "bgColor");
-  setMaterialColor("env_sphere", "RGB", 0, 0, 0, bgColor);
-  setHTMLElemAttribute("value", bgColor, "color-changer1", true);
-  puffPrint = toFixedPoint(dictGet(currentSceneState, "puffPrint"), 1);
-  setMaterialValue("Base", "Value.003", puffPrint);
-  acidWash = toFixedPoint(dictGet(currentSceneState, "acidWash"), 1);
-  setMaterialValue("Base", "Value.004", acidWash);
-  restore_garment_effect_sliders();
-}
-
-// Describe this function...
-function restore_garment_effect_sliders() {
-  /* optional code. I wouldn't recomment to use it. Only if you can do the same in all other apps. */
-
-  Function(
-    "app",
-    "v3d",
-    "puzzles",
-    "VARS",
-    "PROC",
-    "const slider = parent.document.querySelector('#slider-single-2');" +
-    "\n" +
-    "slider.value = VARS.puffPrint;" +
-    "\n" +
-    "const parentNode = slider.closest('div');" +
-    "\n" +
-    "let elem = parentNode.getElementsByClassName('noUi-origin')[0];" +
-    "\n" +
-    "elem.style.transform = `translate(-${100 - (slider.value * 100)}%, 0px)`;" +
-    "\n" +
-    "elem = parentNode.getElementsByClassName('noUi-tooltip')[0];" +
-    "\n" +
-    "elem.innerHTML = slider.value;"
-  )(appInstance, v3d, PL, VARS, PROC);
-
-  Function(
-    "app",
-    "v3d",
-    "puzzles",
-    "VARS",
-    "PROC",
-    "const slider = parent.document.querySelector('#slider-single-3');" +
-    "\n" +
-    "slider.value = VARS.acidWash;" +
-    "\n" +
-    "const parentNode = slider.closest('div');" +
-    "\n" +
-    "let elem = parentNode.getElementsByClassName('noUi-origin')[0];" +
-    "\n" +
-    "elem.style.transform = `translate(-${100 - (slider.value * 100)}%, 0px)`;" +
-    "\n" +
-    "elem = parentNode.getElementsByClassName('noUi-tooltip')[0];" +
-    "\n" +
-    "elem.innerHTML = slider.value;"
-  )(appInstance, v3d, PL, VARS, PROC);
-}
-
-// getHTMLElemAttribute puzzle
-function getHTMLElemAttribute(attr, id, isParent) {
-  var elem = PzLib.getElement(id, isParent);
-  return elem ? elem[attr] : "";
-}
-
-// show and hide puzzles
-function changeVis(objSelector, bool) {
-  var objNames = PzLib.retrieveObjectNames(objSelector);
-
-  for (var i = 0; i < objNames.length; i++) {
-    var objName = objNames[i];
-    if (!objName) continue;
-    var obj = PzLib.getObjectByName(objName);
-    if (!obj) continue;
-    obj.visible = bool;
-    obj.resolveMultiMaterial().forEach(function (objR) {
-      objR.visible = bool;
     });
-  }
-}
 
-function setScreenScale(factor) {
-  // already have maximum pixel ratio in HiDPI mode
-  if (!appInstance.useHiDPIRenderPass)
-    appInstance.renderer.setPixelRatio(factor);
+    create_canvas_drawer(false);
 
-  if (appInstance.postprocessing)
-    appInstance.postprocessing.composer.setPixelRatio(factor);
-
-  // to update possible post-processing passes
-  appInstance.onResize();
-}
-
-// downloadFile puzzle
-function downloadFile(contents, filename) {
-  if (!filename) return;
-
-  if (contents instanceof Promise) {
-    contents.then(
-      function (response) {
-        doDownload(response, filename);
-      },
-      function (error) { }
-    );
-  } else {
-    doDownload(contents, filename);
-  }
-
-  function doDownload(contents, filename) {
-    if (typeof contents !== "string") {
-      contents = PzLib.convertObjToJsonDataUrl(contents);
-    } else if (!PzLib.isDataUrl(contents) && !PzLib.isBlobUrl(contents)) {
-      contents = PzLib.convertObjToTextDataUrl(contents);
+    if (featureAvailable("MOBILE")) {
+      setHTMLElemStyle("display", "none", "backgroundimage", true);
+      setHTMLElemStyle("display", "none", "resetbg", true);
+    } else {
     }
 
-    const link = document.createElement("a");
-    link.href = contents;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    setTimeout(() => {
-      document.body.removeChild(link);
-    }, 100);
-  }
-}
+    eventHTMLElem("click", "closecanvas", false, function (event) {
+      setHTMLElemStyle("display", "none", "myClass", false);
+      setHTMLElemStyle("display", "block", "mobileui", true);
+      openuv = false;
+    });
 
-// Describe this function...
-function create_bg_canvas() {
-  if (getHTMLElemAttribute("innerHTML", "myClass2", false) == "") {
-    myDrawer3 = cf_drawInit(
-      ["QUERYSELECTOR", "#myClass2"],
-      "right",
-      400,
-      400,
-      4,
-      '{"add_draw_mode":true,"add_drawing_tools_mode":true,"add_image_upload_mode":true,"add_transform_mode":true,"add_text_mode":true}',
-      (stage, layer, isWrapperLayer = false) => {
-        try {
-          cf_stageBackgroundLayerImage(
-            "./canvas_bg/none.png",
-            stage,
-            layer,
-            isWrapperLayer
-          );
-        } catch (ex) { }
-      },
-      (stage, layer, isWrapperLayer = false) => {
-        try {
-          cf_stageBackgroundLayerImage(
-            "./canvas_bg/background.jpg",
-            stage,
-            layer,
-            isWrapperLayer
-          );
-        } catch (ex) { }
+    setHTMLElemStyle("display", "none", "myClass", false);
+    eventHTMLElem("click", "uploaddesignmobile", true, function (event) {
+      setHTMLElemStyle("display", "none", "colorsmobile", true);
+      setHTMLElemStyle("display", "none", "animationsmobile", true);
+      setHTMLElemStyle("display", "none", "effectsmobile", true);
+      setHTMLElemStyle("display", "none", "exportoptions", true);
+      openuv2 = false;
+      if (openuv == false) {
+        setHTMLElemStyle("display", "none", "mobileui", true);
+        setHTMLElemStyle("display", "block", "myClass", false);
+        openuv = true;
+      } else {
+        setHTMLElemStyle("display", "block", "mobileui", true);
+        setHTMLElemStyle("display", "none", "myClass", false);
+        openuv = false;
       }
+    });
+
+    currentSceneState = {};
+    dictSet(currentSceneState, "savedLayers", {});
+    dictSet(currentSceneState, "savedImages", {});
+
+    /* load from file */
+
+    /* save to file */
+
+    eventHTMLElem("input", "color-changer", true, function (event) {
+      value = getHTMLElemAttribute("value", "color-changer", true);
+      setMaterialColor("Base", "RGB", 0, 0, 0, value);
+    });
+
+    eventHTMLElem("input", "color-changer1", true, function (event) {
+      remove_bg_canvas();
+      changeVis(camera_bgs, false);
+      openuv2 = false;
+      setHTMLElemStyle("display", "none", "myClass2", false);
+      value = getHTMLElemAttribute("value", "color-changer1", true);
+      setMaterialColor("env_sphere", "RGB", 0, 0, 0, value);
+    });
+
+    /* Colorinput for mobile */
+    eventHTMLElem("input", "color-changer5", true, function (event) {
+      value = getHTMLElemAttribute("value", "color-changer5", true);
+      setMaterialColor("Base", "RGB", 0, 0, 0, value);
+    });
+    eventHTMLElem("input", "color-changer6", true, function (event) {
+      remove_bg_canvas();
+      changeVis(camera_bgs, false);
+      openuv2 = false;
+      setHTMLElemStyle("display", "none", "myClass2", false);
+      value = getHTMLElemAttribute("value", "color-changer6", true);
+      setMaterialColor("env_sphere", "RGB", 0, 0, 0, value);
+    });
+
+    eventHTMLElem("click", "defaultQuality", true, function (event) {
+      setScreenScale(1);
+    });
+
+    /* Image Export/Screenshot */
+    eventHTMLElem("click", "exportimage", true, function (event) {
+      downloadFile(
+        appInstance.renderer.domElement.toDataURL("image/png"),
+        "Virtualthreads.png"
+      );
+    });
+
+    eventHTMLElem("click", "highQuality", true, function (event) {
+      setScreenScale(1.5);
+    });
+
+    /* 3D Model Export */
+
+    /* The Video Export function can be found in tshirt-sizing.js */
+
+    /* OPENING 3D BACKGROUND */
+    eventHTMLElem("click", "3Dbackground", true, function (event) {
+      imagebg = "inactive";
+      changeVis(camera_bgs, false);
+      openuv2 = false;
+      setHTMLElemStyle("display", "none", "myClass2", false);
+    });
+
+    /* CHANGING THE COLOR OF ALL BACKGROUNDS */
+    eventHTMLElem("input", "color-changer1", true, function (event) {
+      value = getHTMLElemAttribute("value", "color-changer1", true);
+      setMaterialColor("camera_bg", "RGB", 0, 0, 0, value);
+    });
+
+    myDrawer3 = null;
+
+    createCSSRule(
+      "#myClass2",
+      "position: absolute; bottom: 0; right: 0;",
+      false,
+      ""
     );
-    replaceTexture("camera_bg", "clouds.jpg", myDrawer3, function () { });
-  }
-}
 
-// Describe this function...
-function remove_bg_canvas() {
-  setHTMLElemAttribute("innerHTML", "", "myClass2", false);
-}
+    /* UPLOADING USER IMAGE TO BACKGROUND */
 
-// setActiveCamera puzzle
-function setActiveCamera(camName) {
-  var camera = PzLib.getObjectByName(camName);
-  if (!camera || !camera.isCamera || appInstance.getCamera() == camera)
-    return;
-  appInstance.setCamera(camera);
-}
-
-// Describe this function...
-function dispatchEvent(eventName, valuesObject) {
-  var VARS = Object.defineProperties(
-    {},
-    {
-      loadSavedLayout: {
-        get: function () {
-          return loadSavedLayout;
-        },
-        set: function (val) {
-          loadSavedLayout = val;
-        },
-      },
-      openuv: {
-        get: function () {
-          return openuv;
-        },
-        set: function (val) {
-          openuv = val;
-        },
-      },
-      Controls_Hide: {
-        get: function () {
-          return Controls_Hide;
-        },
-        set: function (val) {
-          Controls_Hide = val;
-        },
-      },
-      myDrawer2: {
-        get: function () {
-          return myDrawer2;
-        },
-        set: function (val) {
-          myDrawer2 = val;
-        },
-      },
-      openuv2: {
-        get: function () {
-          return openuv2;
-        },
-        set: function (val) {
-          openuv2 = val;
-        },
-      },
-      currentSceneState: {
-        get: function () {
-          return currentSceneState;
-        },
-        set: function (val) {
-          currentSceneState = val;
-        },
-      },
-      color: {
-        get: function () {
-          return color;
-        },
-        set: function (val) {
-          color = val;
-        },
-      },
-      bgColor: {
-        get: function () {
-          return bgColor;
-        },
-        set: function (val) {
-          bgColor = val;
-        },
-      },
-      loadedData: {
-        get: function () {
-          return loadedData;
-        },
-        set: function (val) {
-          loadedData = val;
-        },
-      },
-      puffPrint: {
-        get: function () {
-          return puffPrint;
-        },
-        set: function (val) {
-          puffPrint = val;
-        },
-      },
-      acidWash: {
-        get: function () {
-          return acidWash;
-        },
-        set: function (val) {
-          acidWash = val;
-        },
-      },
-      value: {
-        get: function () {
-          return value;
-        },
-        set: function (val) {
-          value = val;
-        },
-      },
-      camera_bgs: {
-        get: function () {
-          return camera_bgs;
-        },
-        set: function (val) {
-          camera_bgs = val;
-        },
-      },
-      myDrawer3: {
-        get: function () {
-          return myDrawer3;
-        },
-        set: function (val) {
-          myDrawer3 = val;
-        },
-      },
-      imagebg: {
-        get: function () {
-          return imagebg;
-        },
-        set: function (val) {
-          imagebg = val;
-        },
-      },
-      tshirts: {
-        get: function () {
-          return tshirts;
-        },
-        set: function (val) {
-          tshirts = val;
-        },
-      },
-      anims: {
-        get: function () {
-          return anims;
-        },
-        set: function (val) {
-          anims = val;
-        },
-      },
-      eventName: {
-        get: function () {
-          return eventName;
-        },
-        set: function (val) {
-          eventName = val;
-        },
-      },
-      valuesObject: {
-        get: function () {
-          return valuesObject;
-        },
-        set: function (val) {
-          valuesObject = val;
-        },
-      },
-    }
-  );
-
-  Function(
-    "app",
-    "v3d",
-    "puzzles",
-    "VARS",
-    "PROC",
-    "window.top.dispatchEvent(new CustomEvent(VARS['eventName'], { detail: VARS['valuesObject'] || {} }));" +
-    "\n" +
-    ""
-  )(appInstance, v3d, PL, VARS, PROC);
-}
-
-/* Model Entrance Animation */
-
-operateAnimation(
-  "PLAY",
-  "tshirt_pivot",
-  null,
-  null,
-  "LoopOnce",
-  1,
-  function () { },
-  false
-);
-
-createCSSRule(
-  "#myClass",
-  "position: absolute; bottom: 0; right: 0;",
-  false,
-  ""
-);
-
-/* Controlling Whether Image uploaded should be on background or garment */
-openuv = false;
-if (featureAvailable("MOBILE")) {
-} else {
-  setHTMLElemStyle("display", "none", "myClass2", false);
-}
-eventHTMLElem("click", "upload_design", true, function (event) {
-  setHTMLElemStyle("display", "none", "myClass2", false);
-  openuv2 = false;
-  if (openuv == false) {
-    setHTMLElemStyle("display", "block", "myClass", false);
-    openuv = true;
-  } else {
-    setHTMLElemStyle("display", "none", "myClass", false);
-    openuv = false;
-  }
-});
-
-create_canvas_drawer(false);
-
-if (featureAvailable("MOBILE")) {
-  setHTMLElemStyle("display", "none", "backgroundimage", true);
-  setHTMLElemStyle("display", "none", "resetbg", true);
-} else {
-}
-
-eventHTMLElem("click", "closecanvas", false, function (event) {
-  setHTMLElemStyle("display", "none", "myClass", false);
-  setHTMLElemStyle("display", "block", "mobileui", true);
-  openuv = false;
-});
-
-setHTMLElemStyle("display", "none", "myClass", false);
-eventHTMLElem("click", "uploaddesignmobile", true, function (event) {
-  setHTMLElemStyle("display", "none", "colorsmobile", true);
-  setHTMLElemStyle("display", "none", "animationsmobile", true);
-  setHTMLElemStyle("display", "none", "effectsmobile", true);
-  setHTMLElemStyle("display", "none", "exportoptions", true);
-  openuv2 = false;
-  if (openuv == false) {
-    setHTMLElemStyle("display", "none", "mobileui", true);
-    setHTMLElemStyle("display", "block", "myClass", false);
-    openuv = true;
-  } else {
-    setHTMLElemStyle("display", "block", "mobileui", true);
-    setHTMLElemStyle("display", "none", "myClass", false);
-    openuv = false;
-  }
-});
-
-currentSceneState = {};
-dictSet(currentSceneState, "savedLayers", {});
-dictSet(currentSceneState, "savedImages", {});
-
-/* load from file */
-
-/* save to file */
-
-eventHTMLElem("input", "color-changer", true, function (event) {
-  value = getHTMLElemAttribute("value", "color-changer", true);
-  setMaterialColor("Base", "RGB", 0, 0, 0, value);
-});
-
-eventHTMLElem("input", "color-changer1", true, function (event) {
-  remove_bg_canvas();
-  changeVis(camera_bgs, false);
-  openuv2 = false;
-  setHTMLElemStyle("display", "none", "myClass2", false);
-  value = getHTMLElemAttribute("value", "color-changer1", true);
-  setMaterialColor("env_sphere", "RGB", 0, 0, 0, value);
-});
-
-/* Colorinput for mobile */
-eventHTMLElem("input", "color-changer5", true, function (event) {
-  value = getHTMLElemAttribute("value", "color-changer5", true);
-  setMaterialColor("Base", "RGB", 0, 0, 0, value);
-});
-eventHTMLElem("input", "color-changer6", true, function (event) {
-  remove_bg_canvas();
-  changeVis(camera_bgs, false);
-  openuv2 = false;
-  setHTMLElemStyle("display", "none", "myClass2", false);
-  value = getHTMLElemAttribute("value", "color-changer6", true);
-  setMaterialColor("env_sphere", "RGB", 0, 0, 0, value);
-});
-
-eventHTMLElem("click", "defaultQuality", true, function (event) {
-  setScreenScale(1);
-});
-
-/* Image Export/Screenshot */
-eventHTMLElem("click", "exportimage", true, function (event) {
-  downloadFile(
-    appInstance.renderer.domElement.toDataURL("image/png"),
-    "Virtualthreads.png"
-  );
-});
-
-eventHTMLElem("click", "highQuality", true, function (event) {
-  setScreenScale(1.5);
-});
-
-/* 3D Model Export */
-
-/* The Video Export function can be found in tshirt-sizing.js */
-
-/* OPENING 3D BACKGROUND */
-eventHTMLElem("click", "3Dbackground", true, function (event) {
-  imagebg = "inactive";
-  changeVis(camera_bgs, false);
-  openuv2 = false;
-  setHTMLElemStyle("display", "none", "myClass2", false);
-});
-
-/* CHANGING THE COLOR OF ALL BACKGROUNDS */
-eventHTMLElem("input", "color-changer1", true, function (event) {
-  value = getHTMLElemAttribute("value", "color-changer1", true);
-  setMaterialColor("camera_bg", "RGB", 0, 0, 0, value);
-});
-
-myDrawer3 = null;
-
-createCSSRule(
-  "#myClass2",
-  "position: absolute; bottom: 0; right: 0;",
-  false,
-  ""
-);
-
-/* UPLOADING USER IMAGE TO BACKGROUND */
-
-/* Controlling Whether Image uploaded should be on background or garment */
-openuv2 = false;
-setHTMLElemStyle("display", "none", "myClass2", false);
-eventHTMLElem("click", "backgroundimage", true, function (event) {
-  setHTMLElemStyle("display", "none", "myClass", false);
-  openuv = false;
-  if (openuv2 == false) {
-    create_bg_canvas();
-    setHTMLElemStyle("display", "block", "myClass2", false);
-    openuv2 = true;
-  } else {
-    setHTMLElemStyle("display", "none", "myClass2", false);
+    /* Controlling Whether Image uploaded should be on background or garment */
     openuv2 = false;
-  }
-});
-eventHTMLElem("click", "resetbg", true, function (event) {
-  changeVis("cameradefault_bg", false);
-  changeVis("camrotate_bg", false);
-  changeVis("camrotatezoom_bg", false);
-  remove_bg_canvas();
-  setHTMLElemStyle("display", "none", "myClass2", false);
-  openuv2 = false;
-});
+    setHTMLElemStyle("display", "none", "myClass2", false);
+    eventHTMLElem("click", "backgroundimage", true, function (event) {
+      setHTMLElemStyle("display", "none", "myClass", false);
+      openuv = false;
+      if (openuv2 == false) {
+        create_bg_canvas();
+        setHTMLElemStyle("display", "block", "myClass2", false);
+        openuv2 = true;
+      } else {
+        setHTMLElemStyle("display", "none", "myClass2", false);
+        openuv2 = false;
+      }
+    });
+    eventHTMLElem("click", "resetbg", true, function (event) {
+      changeVis("cameradefault_bg", false);
+      changeVis("camrotate_bg", false);
+      changeVis("camrotatezoom_bg", false);
+      remove_bg_canvas();
+      setHTMLElemStyle("display", "none", "myClass2", false);
+      openuv2 = false;
+    });
 
-/* THIS IS FOR HIDING BACKGROUNDS WHEN APP OPENS */
-changeVis("camrotatezoom_bg", false);
-changeVis("camrotate_bg", false);
-changeVis("cameradefault_bg", false);
-
-imagebg = "inactive";
-eventHTMLElem("click", "backgroundimage", true, function (event) {
-  imagebg = "active";
-  setActiveCamera("cameradefault");
-  changeVis("cameradefault_bg", true);
-});
-
-/* CONTROLLING WHICH BACKGROUND PLANE TO REVEAL */
-eventHTMLElem("click", "camerarotationzoon", true, function (event) {
-  if (imagebg == "active") {
-    changeVis("cameradefault_bg", false);
+    /* THIS IS FOR HIDING BACKGROUNDS WHEN APP OPENS */
     changeVis("camrotatezoom_bg", false);
-    changeVis("camrotate_bg", true);
-  }
-});
-eventHTMLElem("click", "camerarotation", true, function (event) {
-  if (imagebg == "active") {
+    changeVis("camrotate_bg", false);
     changeVis("cameradefault_bg", false);
-    changeVis("camrotate_bg", false);
-    changeVis("camrotatezoom_bg", true);
-  }
-});
-eventHTMLElem("click", "cameranone", true, function (event) {
-  if (imagebg == "active") {
-    changeVis("camrotate_bg", false);
-    changeVis("camrotatezoom_bg", false);
-    changeVis("cameradefault_bg", true);
-  }
-});
 
-tshirts = ["tshirt_walking", "tshirt_waves", "tshirt_static"];
-changeVis(tshirts, false);
-changeVis("tshirt_static", true);
+    imagebg = "inactive";
+    eventHTMLElem("click", "backgroundimage", true, function (event) {
+      imagebg = "active";
+      setActiveCamera("cameradefault");
+      changeVis("cameradefault_bg", true);
+    });
 
-anims = ["tshirt_walking", "tshirt_waves"];
+    /* CONTROLLING WHICH BACKGROUND PLANE TO REVEAL */
+    eventHTMLElem("click", "camerarotationzoon", true, function (event) {
+      if (imagebg == "active") {
+        changeVis("cameradefault_bg", false);
+        changeVis("camrotatezoom_bg", false);
+        changeVis("camrotate_bg", true);
+      }
+    });
+    eventHTMLElem("click", "camerarotation", true, function (event) {
+      if (imagebg == "active") {
+        changeVis("cameradefault_bg", false);
+        changeVis("camrotate_bg", false);
+        changeVis("camrotatezoom_bg", true);
+      }
+    });
+    eventHTMLElem("click", "cameranone", true, function (event) {
+      if (imagebg == "active") {
+        changeVis("camrotate_bg", false);
+        changeVis("camrotatezoom_bg", false);
+        changeVis("cameradefault_bg", true);
+      }
+    });
 
-operateAnimation(
-  "PAUSE",
-  anims,
-  null,
-  null,
-  "AUTO",
-  1,
-  function () { },
-  false
-);
+    tshirts = ["tshirt_walking", "tshirt_waves", "tshirt_static"];
+    changeVis(tshirts, false);
+    changeVis("tshirt_static", true);
 
-eventHTMLElem("input", "slider-single", true, function (event) {
-  operateAnimation(
-    "SET_SPEED",
-    "tshirt_walking",
-    null,
-    null,
-    "AUTO",
-    getHTMLElemAttribute("value", "slider-single", true),
-    function () { },
-    false
-  );
+    anims = ["tshirt_walking", "tshirt_waves"];
 
-  operateAnimation(
-    "SET_SPEED",
-    "tshirt_waves",
-    null,
-    null,
-    "AUTO",
-    getHTMLElemAttribute("value", "slider-single", true),
-    function () { },
-    false
-  );
-});
+    operateAnimation(
+      "PAUSE",
+      anims,
+      null,
+      null,
+      "AUTO",
+      1,
+      function () { },
+      false
+    );
 
-/* Mobile controls */
-eventHTMLElem("input", "slider-single-4", true, function (event) {
-  operateAnimation(
-    "SET_SPEED",
-    "tshirt_walking",
-    null,
-    null,
-    "AUTO",
-    getHTMLElemAttribute("value", "slider-single-4", true),
-    function () { },
-    false
-  );
+    eventHTMLElem("input", "slider-single", true, function (event) {
+      operateAnimation(
+        "SET_SPEED",
+        "tshirt_walking",
+        null,
+        null,
+        "AUTO",
+        getHTMLElemAttribute("value", "slider-single", true),
+        function () { },
+        false
+      );
 
-  operateAnimation(
-    "SET_SPEED",
-    "tshirt_waves",
-    null,
-    null,
-    "AUTO",
-    getHTMLElemAttribute("value", "slider-single-4", true),
-    function () { },
-    false
-  );
-});
+      operateAnimation(
+        "SET_SPEED",
+        "tshirt_waves",
+        null,
+        null,
+        "AUTO",
+        getHTMLElemAttribute("value", "slider-single", true),
+        function () { },
+        false
+      );
+    });
 
-/* For Mobile user interface */
+    /* Mobile controls */
+    eventHTMLElem("input", "slider-single-4", true, function (event) {
+      operateAnimation(
+        "SET_SPEED",
+        "tshirt_walking",
+        null,
+        null,
+        "AUTO",
+        getHTMLElemAttribute("value", "slider-single-4", true),
+        function () { },
+        false
+      );
 
-setActiveCamera("cameradefault");
+      operateAnimation(
+        "SET_SPEED",
+        "tshirt_waves",
+        null,
+        null,
+        "AUTO",
+        getHTMLElemAttribute("value", "slider-single-4", true),
+        function () { },
+        false
+      );
+    });
 
-operateAnimation(
-  "STOP",
-  "camrotatezoomaxis",
-  null,
-  null,
-  "AUTO",
-  1,
-  function () { },
-  false
-);
+    /* For Mobile user interface */
 
-operateAnimation(
-  "STOP",
-  "camrotateaxis",
-  null,
-  null,
-  "AUTO",
-  1,
-  function () { },
-  false
-);
+    setActiveCamera("cameradefault");
 
-/* For Mobile user interface */
+    operateAnimation(
+      "STOP",
+      "camrotatezoomaxis",
+      null,
+      null,
+      "AUTO",
+      1,
+      function () { },
+      false
+    );
 
-/* Set Puff Print and Acid Wash to NONE */
-setMaterialValue("Base", "Value.003", 0);
-setMaterialValue("Base", "Value.004", 0);
+    operateAnimation(
+      "STOP",
+      "camrotateaxis",
+      null,
+      null,
+      "AUTO",
+      1,
+      function () { },
+      false
+    );
 
-/* Puff Print Slider */
-eventHTMLElem("input", "slider-single-2", true, function (event) {
-  setMaterialValue(
-    "Base",
-    "Value.003",
-    getHTMLElemAttribute("value", "slider-single-2", true)
-  );
-});
+    /* For Mobile user interface */
 
-/* Acid Wash Slider */
-eventHTMLElem("input", "slider-single-3", true, function (event) {
-  setMaterialValue(
-    "Base",
-    "Value.004",
-    getHTMLElemAttribute("value", "slider-single-3", true)
-  );
-});
+    /* Set Puff Print and Acid Wash to NONE */
+    setMaterialValue("Base", "Value.003", 0);
+    setMaterialValue("Base", "Value.004", 0);
 
-/* Mobile controls */
-/* Acid Wash Slider */
-eventHTMLElem("input", "slider-single-5", true, function (event) {
-  setMaterialValue(
-    "Base",
-    "Value.003",
-    getHTMLElemAttribute("value", "slider-single-5", true)
-  );
-});
-/* Puff Print Slider */
-eventHTMLElem("input", "slider-single-6", true, function (event) {
-  setMaterialValue(
-    "Base",
-    "Value.004",
-    getHTMLElemAttribute("value", "slider-single-6", true)
-  );
-});
+    /* Puff Print Slider */
+    eventHTMLElem("input", "slider-single-2", true, function (event) {
+      setMaterialValue(
+        "Base",
+        "Value.003",
+        getHTMLElemAttribute("value", "slider-single-2", true)
+      );
+    });
 
-if (featureAvailable("MOBILE")) {
-}
+    /* Acid Wash Slider */
+    eventHTMLElem("input", "slider-single-3", true, function (event) {
+      setMaterialValue(
+        "Base",
+        "Value.004",
+        getHTMLElemAttribute("value", "slider-single-3", true)
+      );
+    });
+
+    /* Mobile controls */
+    /* Acid Wash Slider */
+    eventHTMLElem("input", "slider-single-5", true, function (event) {
+      setMaterialValue(
+        "Base",
+        "Value.003",
+        getHTMLElemAttribute("value", "slider-single-5", true)
+      );
+    });
+    /* Puff Print Slider */
+    eventHTMLElem("input", "slider-single-6", true, function (event) {
+      setMaterialValue(
+        "Base",
+        "Value.004",
+        getHTMLElemAttribute("value", "slider-single-6", true)
+      );
+    });
+
+    if (featureAvailable("MOBILE")) {
+    }
   }; // end of PL.init function
 
-PL.disposeListeners = function () {
-  if (_pGlob) {
-    _pGlob.eventListeners.forEach(
-      ({ target, type, listener, optionsOrUseCapture }) => {
-        target.removeEventListener(type, listener, optionsOrUseCapture);
-      }
-    );
-    _pGlob.eventListeners.length = 0;
-  }
-};
-
-PL.disposeHTMLElements = function () {
-  if (_pGlob) {
-    _pGlob.htmlElements.forEach((elem) => {
-      elem.remove();
-    });
-    _pGlob.htmlElements.clear();
-  }
-};
-
-PL.disposeMaterialsCache = function () {
-  if (_pGlob) {
-    for (const mat of _pGlob.materialsCache.values()) {
-      mat.dispose();
+  PL.disposeListeners = function () {
+    if (_pGlob) {
+      _pGlob.eventListeners.forEach(
+        ({ target, type, listener, optionsOrUseCapture }) => {
+          target.removeEventListener(type, listener, optionsOrUseCapture);
+        }
+      );
+      _pGlob.eventListeners.length = 0;
     }
-    _pGlob.materialsCache.clear();
-  }
-};
+  };
 
-PL.dispose = function () {
-  PL.disposeListeners();
-  PL.disposeHTMLElements();
-  PL.disposeMaterialsCache();
-  _pGlob = null;
-  // backward compatibility
-  if (v3d[Symbol.toStringTag] !== "Module") {
-    delete v3d.PL;
-    delete v3d.puzzles;
-  }
-};
+  PL.disposeHTMLElements = function () {
+    if (_pGlob) {
+      _pGlob.htmlElements.forEach((elem) => {
+        elem.remove();
+      });
+      _pGlob.htmlElements.clear();
+    }
+  };
 
-return PL;
+  PL.disposeMaterialsCache = function () {
+    if (_pGlob) {
+      for (const mat of _pGlob.materialsCache.values()) {
+        mat.dispose();
+      }
+      _pGlob.materialsCache.clear();
+    }
+  };
+
+  PL.dispose = function () {
+    PL.disposeListeners();
+    PL.disposeHTMLElements();
+    PL.disposeMaterialsCache();
+    _pGlob = null;
+    // backward compatibility
+    if (v3d[Symbol.toStringTag] !== "Module") {
+      delete v3d.PL;
+      delete v3d.puzzles;
+    }
+  };
+
+  return PL;
 }
 
 export { createPL };
