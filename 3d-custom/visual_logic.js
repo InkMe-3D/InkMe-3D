@@ -14020,49 +14020,23 @@ Thêm Ảnh
           
           console.log('🔗 Shareable link created:', shareableLink);
     
-          // HIỂN THỊ LINK CHO NGƯỜI DÙNG
-          const linkHtml = \`
-            <div style="max-width: 500px; margin: 20px auto; padding: 20px; border: 2px solid #4CAF50; border-radius: 10px; background: #f9f9f9;">
-              <h3 style="color: #4CAF50; margin-top: 0;">🎉 Thiết kế đã được lưu thành công!</h3>
-              <p><strong>Link chia sẻ của bạn:</strong></p>
-              <div style="background: white; padding: 10px; border: 1px solid #ddd; border-radius: 5px; word-break: break-all; font-family: monospace; font-size: 12px;">
-                <a href="\${shareableLink}" target="_blank" style="color: #2196F3; text-decoration: none;">
-                  \${shareableLink}
-                </a>
-              </div>
-              <div style="margin-top: 15px;">
-                <button onclick="navigator.clipboard.writeText('\${shareableLink}').then(() => alert('✅ Link đã được copy!')).catch(() => alert('❌ Không thể copy link'))" 
-                        style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px;">
-                  📋 Copy Link
-                </button>
-                <button onclick="window.open('\${shareableLink}', '_blank')" 
-                        style="background: #2196F3; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-                  🔗 Mở Link
-                </button>
-              </div>
-              <p style="font-size: 12px; color: #666; margin-bottom: 0;">
-                💡 Chia sẻ link này để người khác có thể xem thiết kế 3D của bạn!
-              </p>
-            </div>
-          \`;
-    
-          // Tạo modal để hiển thị link
-          const modal = document.createElement('div');
-          modal.style.cssText = \`
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.8); z-index: 10000; display: flex; 
-            align-items: center; justify-content: center;
-          \`;
-          
-          const modalContent = document.createElement('div');
-          modalContent.style.cssText = \`
-            background: white; padding: 0; border-radius: 10px; 
-            max-width: 90%; max-height: 90%; overflow: auto;
-          \`;
-         
-          
-          modal.appendChild(modalContent);
-          document.body.appendChild(modal);
+         // HIỂN THỊ MODAL CHIA SẺ
+console.log('🎉 Hiển thị modal chia sẻ với link:', shareableLink);
+  
+// Sử dụng function showShareModal có sẵn
+if (typeof showShareModal === 'function') {
+  showShareModal(shareableLink);
+} else {
+  // Fallback nếu function chưa load
+  setTimeout(() => {
+    if (typeof showShareModal === 'function') {
+      showShareModal(shareableLink);
+    } else {
+      // Fallback cuối cùng với alert
+      alert('🎉 Thiết kế đã được lưu thành công!\\n\\nLink chia sẻ:\\n' + shareableLink);
+    }
+  }, 500);
+}
     
           // Thêm vào giỏ hàng với link
           const cartItem = {
