@@ -30,16 +30,18 @@ const CartPage = () => {
     if (!user?.userId) return;
 
     fetchDataFromApi(`/api/cart?userId=${user.userId}`).then((res) => {
-      setCartData(res);
-      context.setCartData(res);
+      // Ensure res is always an array
+      const cartArray = Array.isArray(res) ? res : [];
+      setCartData(cartArray);
+      context.setCartData(cartArray);
       // Initialize quantities
       const initialQuantities = {};
-      res.forEach(item => {
+      cartArray.forEach(item => {
         initialQuantities[item._id] = item.quantity;
       });
       setSelectedQuantity(initialQuantities);
       // Calculate total
-      const total = res.reduce((sum, item) => sum + item.subTotal, 0);
+      const total = cartArray.reduce((sum, item) => sum + item.subTotal, 0);
       setTotalAmount(total);
     });
   }, []);
@@ -179,8 +181,8 @@ const CartPage = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {cartData?.length !== 0 ? (
-                          cartData?.map((item) => {
+                        {Array.isArray(cartData) && cartData.length !== 0 ? (
+                          cartData.map((item) => {
                             return (
                               <React.Fragment key={item._id}>
                                 <tr className="cart-item">
