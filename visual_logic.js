@@ -13387,7 +13387,6 @@ Thêm Ảnh
         );
       });
     }
-
     // Describe this function...
     function restore_saved_canvas_layers() {
       Function(
@@ -13671,6 +13670,270 @@ Thêm Ảnh
       )(appInstance, v3d, PL, VARS, PROC);
     }
 
+    // Helper functions cho URL Loading UI
+    function showUrlLoadingOverlay(title, subtitle) {
+      const overlay = document.getElementById('urlLoadingOverlay');
+      const spinner = document.getElementById('urlLoadingSpinner');
+      const icon = document.getElementById('urlLoadingIcon');
+      const text = document.getElementById('urlLoadingText');
+      const subtitleEl = document.getElementById('urlLoadingSubtitle');
+      const progress = document.getElementById('urlLoadingProgress');
+      const dots = document.getElementById('urlLoadingDots');
+
+      if (overlay) {
+        // Reset về trạng thái loading
+        spinner.style.display = 'block';
+        icon.style.display = 'none';
+        progress.style.display = 'block';
+        dots.style.display = 'flex';
+
+        // Cập nhật text
+        text.textContent = title || 'Đang tải...';
+        text.className = 'url-loading-text';
+        subtitleEl.textContent = subtitle || 'Vui lòng chờ trong giây lát';
+        subtitleEl.className = 'url-loading-subtitle';
+
+        // Hiển thị overlay
+        overlay.style.display = 'flex';
+
+        console.log('🔄 Loading overlay displayed');
+      }
+    }
+
+    function updateUrlLoadingProgress(title, subtitle) {
+      const text = document.getElementById('urlLoadingText');
+      const subtitleEl = document.getElementById('urlLoadingSubtitle');
+
+      if (text && subtitleEl) {
+        text.textContent = title || 'Đang xử lý...';
+        subtitleEl.textContent = subtitle || 'Vui lòng chờ...';
+        console.log('📝 Loading progress updated:', title);
+      }
+    }
+
+    function showUrlLoadingSuccess(title, subtitle) {
+      const spinner = document.getElementById('urlLoadingSpinner');
+      const icon = document.getElementById('urlLoadingIcon');
+      const iconText = document.getElementById('urlLoadingIconText');
+      const text = document.getElementById('urlLoadingText');
+      const subtitleEl = document.getElementById('urlLoadingSubtitle');
+      const progress = document.getElementById('urlLoadingProgress');
+      const dots = document.getElementById('urlLoadingDots');
+
+      if (spinner && icon && text) {
+        // Ẩn loading elements
+        spinner.style.display = 'none';
+        progress.style.display = 'none';
+        dots.style.display = 'none';
+
+        // Hiển thị success
+        icon.style.display = 'flex';
+        icon.className = 'url-loading-icon success';
+        iconText.textContent = '✓';
+
+        // Cập nhật text
+        text.textContent = title || 'Thành công!';
+        text.className = 'url-loading-text url-loading-success';
+        subtitleEl.textContent = subtitle || 'Đã hoàn thành';
+        subtitleEl.className = 'url-loading-subtitle url-loading-success';
+
+        console.log('✅ Success state displayed');
+      }
+    }
+
+    function showUrlLoadingError(title, subtitle) {
+      const spinner = document.getElementById('urlLoadingSpinner');
+      const icon = document.getElementById('urlLoadingIcon');
+      const iconText = document.getElementById('urlLoadingIconText');
+      const text = document.getElementById('urlLoadingText');
+      const subtitleEl = document.getElementById('urlLoadingSubtitle');
+      const progress = document.getElementById('urlLoadingProgress');
+      const dots = document.getElementById('urlLoadingDots');
+
+      if (spinner && icon && text) {
+        // Ẩn loading elements
+        spinner.style.display = 'none';
+        progress.style.display = 'none';
+        dots.style.display = 'none';
+
+        // Hiển thị error
+        icon.style.display = 'flex';
+        icon.className = 'url-loading-icon error';
+        iconText.textContent = '✕';
+
+        // Cập nhật text
+        text.textContent = title || 'Lỗi!';
+        text.className = 'url-loading-text url-loading-error';
+        subtitleEl.textContent = subtitle || 'Có lỗi xảy ra';
+        subtitleEl.className = 'url-loading-subtitle url-loading-error';
+
+        console.log('❌ Error state displayed');
+      }
+    }
+
+    function hideUrlLoadingOverlay() {
+      const overlay = document.getElementById('urlLoadingOverlay');
+      if (overlay) {
+        overlay.style.display = 'none';
+        console.log('🔄 Loading overlay hidden');
+      }
+    }
+
+    function load_layout_from_url(url) {
+      if (!url) {
+        console.error('URL không hợp lệ');
+        return;
+      }
+
+      console.log('🔗 Loading layout from URL:', url);
+      showUrlLoadingOverlay('Đang tải thiết kế...', 'Vui lòng chờ trong giây lát');
+
+      loadFile(
+        url,
+        function () {
+          console.log('✅ File loaded successfully, processing...');
+
+          try {
+            loadedData = _pGlob.loadedFile;
+            console.log('📄 Loaded data:', typeof loadedData, loadedData ? 'Data exists' : 'No data');
+
+            Function(
+              "app", "v3d", "puzzles", "VARS", "PROC",
+              "showUrlLoadingOverlay", "updateUrlLoadingProgress", "showUrlLoadingSuccess", "showUrlLoadingError", "hideUrlLoadingOverlay",
+              `
+              const alertMsg = 'Wrong save file! Try another one.';
+    
+              try {
+                console.log('🔄 Parsing JSON data...');
+                VARS.currentSceneState = JSON.parse(VARS.loadedData);
+                console.log('✅ JSON parsed successfully:', VARS.currentSceneState);
+              } catch(e) {
+                console.error('❌ Parse error:', e);
+                alert(alertMsg);
+                showUrlLoadingError('Lỗi dữ liệu', 'Không thể đọc thiết kế');
+                return;
+              }
+    
+              const sceneName = app._loadSceneURL.replace('.gltf.xz', '');
+              const state = VARS.currentSceneState;
+              state.readyImages = {};
+    
+              console.log('🏷️ Scene comparison:', sceneName, 'vs', state.sceneName);
+    
+              if (sceneName != state.sceneName) {
+                console.warn('⚠️ Scene name mismatch:', sceneName, 'vs', state.sceneName);
+              }
+    
+              console.log('🖼️ Processing saved images:', Object.keys(state.savedImages || {}));
+    
+              for (let name in state.savedImages) {
+                const image = new Image();
+                image.src = state.savedImages[name];
+                state.readyImages[name] = image;
+                delete state.savedImages[name];
+              }
+    
+              const array = Object.values(state.readyImages);
+              console.log('🎨 Ready images count:', array.length);
+    
+              if (array.length) {
+                console.log('🔄 Checking loaded images...');
+                checkLoadedImages();
+              } else {
+                console.log('🎨 No images to load, creating canvas drawer...');
+                PROC.create_canvas_drawer(true);
+                showUrlLoadingSuccess('Tải thành công', 'Thiết kế đã được áp dụng');
+                hideUrlLoadingOverlay();
+              }
+    
+              // Delay restore parameters
+              console.log('⚙️ Scheduling restore parameters...');
+              setTimeout(function() {
+                try {
+                  console.log('⚙️ Restoring other parameters...');
+                  PROC.restore_other_parameters();
+                  console.log('✅ Parameters restored successfully');
+                } catch(paramError) {
+                  console.error('⚠️ Error restoring parameters:', paramError);
+                }
+              }, 500);
+    
+              function checkLoadedImages() {
+                let ready = false;
+                let loadedCount = 0;
+                for (let i = 0; i < array.length; i++) {
+                  if (!array[i].width) {
+                    ready = false;
+                    break;
+                  } else {
+                    ready = true;
+                    loadedCount++;
+                  }
+                }
+    
+                console.log('📊 Images loaded:', loadedCount, '/', array.length, 'Ready:', ready);
+    
+                if (ready) {
+                  console.log('✅ All images loaded, creating canvas drawer...');
+                  PROC.create_canvas_drawer(true);
+                  showUrlLoadingSuccess('Tải thành công', 'Thiết kế đã được áp dụng');
+                  hideUrlLoadingOverlay();
+                } else {
+                  setTimeout(function() {
+                    checkLoadedImages();
+                  }, 100);
+                }
+              }
+              `
+            )(appInstance, v3d, PL, VARS, PROC,
+              showUrlLoadingOverlay, updateUrlLoadingProgress, showUrlLoadingSuccess, showUrlLoadingError, hideUrlLoadingOverlay
+            );
+
+            console.log('✅ Layout loaded successfully from URL');
+          } catch (error) {
+            console.error('❌ Error in processing loaded data:', error);
+            showUrlLoadingError('Lỗi xử lý', 'Không thể khôi phục thiết kế');
+            setTimeout(hideUrlLoadingOverlay, 1500);
+          }
+        },
+        function () {
+          console.error('❌ Failed to load layout from URL');
+          showUrlLoadingError('Lỗi kết nối', 'Không thể tải file từ link');
+          setTimeout(hideUrlLoadingOverlay, 1500);
+        },
+        false
+      );
+    }
+
+
+    // Function để tự động load layout khi có URL parameter
+    function auto_load_from_url_params() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const layoutUrl = urlParams.get('layout');
+
+      if (layoutUrl) {
+        console.log('🔄 Auto-loading layout from URL parameter:', layoutUrl);
+
+        // Decode URL
+        const decodedUrl = decodeURIComponent(layoutUrl);
+        console.log('🔗 Decoded URL:', decodedUrl);
+
+        load_layout_from_url(decodedUrl);
+
+
+      } else {
+        console.log('ℹ️ No layout URL parameter found');
+      }
+    }
+
+    // Hoặc nếu app đã load rồi
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', auto_load_from_url_params);
+    } else {
+      auto_load_from_url_params();
+    }
+
+
     function upload_layout_to_server() {
       color = getMaterialColor("Base", "RGB", "CSS_HEX");
       bgColor = getMaterialColor("env_sphere", "RGB", "CSS_HEX");
@@ -13714,14 +13977,12 @@ Thêm Ảnh
     
         // Tạo blob JSON từ state
         const blob = new Blob([JSON.stringify(state)], { type: 'application/json' });
-        const filename = state.sceneName + '_layout.sav';
+        const filename = state.sceneName + '_layout_' + Date.now() + '.sav';
         
         const formData = new FormData();
         
-        // SỬA: Thử nhiều cách lấy token
+        // Lấy token
         let authorization = '';
-        
-        // Thử lấy từ các source khác nhau
         const token = localStorage.getItem('token') || 
                      localStorage.getItem('authorization') || 
                      sessionStorage.getItem('token') || 
@@ -13729,18 +13990,15 @@ Thêm Ảnh
                      window.authToken || '';
         
         if (token) {
-          // Nếu token chưa có Bearer prefix thì thêm vào
           authorization = token.startsWith('Bearer ') ? token : \`Bearer \${token}\`;
         }
-        
-        console.log('🔑 Authorization token:', authorization ? '✅ Có token' : '❌ Không có token');
         
         formData.append('file', blob, filename); 
     
         console.log('🚀 Uploading layout to server...', { filename });
         fetch('https://inkme-3d-server-production.up.railway.app/api/products/upload-file', {
           method: 'POST',
-         headers: {
+          headers: {
             'Authorization': authorization,
           },
           body: formData
@@ -13752,40 +14010,66 @@ Thêm Ảnh
           }
     
           const result = await res.json();
-          const inkmeFile = result.url;
+          const fileUrl = result.url;
     
-          console.log('✅ Uploaded layout file:', inkmeFile);
+          console.log('✅ Uploaded layout file:', fileUrl);
     
+          // TẠO SHAREABLE LINK
+          const currentUrl = window.location.origin + window.location.pathname;
+          const shareableLink = \`\${currentUrl}?layout=\${encodeURIComponent(fileUrl)}\`;
+          
+          console.log('🔗 Shareable link created:', shareableLink);
+    
+         // HIỂN THỊ MODAL CHIA SẺ
+console.log('🎉 Hiển thị modal chia sẻ với link:', shareableLink);
+  
+// Sử dụng function showShareModal có sẵn
+if (typeof showShareModal === 'function') {
+  showShareModal(shareableLink);
+} else {
+  // Fallback nếu function chưa load
+  setTimeout(() => {
+    if (typeof showShareModal === 'function') {
+      showShareModal(shareableLink);
+    } else {
+      // Fallback cuối cùng với alert
+      alert('🎉 Thiết kế đã được lưu thành công!\\n\\nLink chia sẻ:\\n' + shareableLink);
+    }
+  }, 500);
+}
+    
+          // Thêm vào giỏ hàng với link
           const cartItem = {
-          productTitle: state.sceneName || 'InkMe Custom',
-          images: [''],
-          rating: '5',
-          price: 250000,
-          quantity: 1,
-          subTotal: 250000,
-          productId: localStorage.getItem("productId") || 'lo-custom',
-           productColor: '3D',
-          productSize: '3D',
-          userId: localStorage.getItem("userId") || 'guest-user',
-          inkmeFile: {
-            url: result.url,
-            sceneName: state.sceneName,
-            color: state.color,
-            bgColor: state.bgColor,
-            acidWash: state.acidWash,
-            puffPrint: state.puffPrint,
-            timestamp: new Date().toISOString()
-          },
-          classifications: [
-            {
-              name: 'Size M',
-              image: 'https://dummyimage.com/100x100/ccc/000?text=S', 
-              price: 250000,
-              quantity: 1,
-              subTotal: 250000
-            }
-          ]
-        };
+            productTitle: state.sceneName || 'InkMe Custom',
+            images: [''],
+            rating: '5',
+            price: 189000,
+            quantity: 1,
+            subTotal: 189000,
+            productId: localStorage.getItem("productId") || 'lo-custom',
+            productColor: '3D',
+            productSize: '3D',
+            userId: localStorage.getItem("userId") || 'guest-user',
+            inkmeFile: {
+              url: fileUrl,
+              shareableLink: shareableLink,
+              sceneName: state.sceneName,
+              color: state.color,
+              bgColor: state.bgColor,
+              acidWash: state.acidWash,
+              puffPrint: state.puffPrint,
+              timestamp: new Date().toISOString()
+            },
+            classifications: [
+              {
+                name: 'Size M',
+                image: 'https://dummyimage.com/100x100/ccc/000?text=S', 
+                price: 189000,
+                quantity: 1,
+                subTotal: 189000
+              }
+            ]
+          };
     
           return fetch('https://inkme-3d-server-production.up.railway.app/api/cart/add', {
             method: 'POST',
@@ -13803,14 +14087,13 @@ Thêm Ảnh
           }
           const result = await res.json();
           console.log('🛒 Đã thêm vào giỏ hàng:', result);
-          alert('🎉 Thiết kế đã được tải lên và thêm vào giỏ hàng!');
         })
         .catch(err => {
           console.error('❌ Lỗi toàn trình:', err);
           alert('❌ Lỗi: ' + err.message);
         });
     
-        // Reset lại state để không lưu dư thừa
+        // Reset lại state
         state.savedImages = {};
         state.savedLayers = {};
         `

@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', function () {
 async function checkInappropriateContent(base64ImageData) {
   try {
     // Gọi API endpoint của server thay vì gọi trực tiếp OpenAI
-    const response = await fetch('/api/ai/moderate-content', {
+    const response = await fetch('https://inkme-3d-server-production.up.railway.app/api/ai/moderate-content', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
