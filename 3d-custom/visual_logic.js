@@ -13388,6 +13388,7 @@ Thêm Ảnh
       });
     }
     // Describe this function...
+    // Describe this function...
     function restore_saved_canvas_layers() {
       Function(
         "app",
@@ -13429,27 +13430,67 @@ Thêm Ảnh
         "\n" +
         "" +
         "\n" +
+        "// Calculate scale ratio for position adjustment" +
+        "\n" +
+        "const currentCanvasSize = stage.width() / stage.cfScale;" +
+        "\n" +
+        "const savedCanvasSize = state.canvasSize || 450; // Default to desktop size" +
+        "\n" +
+        "const positionScale = currentCanvasSize / savedCanvasSize;" +
+        "\n" +
+        "" +
+        "\n" +
+        "" +
+        "\n" +
         "for (let i = 0; i < savedLayers.length; i++) {" +
         "\n" +
         "  const a = savedLayers[i].attrs;" +
         "\n" +
+        "  " +
+        "\n" +
+        "  // Adjust positions based on canvas size ratio" +
+        "\n" +
+        "  const adjustedX = a.x * positionScale;" +
+        "\n" +
+        "  const adjustedY = a.y * positionScale;" +
+        "\n" +
+        "  const adjustedWidth = a.width * positionScale;" +
+        "\n" +
+        "  const adjustedHeight = a.height * positionScale;" +
+        "\n" +
+        "  " +
+        "\n" +
         "  if (savedLayers[i].className == 'Image')" +
         "\n" +
-        "    savedLayers[i] = createImageLayer(readyImages[a.name], a.x, a.y," +
+        "    savedLayers[i] = createImageLayer(readyImages[a.name], adjustedX, adjustedY," +
         "\n" +
-        "          a.rotation, a.scaleX, a.scaleY, a.width, a.height, a.name);" +
+        "          a.rotation, a.scaleX, a.scaleY, adjustedWidth, adjustedHeight, a.name);" +
         "\n" +
         "  else if (savedLayers[i].className == 'Text')" +
         "\n" +
-        "    savedLayers[i] = createTextLayer(a.text, a.x, a.y, a.rotation," +
+        "    savedLayers[i] = createTextLayer(a.text, adjustedX, adjustedY, a.rotation," +
         "\n" +
-        "          a.scaleX, a.fontSize, a.fontFamily, a.width, a.name, a.fill);" +
+        "          a.scaleX, a.fontSize * positionScale, a.fontFamily, adjustedWidth, a.name, a.fill);" +
         "\n" +
-        "  else if (savedLayers[i].className == 'Line')" +
+        "  else if (savedLayers[i].className == 'Line') {" +
         "\n" +
-        "    savedLayers[i] = createStrokeLayer(a.stroke, a.strokeWidth," +
+        "    // Adjust line points" +
         "\n" +
-        "          a.points, a.name);" +
+        "    const adjustedPoints = [];" +
+        "\n" +
+        "    for (let j = 0; j < a.points.length; j += 2) {" +
+        "\n" +
+        "      adjustedPoints.push(a.points[j] * positionScale);" +
+        "\n" +
+        "      adjustedPoints.push(a.points[j + 1] * positionScale);" +
+        "\n" +
+        "    }" +
+        "\n" +
+        "    savedLayers[i] = createStrokeLayer(a.stroke, a.strokeWidth * positionScale," +
+        "\n" +
+        "          adjustedPoints, a.name);" +
+        "\n" +
+        "  }" +
         "\n" +
         "  else" +
         "\n" +
@@ -13598,9 +13639,19 @@ Thêm Ảnh
         "\n" +
         "if (VARS.myDrawer2) {" +
         "\n" +
-        "  const stageId = VARS.myDrawer2.dataset.stage;" +
+        "const stageId = VARS.myDrawer2.dataset.stage;" +
         "\n" +
-        "  const layer = Konva.ids[stageId].children[0];" +
+        "const stage = Konva.ids[stageId];" +
+        "\n" +
+        "const layer = stage.children[0];" +
+        "\n" +
+        "" +
+        "\n" +
+        "// Save current canvas size for position scaling" +
+        "\n" +
+        "const currentCanvasSize = stage.width() / stage.cfScale;" +
+        "\n" +
+        "VARS.currentSceneState.canvasSize = currentCanvasSize;" +
         "\n" +
         "" +
         "\n" +

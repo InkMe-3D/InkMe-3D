@@ -870,7 +870,6 @@
 
     // Function to clear all user data (for testing)
     function clearUserData() {
-      console.log('🧹 Clearing all user data...');
 
       // Remove common user-related keys
       const keysToRemove = [
@@ -881,7 +880,6 @@
 
       keysToRemove.forEach(key => {
         if (localStorage.getItem(key)) {
-          console.log(`Removing ${key}:`, localStorage.getItem(key));
           localStorage.removeItem(key);
         }
       });
@@ -890,16 +888,13 @@
       const allKeys = Object.keys(localStorage);
       allKeys.forEach(key => {
         if (key.toLowerCase().includes('user') || key.toLowerCase().includes('auth')) {
-          console.log(`Found and removing ${key}:`, localStorage.getItem(key));
           localStorage.removeItem(key);
         }
       });
 
-      console.log('✅ User data cleared!');
 
       // Force refresh button
       checkUserAndUpdateButton();
-      console.log('🔄 Button refreshed!');
     }
 
     // Make clear function available globally
@@ -907,9 +902,7 @@
 
     // Force refresh cart button function
     function forceRefreshButton() {
-      console.log('🔄 Force refreshing cart button...');
       checkUserAndUpdateButton();
-      console.log('✅ Button refreshed!');
     }
 
     // Make refresh function available globally  
@@ -917,12 +910,9 @@
 
     // Check user and update cart button
     function checkUserAndUpdateButton() {
-      console.log('🔍 checkUserAndUpdateButton() called');
 
       const cartButton = document.getElementById('cart_button');
       const cartSection = document.querySelector('.cart-section');
-      console.log('🎯 Cart button element:', cartButton);
-      console.log('🔐 User logged in:', isUserLoggedIn());
 
       if (!cartButton) {
         console.error('❌ Cart button not found! Looking for element with ID "cart_button"');
@@ -939,7 +929,6 @@
         alternativeSelectors.forEach(selector => {
           const elem = document.querySelector(selector);
           if (elem) {
-            console.log(`✅ Found button with selector "${selector}":`, elem);
           }
         });
         return;
@@ -947,7 +936,6 @@
 
       if (!isUserLoggedIn()) {
         // Ẩn button hoàn toàn khi không có user
-        console.log('🔄 Hiding cart button - no user logged in');
         if (cartSection) {
           cartSection.style.display = 'none';
         } else {
@@ -955,7 +943,6 @@
         }
       } else {
         // Hiển thị button khi có user
-        console.log('👤 User is logged in - showing cart button');
         if (cartSection) {
           cartSection.style.display = 'block';
         } else {
@@ -1125,8 +1112,6 @@
 
       // Create full address
       userInfo.fullAddress = `${userInfo.address}, ${userInfo.wardName}, ${userInfo.districtName}, ${userInfo.provinceName}`;
-
-      console.log('👤 User info submitted:', userInfo);
 
       // Save to localStorage temporarily
       localStorage.setItem('tempUserInfo', JSON.stringify(userInfo));
