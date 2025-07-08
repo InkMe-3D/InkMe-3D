@@ -15,32 +15,226 @@ const Product = ({ product }) => {
   const [activeSize, setActiveSize] = useState(null);
   const [activeColor, setActiveColor] = useState(null);
 
-  // Color mapping for display
-  const colorMap = {
-    'Xám': '#9ca3af',
-    'Xanh dương': '#3b82f6',
-    'Xanh lá': '#22c55e',
-    'Vàng': '#fbbf24',
-    'Tím': '#a855f7',
-    'Đỏ': '#ef4444',
-    'Đen': '#1f2937',
-    'Trắng': '#f9fafb',
-    'Hồng': '#ec4899',
-    'Cam': '#f97316',
-    'Nâu': '#a3a3a3',
-    'Xanh lam': '#06b6d4',
-    'Gray': '#9ca3af',
-    'Blue': '#3b82f6',
-    'Green': '#22c55e',
-    'Yellow': '#fbbf24',
-    'Purple': '#a855f7',
-    'Red': '#ef4444',
-    'Black': '#1f2937',
-    'White': '#f9fafb',
-    'Pink': '#ec4899',
-    'Orange': '#f97316',
-    'Brown': '#a3a3a3',
-    'Cyan': '#06b6d4'
+  // Enhanced Color Detection System
+  const getColorFromName = (colorName) => {
+    if (!colorName) return '#cccccc';
+
+    const name = colorName.toLowerCase().trim();
+
+    // Extended color mapping with variations
+    const colorMap = {
+      // Tiếng Việt - Xanh dương variants
+      'xanh dương': '#3b82f6',
+      'xanh dương đậm': '#1d4ed8',
+      'xanh dương nhạt': '#60a5fa',
+      'xanh dương sáng': '#3b82f6',
+      'xanh dương tối': '#1e40af',
+      'xanh dương navy': '#1e3a8a',
+      'xanh dương royal': '#2563eb',
+
+      // Tiếng Việt - Xanh lá variants  
+      'xanh lá': '#22c55e',
+      'xanh lá đậm': '#16a34a',
+      'xanh lá nhạt': '#4ade80',
+      'xanh lá sáng': '#22c55e',
+      'xanh lá tối': '#166534',
+      'xanh lá olive': '#84cc16',
+      'xanh lá cây': '#22c55e',
+
+      // Tiếng Việt - Xanh lam variants
+      'xanh lam': '#06b6d4',
+      'xanh lam đậm': '#0891b2',
+      'xanh lam nhạt': '#22d3ee',
+      'xanh lam sáng': '#06b6d4',
+      'xanh lam tối': '#164e63',
+      'xanh ngọc': '#14b8a6',
+      'xanh biển': '#0ea5e9',
+
+      // Tiếng Việt - Đỏ variants
+      'đỏ': '#ef4444',
+      'đỏ đậm': '#dc2626',
+      'đỏ nhạt': '#f87171',
+      'đỏ sáng': '#ef4444',
+      'đỏ tối': '#991b1b',
+      'đỏ cherry': '#dc2626',
+      'đỏ hồng': '#f43f5e',
+      'đỏ cam': '#f97316',
+
+      // Tiếng Việt - Vàng variants
+      'vàng': '#fbbf24',
+      'vàng đậm': '#f59e0b',
+      'vàng nhạt': '#fde047',
+      'vàng sáng': '#fbbf24',
+      'vàng tối': '#d97706',
+      'vàng chanh': '#eab308',
+      'vàng cam': '#f59e0b',
+      'vàng gold': '#fbbf24',
+
+      // Tiếng Việt - Tím variants
+      'tím': '#a855f7',
+      'tím đậm': '#9333ea',
+      'tím nhạt': '#c084fc',
+      'tím sáng': '#a855f7',
+      'tím tối': '#7c3aed',
+      'tím violet': '#8b5cf6',
+      'tím lavender': '#c084fc',
+
+      // Tiếng Việt - Hồng variants
+      'hồng': '#ec4899',
+      'hồng đậm': '#db2777',
+      'hồng nhạt': '#f472b6',
+      'hồng sáng': '#ec4899',
+      'hồng tối': '#be185d',
+      'hồng rose': '#f43f5e',
+      'hồng pastel': '#f9a8d4',
+
+      // Tiếng Việt - Cam variants
+      'cam': '#f97316',
+      'cam đậm': '#ea580c',
+      'cam nhạt': '#fb923c',
+      'cam sáng': '#f97316',
+      'cam tối': '#c2410c',
+      'cam đỏ': '#dc2626',
+
+      // Tiếng Việt - Basic colors
+      'đen': '#1f2937',
+      'trắng': '#ffffff',
+      'xám': '#9ca3af',
+      'xám đậm': '#6b7280',
+      'xám nhạt': '#d1d5db',
+      'xám tối': '#374151',
+      'nâu': '#a3a3a3',
+      'nâu đậm': '#78716c',
+      'nâu nhạt': '#d6d3d1',
+      'bạc': '#e5e7eb',
+      'vàng gold': '#ffd700',
+
+      // English variants
+      'blue': '#3b82f6',
+      'dark blue': '#1d4ed8',
+      'light blue': '#60a5fa',
+      'navy blue': '#1e3a8a',
+      'royal blue': '#2563eb',
+      'sky blue': '#0ea5e9',
+      'cyan': '#06b6d4',
+      'turquoise': '#14b8a6',
+
+      'green': '#22c55e',
+      'dark green': '#16a34a',
+      'light green': '#4ade80',
+      'lime green': '#84cc16',
+      'emerald': '#10b981',
+      'forest green': '#166534',
+
+      'red': '#ef4444',
+      'dark red': '#dc2626',
+      'light red': '#f87171',
+      'crimson': '#dc143c',
+      'cherry red': '#dc2626',
+
+      'yellow': '#fbbf24',
+      'dark yellow': '#f59e0b',
+      'light yellow': '#fde047',
+      'golden': '#ffd700',
+      'amber': '#f59e0b',
+
+      'purple': '#a855f7',
+      'dark purple': '#9333ea',
+      'light purple': '#c084fc',
+      'violet': '#8b5cf6',
+      'lavender': '#c084fc',
+      'indigo': '#6366f1',
+
+      'pink': '#ec4899',
+      'dark pink': '#db2777',
+      'light pink': '#f472b6',
+      'rose': '#f43f5e',
+      'magenta': '#d946ef',
+
+      'orange': '#f97316',
+      'dark orange': '#ea580c',
+      'light orange': '#fb923c',
+
+      'black': '#1f2937',
+      'white': '#ffffff',
+      'gray': '#9ca3af',
+      'grey': '#9ca3af',
+      'dark gray': '#6b7280',
+      'light gray': '#d1d5db',
+      'brown': '#a3a3a3',
+      'silver': '#e5e7eb',
+      'gold': '#ffd700'
+    };
+
+    // Direct match
+    if (colorMap[name]) {
+      return colorMap[name];
+    }
+
+    // Fuzzy matching for complex color names
+    const fuzzyMatch = (input, target) => {
+      return input.includes(target) || target.includes(input);
+    };
+
+    // Try to find partial matches
+    for (const [key, value] of Object.entries(colorMap)) {
+      if (fuzzyMatch(name, key)) {
+        return value;
+      }
+    }
+
+    // Advanced pattern matching
+    const patterns = [
+      // Xanh patterns
+      { pattern: /(xanh|blue).*?(dương|navy|royal)/, color: '#1e40af' },
+      { pattern: /(xanh|green).*?(lá|lime|forest)/, color: '#22c55e' },
+      { pattern: /(xanh|cyan|turquoise).*?(lam|biển)/, color: '#06b6d4' },
+
+      // Đỏ patterns  
+      { pattern: /(đỏ|red).*?(đậm|dark|cherry)/, color: '#dc2626' },
+      { pattern: /(đỏ|red).*?(nhạt|light|pink)/, color: '#f87171' },
+
+      // Vàng patterns
+      { pattern: /(vàng|yellow).*?(đậm|dark|gold)/, color: '#f59e0b' },
+      { pattern: /(vàng|yellow).*?(nhạt|light|pale)/, color: '#fde047' },
+
+      // Tím patterns
+      { pattern: /(tím|purple).*?(đậm|dark|deep)/, color: '#9333ea' },
+      { pattern: /(tím|purple).*?(nhạt|light|lavender)/, color: '#c084fc' },
+
+      // Intensity modifiers
+      { pattern: /đậm|dark|deep|tối/, color: null, modifier: 'darken' },
+      { pattern: /nhạt|light|pale|sáng/, color: null, modifier: 'lighten' },
+    ];
+
+    for (const { pattern, color, modifier } of patterns) {
+      if (pattern.test(name)) {
+        if (color) return color;
+
+        // Apply modifier to base color
+        if (modifier && name.includes('xanh dương')) {
+          return modifier === 'darken' ? '#1d4ed8' : '#60a5fa';
+        }
+        if (modifier && name.includes('đỏ')) {
+          return modifier === 'darken' ? '#dc2626' : '#f87171';
+        }
+        // Add more modifier logic as needed
+      }
+    }
+
+    // Color name extraction
+    const colorKeywords = ['xanh', 'đỏ', 'vàng', 'tím', 'hồng', 'cam', 'đen', 'trắng', 'xám', 'nâu',
+      'blue', 'red', 'yellow', 'purple', 'pink', 'orange', 'black', 'white', 'gray', 'brown'];
+
+    for (const keyword of colorKeywords) {
+      if (name.includes(keyword)) {
+        return colorMap[keyword] || '#cccccc';
+      }
+    }
+
+    // Fallback: return a default color
+    console.warn(`Unknown color: ${colorName}, using default gray`);
+    return '#cccccc';
   };
 
   useEffect(() => {
@@ -300,7 +494,7 @@ const Product = ({ product }) => {
               )}
               <div className={`color-options mt-2 d-flex gap-2 align-items-center ${tabError && !selectedColor ? 'error' : ''}`}>
                 {product.color.map((color, index) => {
-                  const colorHex = colorMap[color] || '#cccccc';
+                  const colorHex = getColorFromName(color);
                   const isSelected = activeColor === index;
 
                   return (
@@ -322,16 +516,21 @@ const Product = ({ product }) => {
                       title={color}
                     >
                       {/* White border for light colors */}
-                      {(color === 'Trắng' || color === 'White' || color === 'Vàng' || color === 'Yellow') && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: '2px',
-                            borderRadius: '50%',
-                            border: '1px solid #d1d5db'
-                          }}
-                        />
-                      )}
+                      {(() => {
+                        const lightColors = ['trắng', 'white', 'vàng', 'yellow', 'vàng nhạt', 'light yellow', 'vàng sáng', 'cream', 'beige'];
+                        const colorLower = color.toLowerCase();
+                        const isLightColor = lightColors.some(lightColor => colorLower.includes(lightColor));
+                        return isLightColor && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              inset: '2px',
+                              borderRadius: '50%',
+                              border: '1px solid #d1d5db'
+                            }}
+                          />
+                        );
+                      })()}
                     </div>
                   );
                 })}
@@ -416,12 +615,3 @@ const Product = ({ product }) => {
 };
 
 export default Product;
-
-
-
-
-
-
-
-
-

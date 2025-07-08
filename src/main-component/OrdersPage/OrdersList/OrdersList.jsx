@@ -111,7 +111,7 @@ const OrdersList = () => {
     }
 
     return (
-        <div className="orders-list-container">
+        <div className="orders-list-container container">
             <div className="orders-header">
                 <h5 className="orders-title">
                     <i className="fas fa-shopping-bag me-2"></i>

@@ -303,7 +303,7 @@ const Header = (props) => {
                                                                     </div>
 
                                                                     <div
-                                                                        onClick={() => navigate("/user/orders")}
+                                                                        onClick={() => navigate(`/user/orders/${userId}`)}
                                                                         className="menu-item"
                                                                     >
                                                                         <i className="fas fa-shopping-bag menu-icon"></i>

@@ -5772,8 +5772,8 @@ input.main-search-input::placeholder {
 }
 
 .portfolio-wrapper {
+  background: linear-gradient(49deg, #600ee4 17.28%, #790fde 51.11%, #a41fe2 94.57%);
   border-radius: 23px 0 0 23px;
-  background: linear-gradient(49deg, #600EE4 17.28%, #790FDE 51.11%, #A41FE2 94.57%);
   position: relative;
 }
 @media (max-width: 1399px) {
@@ -5811,6 +5811,7 @@ input.main-search-input::placeholder {
     margin-bottom: 30px;
   }
 }
+
 .portfolio-wrapper .portfolio-content .section-title h6 {
   background: rgba(255, 255, 255, 0.23);
 }
