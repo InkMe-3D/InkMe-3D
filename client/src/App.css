@@ -248,7 +248,7 @@
   background: #e0e0e0;
 }
 
-body {
+body:not(.custom-3d-popup) {
   /* transform: scale(0.85);
   transform-origin: top left;
   width: 118%; */
