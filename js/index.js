@@ -483,8 +483,6 @@ window.addEventListener('message', (event) => {
 
     const { userId, productId, authorization } = event.data;
 
-    console.log("📥 Nhận dữ liệu từ parent:", event.data);
-
     if (userId) {
         localStorage.setItem('userId', userId || '');
     }
