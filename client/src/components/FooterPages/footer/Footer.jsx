@@ -39,8 +39,7 @@ const Footer = () => {
                                 </div>
                                 <div className="footer-content">
                                     <p>
-                                        A new way to make the payments easy,
-                                        reliable and 100% secure. claritatem itamconse quat. Exerci tation ullamcorper.
+                                        InkMe là một công ty in ấn 3D đầu tiên tại Việt Nam, cung cấp các dịch vụ in ấn 3D chất lượng cao với giá cả cạnh tranh.
                                     </p>
                                     <ul className="contact-list">
                                         <li>
@@ -58,7 +57,7 @@ const Footer = () => {
                         <div className="col-xl-3 ps-lg-5 col-sm-6 col-md-6 col-lg-4">
                             <div className="single-footer-widget">
                                 <div className="widget-head">
-                                    <h3>Usefull Links</h3>
+                                    <h3>Liên kết</h3>
                                 </div>
                                 <ul className="list-items">
                                     {Services.slice(0, 5).map((service, sitem) => (
@@ -76,22 +75,22 @@ const Footer = () => {
                         <div className="col-xl-3 ps-lg-4 col-sm-6 col-md-6 col-lg-4" >
                             <div className="single-footer-widget">
                                 <div className="widget-head">
-                                    <h3>Community</h3>
+                                    <h3>Cộng đồng</h3>
                                 </div>
                                 <ul className="list-items">
                                     <li>
                                         <Link to="/contact">
-                                            Help Center
+                                            Trung tâm trợ giúp
                                         </Link>
                                     </li>
                                     <li>
                                         <Link to="/contact">
-                                            Partners
+                                            Đối tác
                                         </Link>
                                     </li>
                                     <li>
                                         <Link to="/contact">
-                                            Suggestions
+                                            Góp ý
                                         </Link>
                                     </li>
                                     <li>
@@ -101,7 +100,7 @@ const Footer = () => {
                                     </li>
                                     <li>
                                         <Link to="/contact">
-                                            Newsletters
+                                            Bản tin
                                         </Link>
                                     </li>
                                 </ul>
@@ -110,7 +109,7 @@ const Footer = () => {
                         <div className="col-xl-3 col-sm-6 col-md-6 col-lg-4">
                             <div className="single-footer-widget">
                                 <div className="widget-head">
-                                    <h3>Get In Touch</h3>
+                                    <h3>Liên hệ</h3>
                                 </div>
                                 <div className="footer-content">
                                     <div className="scan-items">
@@ -121,13 +120,13 @@ const Footer = () => {
                                             <li>
                                                 <Link to="/contact">
                                                     <img src={Fi5} alt="img" />
-                                                    App Store
+                                                    App Store (Chưa có)
                                                 </Link>
                                             </li>
                                             <li className="active">
                                                 <Link to="/contact">
                                                     <img src={Fi6} alt="img" />
-                                                    Google play
+                                                    Google play (Chưa có)   
                                                 </Link>
                                             </li>
                                         </ul>

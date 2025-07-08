@@ -1,0 +1,390 @@
+/* Profile Page Custom Styles */
+.profile-container {
+    /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+    min-height: 100vh;
+    padding: 40px 0;
+}
+
+.profile-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: none;
+    overflow: hidden;
+}
+
+.profile-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 30px;
+    border: none;
+}
+
+.profile-avatar {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.profile-name {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #fff;
+}
+
+.profile-email {
+    font-size: 16px;
+    opacity: 0.9;
+    color: #fff;
+}
+
+/* Custom Tabs */
+.profile-tabs {
+    background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: none;
+}
+
+.profile-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+    font-weight: 600;
+    padding: 20px 25px;
+    border-radius: 0;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-tabs .nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    transition: width 0.3s ease;
+}
+
+.profile-tabs .nav-link:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    color: #667eea;
+    transform: translateY(-2px);
+}
+
+.profile-tabs .nav-link.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.profile-tabs .nav-link.active::before {
+    width: 100%;
+}
+
+/* Tab Content */
+.profile-tab-content {
+    background: white;
+    padding: 40px;
+    min-height: 500px;
+}
+
+.tab-title {
+    color: #667eea;
+    font-weight: 700;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #f0f2f5;
+    padding-bottom: 15px;
+}
+
+.tab-title i {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Form Controls */
+.profile-form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 15px 20px;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.profile-form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    background: white;
+    transform: translateY(-1px);
+}
+
+.profile-form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+/* Buttons */
+.btn-profile-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-profile-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.btn-profile-outline {
+    border: 2px solid #667eea;
+    color: #667eea;
+    border-radius: 25px;
+    padding: 10px 25px;
+    font-weight: 600;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-profile-outline:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-profile-danger {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 25px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-profile-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    color: white;
+}
+
+/* Address Cards */
+.address-card {
+    border: none;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid #667eea;
+}
+
+.address-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+}
+
+.address-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Empty States */
+.empty-state {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    padding: 60px 40px;
+    text-align: center;
+}
+
+.empty-state i {
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+.empty-state h6 {
+    color: #6c757d;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: #adb5bd;
+    font-size: 14px;
+}
+
+/* Settings Card */
+.settings-card {
+    border: none;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.settings-card .card-body {
+    padding: 30px;
+}
+
+.form-switch .form-check-input {
+    background-color: #e9ecef;
+    border-color: #e9ecef;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.form-switch .form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+/* Danger Zone */
+.danger-zone {
+    border-top: 2px solid #ff6b6b;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.danger-zone h6 {
+    color: #ff6b6b;
+    font-weight: 700;
+}
+
+/* Loading Spinner */
+.profile-spinner {
+    color: #667eea;
+}
+
+/* Address Management Integration */
+.profile-address-container {
+    margin-top: 20px;
+}
+
+.profile-address-container .checkout-single {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+.profile-address-container .MuiCard-root {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+    transition: all 0.3s ease;
+}
+
+.profile-address-container .MuiCard-root:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+}
+
+.profile-address-container .MuiButton-root {
+    border-radius: 20px;
+    text-transform: none;
+    font-weight: 600;
+}
+
+.profile-address-container .MuiButton-contained {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.profile-address-container .MuiButton-contained:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.profile-address-container .MuiFormControl-root .MuiInputLabel-root.Mui-focused {
+    color: #667eea;
+}
+
+.profile-address-container .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #667eea;
+}
+
+.profile-address-container .MuiRadio-root.Mui-checked {
+    color: #667eea;
+}
+
+.profile-address-container h4 {
+    color: #667eea;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 20px 0;
+    }
+
+    .profile-tab-content {
+        padding: 20px;
+    }
+
+    .profile-tabs .nav-link {
+        padding: 15px 10px;
+        font-size: 14px;
+    }
+
+    .profile-header {
+        padding: 20px;
+    }
+
+    .profile-name {
+        font-size: 24px;
+    }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.tab-pane.show.active {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+/* OrdersList Integration */
+.profile-orders-container {
+    margin: -20px;
+    border-radius: 0;
+}
+
+.profile-orders-container .orders-list-container {
+    background: transparent;
+    min-height: auto;
+    padding: 0;
+    color: inherit;
+}
+
+.profile-orders-container .orders-header {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 20px;
+}

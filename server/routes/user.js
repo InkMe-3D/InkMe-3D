@@ -202,7 +202,7 @@ router.post(`/signup`, async (req, res) => {
     const token = jwt.sign(
       { email: result.email, id: result._id },
       process.env.JSON_WEB_TOKEN_SECRET_KEY,
-      { expiresIn: '24h' }
+      { expiresIn: '30d' }
     );
 
     // Create verification link
@@ -353,7 +353,7 @@ router.post(`/signin`, async (req, res) => {
     const token = jwt.sign(
       { email: existingUser.email, id: existingUser._id },
       process.env.JSON_WEB_TOKEN_SECRET_KEY,
-      { expiresIn: '24h' }
+      { expiresIn: '30d' }
     );
 
     res.status(200).json({

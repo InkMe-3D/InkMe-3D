@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import AllRoute from "../router";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,6 +9,32 @@ import { Alert, Snackbar } from "@mui/material";
 
 const AppContent = () => {
   const { alterBox, handleClose } = useContext(MyContext);
+
+  useEffect(() => {
+    const checkTokenExpiry = () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        if (payload.exp < currentTime) {
+          console.log('🔒 Token expired, clearing...');
+          localStorage.clear();
+          alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+          window.location.href = '/login';
+        }
+      } catch (error) {
+        console.error('Invalid token, clearing...');
+        localStorage.clear();
+        window.location.href = '/login';
+      }
+    };
+
+    checkTokenExpiry();
+  }, []);
+
   return (
     <div className="App" id="scrool">
       <AllRoute />
