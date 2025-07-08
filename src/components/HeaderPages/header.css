@@ -1,0 +1,148 @@
+/* Header Main Wrapper - Level 1 */
+.header-main-wrapper {
+    position: relative;
+}
+
+/* User Dropdown Container - Level 2 */
+.header-main-wrapper .user-dropdown-container {
+    position: relative;
+    margin-left: 90px;
+}
+
+/* User Profile Toggle Button - Level 2 */
+.header-main-wrapper .user-profile-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+    background-color: transparent;
+}
+
+.header-main-wrapper .user-profile-toggle:hover {
+    background-color: #f0f0f0;
+}
+
+.header-main-wrapper .user-profile-toggle.active {
+    background-color: #f0f0f0;
+}
+
+/* Chevron Icon - Level 3 */
+.header-main-wrapper .user-profile-toggle .chevron-icon {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Dropdown Menu - Level 2 */
+.header-main-wrapper .user-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 10px;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+/* Dropdown Header - Level 3 */
+.header-main-wrapper .user-dropdown-menu .dropdown-header {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    background-color: #f8f9fa;
+}
+
+.header-main-wrapper .user-dropdown-menu .dropdown-header .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-main-wrapper .user-dropdown-menu .dropdown-header .user-details .user-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.header-main-wrapper .user-dropdown-menu .dropdown-header .user-details .user-email {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Dropdown Body - Level 3 */
+.header-main-wrapper .user-dropdown-menu .dropdown-body {
+    padding: 8px 0;
+}
+
+/* Menu Items - Level 3 */
+.header-main-wrapper .user-dropdown-menu .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+    color: #333;
+}
+
+.header-main-wrapper .user-dropdown-menu .menu-item:hover {
+    background-color: #f8f9fa;
+}
+
+.header-main-wrapper .user-dropdown-menu .menu-item .menu-icon {
+    width: 16px;
+    color: #666;
+}
+
+/* Logout Menu Item - Level 3 */
+.header-main-wrapper .user-dropdown-menu .menu-item.logout {
+    color: #dc3545;
+}
+
+.header-main-wrapper .user-dropdown-menu .menu-item.logout .menu-icon {
+    color: #dc3545;
+}
+
+/* Menu Separator - Level 3 */
+.header-main-wrapper .user-dropdown-menu .menu-separator {
+    margin: 8px 0;
+    border: none;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* Login Button - Level 2 */
+.header-main-wrapper .login-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    border: none;
+}
+
+.header-main-wrapper .login-button:hover {
+    background-color: #0056b3;
+}
+
+.header-main-wrapper .login-button .login-icon {
+    font-size: 12px;
+}
+
+/* Header Right Section - Level 2 */
+.header-main-wrapper .header-right-section {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}

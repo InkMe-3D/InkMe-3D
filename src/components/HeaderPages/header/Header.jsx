@@ -14,6 +14,7 @@ import Home3 from '../../../img/header/home-3.jpg';
 import SearchComponent from './search';
 import MobileMenu from '../../MobileMenu/MobileMenu';
 import { useMyContext } from '../../../context/MyContext';
+import '../header.css';
 
 
 const Header = (props) => {
@@ -94,7 +95,7 @@ const Header = (props) => {
     };
 
     const handleProfileClick = () => {
-        navigate("/user/profile");
+        navigate(`/user/profile/${userId}`);
         setShowDropdown(false);
     };
 
@@ -236,225 +237,114 @@ const Header = (props) => {
                                             </nav>
                                         </div>
                                     </div>
-                                    <div className="header-right d-flex justify-content-end align-items-center">
-                                        <SearchComponent />
-                                        <h5 className="cart-title">
-                                            <Link
-                                                onClick={ClickHandler}
-                                                to={user ? `/shop-cart/${user.userId}` : "/login"}
-                                            >
-                                                Giỏ hàng <span className='cart-count'>{totalQuantity}</span>
-                                            </Link>
-                                        </h5>
-                                        <div
-                                            ref={dropdownRef}
-                                            style={{
-                                                position: "relative",
-                                                marginLeft: "20px",
-                                            }}
-                                        >
-                                            {userInfo ? (
-                                                <>
-                                                    <div
-                                                        onClick={toggleDropdown}
-                                                        style={{
-                                                            display: "flex",
-                                                            alignItems: "center",
-                                                            gap: "8px",
-                                                            cursor: "pointer",
-                                                            padding: "5px 10px",
-                                                            borderRadius: "25px",
-                                                            transition: "background-color 0.3s ease",
-                                                            backgroundColor: showDropdown ? "#f0f0f0" : "transparent"
-                                                        }}
-                                                        onMouseEnter={(e) => e.target.style.backgroundColor = "#f0f0f0"}
-                                                        onMouseLeave={(e) => e.target.style.backgroundColor = showDropdown ? "#f0f0f0" : "transparent"}
-                                                    >
-                                                        <Avatar
-                                                            alt={userInfo?.name}
-                                                            src={
-                                                                Array.isArray(userInfo.images) &&
-                                                                    userInfo.images.length > 0 &&
-                                                                    userInfo.images[0]
-                                                                    ? userInfo.images[0]
-                                                                    : avatarDefault
-                                                            }
-                                                            sx={{ width: 35, height: 35 }}
-                                                        />
-                                                        {/* <span style={{
-                                                            fontSize: "14px",
-                                                            color: "#333",
-                                                            fontWeight: "500"
-                                                        }}>
-                                                            {userInfo?.name}
-                                                        </span> */}
-                                                        <i className={`fas fa-chevron-${showDropdown ? 'up' : 'down'}`}
-                                                            style={{ fontSize: "12px", color: "#666" }}></i>
-                                                    </div>
-
-                                                    {showDropdown && (
-                                                        <div style={{
-                                                            position: "absolute",
-                                                            top: "100%",
-                                                            right: "0",
-                                                            marginTop: "10px",
-                                                            backgroundColor: "white",
-                                                            border: "1px solid #e0e0e0",
-                                                            borderRadius: "8px",
-                                                            boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
-                                                            minWidth: "200px",
-                                                            zIndex: 1000,
-                                                            overflow: "hidden"
-                                                        }}>
-                                                            <div style={{
-                                                                padding: "15px",
-                                                                borderBottom: "1px solid #f0f0f0",
-                                                                backgroundColor: "#f8f9fa"
-                                                            }}>
-                                                                <div style={{
-                                                                    display: "flex",
-                                                                    alignItems: "center",
-                                                                    gap: "10px"
-                                                                }}>
-                                                                    <Avatar
-                                                                        alt={userInfo?.name}
-                                                                        src={
-                                                                            Array.isArray(userInfo.images) &&
-                                                                                userInfo.images.length > 0 &&
-                                                                                userInfo.images[0]
-                                                                                ? userInfo.images[0]
-                                                                                : avatarDefault
-                                                                        }
-                                                                        sx={{ width: 40, height: 40 }}
-                                                                    />
-                                                                    {/* <div>
-                                                                        <div style={{
-                                                                            fontWeight: "600",
-                                                                            fontSize: "14px",
-                                                                            color: "#333"
-                                                                        }}>
-                                                                            {userInfo?.name}
-                                                                        </div>
-                                                                        <div style={{
-                                                                            fontSize: "12px",
-                                                                            color: "#666"
-                                                                        }}>
-                                                                            {userInfo?.email}
-                                                                        </div>
-                                                                    </div> */}
-                                                                </div>
-                                                            </div>
-
-                                                            <div style={{ padding: "8px 0" }}>
-                                                                <div
-                                                                    onClick={handleProfileClick}
-                                                                    style={{
-                                                                        display: "flex",
-                                                                        alignItems: "center",
-                                                                        gap: "12px",
-                                                                        padding: "12px 15px",
-                                                                        cursor: "pointer",
-                                                                        transition: "background-color 0.2s ease",
-                                                                        fontSize: "14px",
-                                                                        color: "#333"
-                                                                    }}
-                                                                    onMouseEnter={(e) => e.target.style.backgroundColor = "#f8f9fa"}
-                                                                    onMouseLeave={(e) => e.target.style.backgroundColor = "transparent"}
-                                                                >
-                                                                    <i className="fas fa-user" style={{ width: "16px", color: "#666" }}></i>
-                                                                    Thông tin cá nhân
-                                                                </div>
-
-                                                                <div
-                                                                    onClick={() => navigate("/user/orders")}
-                                                                    style={{
-                                                                        display: "flex",
-                                                                        alignItems: "center",
-                                                                        gap: "12px",
-                                                                        padding: "12px 15px",
-                                                                        cursor: "pointer",
-                                                                        transition: "background-color 0.2s ease",
-                                                                        fontSize: "14px",
-                                                                        color: "#333"
-                                                                    }}
-                                                                    onMouseEnter={(e) => e.target.style.backgroundColor = "#f8f9fa"}
-                                                                    onMouseLeave={(e) => e.target.style.backgroundColor = "transparent"}
-                                                                >
-                                                                    <i className="fas fa-shopping-bag" style={{ width: "16px", color: "#666" }}></i>
-                                                                    Đơn hàng của tôi
-                                                                </div>
-
-                                                                <div
-                                                                    onClick={() => navigate("/user/address")}
-                                                                    style={{
-                                                                        display: "flex",
-                                                                        alignItems: "center",
-                                                                        gap: "12px",
-                                                                        padding: "12px 15px",
-                                                                        cursor: "pointer",
-                                                                        transition: "background-color 0.2s ease",
-                                                                        fontSize: "14px",
-                                                                        color: "#333"
-                                                                    }}
-                                                                    onMouseEnter={(e) => e.target.style.backgroundColor = "#f8f9fa"}
-                                                                    onMouseLeave={(e) => e.target.style.backgroundColor = "transparent"}
-                                                                >
-                                                                    <i className="fas fa-map-marker-alt" style={{ width: "16px", color: "#666" }}></i>
-                                                                    Địa chỉ
-                                                                </div>
-
-                                                                <hr style={{ margin: "8px 0", border: "none", borderTop: "1px solid #f0f0f0" }} />
-
-                                                                <div
-                                                                    onClick={handleLogout}
-                                                                    style={{
-                                                                        display: "flex",
-                                                                        alignItems: "center",
-                                                                        gap: "12px",
-                                                                        padding: "12px 15px",
-                                                                        cursor: "pointer",
-                                                                        transition: "background-color 0.2s ease",
-                                                                        fontSize: "14px",
-                                                                        color: "#dc3545"
-                                                                    }}
-                                                                    onMouseEnter={(e) => e.target.style.backgroundColor = "#f8f9fa"}
-                                                                    onMouseLeave={(e) => e.target.style.backgroundColor = "transparent"}
-                                                                >
-                                                                    <i className="fas fa-sign-out-alt" style={{ width: "16px", color: "#dc3545" }}></i>
-                                                                    Đăng xuất
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </>
-                                            ) : (
-                                                <div
-                                                    onClick={() => navigate("/login")}
-                                                    style={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        gap: "8px",
-                                                        padding: "8px 15px",
-                                                        backgroundColor: "#007bff",
-                                                        color: "white",
-                                                        borderRadius: "20px",
-                                                        cursor: "pointer",
-                                                        fontSize: "14px",
-                                                        fontWeight: "500",
-                                                        transition: "background-color 0.3s ease",
-                                                        border: "none"
-                                                    }}
-                                                    onMouseEnter={(e) => e.target.style.backgroundColor = "#0056b3"}
-                                                    onMouseLeave={(e) => e.target.style.backgroundColor = "#007bff"}
+                                    <div className="header-right header-main-wrapper">
+                                        <div className="header-right-section">
+                                            <SearchComponent />
+                                            <h5 className="cart-title">
+                                                <Link
+                                                    onClick={ClickHandler}
+                                                    to={user ? `/shop-cart/${user.userId}` : "/login"}
                                                 >
-                                                    <i className="fas fa-user" style={{ fontSize: "12px" }}></i>
-                                                    Đăng nhập
+                                                    Giỏ hàng <span className='cart-count'>{totalQuantity}</span>
+                                                </Link>
+                                            </h5>
+                                            <div
+                                                ref={dropdownRef}
+                                                className="user-dropdown-container"
+                                            >
+                                                {userInfo ? (
+                                                    <>
+                                                        <div
+                                                            onClick={toggleDropdown}
+                                                            className={`user-profile-toggle ${showDropdown ? 'active' : ''}`}
+                                                        >
+                                                            <Avatar
+                                                                alt={userInfo?.name}
+                                                                src={
+                                                                    Array.isArray(userInfo.images) &&
+                                                                        userInfo.images.length > 0 &&
+                                                                        userInfo.images[0]
+                                                                        ? userInfo.images[0]
+                                                                        : avatarDefault
+                                                                }
+                                                                sx={{ width: 35, height: 35 }}
+                                                            />
+                                                            <i className={`fas fa-chevron-${showDropdown ? 'up' : 'down'} chevron-icon`}></i>
+                                                        </div>
+
+                                                        {showDropdown && (
+                                                            <div className="user-dropdown-menu">
+                                                                <div className="dropdown-header">
+                                                                    <div className="user-info">
+                                                                        <Avatar
+                                                                            alt={userInfo?.name}
+                                                                            src={
+                                                                                Array.isArray(userInfo.images) &&
+                                                                                    userInfo.images.length > 0 &&
+                                                                                    userInfo.images[0]
+                                                                                    ? userInfo.images[0]
+                                                                                    : avatarDefault
+                                                                            }
+                                                                            sx={{ width: 40, height: 40 }}
+                                                                        />
+                                                                        <div className="user-details">
+                                                                            <h4 className="user-name">{userInfo?.name}</h4>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="dropdown-body">
+                                                                    <div
+                                                                        onClick={handleProfileClick}
+                                                                        className="menu-item"
+                                                                    >
+                                                                        <i className="fas fa-user menu-icon"></i>
+                                                                        Thông tin cá nhân
+                                                                    </div>
+
+                                                                    <div
+                                                                        onClick={() => navigate("/user/orders")}
+                                                                        className="menu-item"
+                                                                    >
+                                                                        <i className="fas fa-shopping-bag menu-icon"></i>
+                                                                        Đơn hàng của tôi
+                                                                    </div>
+
+                                                                    <div
+                                                                        onClick={() => navigate("/user/address")}
+                                                                        className="menu-item"
+                                                                    >
+                                                                        <i className="fas fa-map-marker-alt menu-icon"></i>
+                                                                        Địa chỉ
+                                                                    </div>
+
+                                                                    <hr className="menu-separator" />
+
+                                                                    <div
+                                                                        onClick={handleLogout}
+                                                                        className="menu-item logout"
+                                                                    >
+                                                                        <i className="fas fa-sign-out-alt menu-icon"></i>
+                                                                        Đăng xuất
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                ) : (
+                                                    <div
+                                                        onClick={() => navigate("/login")}
+                                                        className="login-button"
+                                                    >
+                                                        <i className="fas fa-user login-icon"></i>
+                                                        Đăng nhập
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="header__hamburger d-xl-none my-auto">
+                                                <div className="sidebar__toggle">
+                                                    <MobileMenu />
                                                 </div>
-                                            )}
-                                        </div>
-                                        <div className="header__hamburger d-xl-none my-auto">
-                                            <div className="sidebar__toggle">
-                                                <MobileMenu />
                                             </div>
                                         </div>
                                     </div>
