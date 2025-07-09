@@ -293,7 +293,7 @@ const isPhone = (input) => {
   return phoneRegex.test(input);
 };
 
-router.post(`/signin`, async (req, res) => {
+router.post(`/login`, async (req, res) => {
   const { emailOrPhone, password } = req.body;
 
   try {
