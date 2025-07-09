@@ -4,6 +4,7 @@ import AddressManage from '../../AddressManage/AddressManage';
 import UserInfoCheckout from '../UserInfoCheckout/UserInfoCheckout';
 import { MyContext } from '../../../context/MyContext';
 import { postData } from '../../../utils/api';
+import { trackBeginCheckout } from '../../../utils/analytics';
 
 const CheckoutSection = () => {
     const context = useContext(MyContext);
@@ -26,6 +27,11 @@ const CheckoutSection = () => {
             const addressObj = context.selectedAddressId;
             // Lấy thông tin cart (giả sử context.cartData)
             const cartItems = context.cartData || [];
+            const totalValue = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            // Google Analytics tracking - Begin Checkout
+            trackBeginCheckout(cartItems, totalValue);
+            
             // Tạo dữ liệu order
             const orderData = {
                 fullname: user.name,

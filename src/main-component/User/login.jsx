@@ -15,6 +15,7 @@ import "../../App.css";
 import { getUsers, loginWithGoogle } from "../../services/UserServices";
 import { MyContext } from "../../context/MyContext";
 import { GoogleLogin } from "@react-oauth/google";
+import { trackLogin } from "../../utils/analytics";
 
 // Thêm CSS inline cho trang login
 const loginStyles = `
@@ -802,6 +803,12 @@ const LoginScreen = () => {
 
       localStorage.setItem('user', JSON.stringify(user));
 
+      // Google Analytics tracking - Login
+      trackLogin({
+        method: 'email',
+        userId: res.user.id
+      });
+
       context.setAlterBox({
         open: true,
         error: false,
@@ -837,6 +844,13 @@ const LoginScreen = () => {
       }
       setLoading(true);
       localStorage.setItem("token", res.token);
+      
+      // Google Analytics tracking - Login with Google
+      trackLogin({
+        method: 'google',
+        userId: res.user?.id || 'unknown'
+      });
+      
       context.setAlterBox({
         open: true,
         error: false,

@@ -4,6 +4,7 @@ import 'react-medium-image-zoom/dist/styles.css'
 import { Link } from 'react-router-dom';
 import { MyContext } from '../../context/MyContext';
 import { BsCartFill } from 'react-icons/bs';
+import { trackViewProduct } from '../../utils/analytics';
 
 const Product = ({ product }) => {
   const context = useContext(MyContext);
@@ -239,7 +240,17 @@ const Product = ({ product }) => {
 
   useEffect(() => {
     window.scrollTo(10, 0);
-  }, []);
+    
+    // Google Analytics tracking - Product View
+    if (product) {
+      trackViewProduct({
+        id: product._id,
+        name: product.name,
+        price: product.price,
+        category: product.category || 'Custom Print'
+      });
+    }
+  }, [product]);
 
   const handleAddToCart = () => {
     setTabError(false);

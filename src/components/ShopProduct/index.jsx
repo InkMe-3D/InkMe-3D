@@ -1,11 +1,22 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from "react-router-dom";
 import ShopSidebar from "./ShopSidebar";
+import { trackViewProduct } from "../../utils/analytics";
 
 const ShopProduct = ({ products, addToCartProduct, searchTerm, setSearchTerm,
      selectedCategory, setSelectedCategory}) => {
     const ClickHandler = () => {
         window.scrollTo(10, 0);
+    };
+
+    const handleProductClick = (product) => {
+        // Google Analytics tracking - Product Click
+        trackViewProduct({
+            id: product._id,
+            name: product.name,
+            price: product.price,
+            category: product.category?.name || 'Custom Print'
+        });
     };
 
     const [sortOption, setSortOption] = useState('1');
@@ -98,7 +109,12 @@ const ShopProduct = ({ products, addToCartProduct, searchTerm, setSearchTerm,
 
                         <div className="row">
                             {currentProducts.map((product) => (
-                                <Link to={`/shop-details/Calendar-printing-design/${product._id}`} key={product._id} className="col-lg-4 col-md-6 col-12">
+                                <Link 
+                                    to={`/shop-details/Calendar-printing-design/${product._id}`} 
+                                    key={product._id} 
+                                    className="col-lg-4 col-md-6 col-12"
+                                    onClick={() => handleProductClick(product)}
+                                >
                                     <div className="product-box-items">
                                         <div className="product-image">
                                             <img src={product.images[0]} alt="img" />

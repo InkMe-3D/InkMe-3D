@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { Login } from "../services/UserServices";
 import { googleLogout } from "@react-oauth/google";
 import { fetchDataFromApi, postData } from "../utils/api";
+import { trackAddToCart } from "../utils/analytics";
 
 const MyContext = createContext();
 
@@ -153,6 +154,15 @@ const MyProvider = ({ children }) => {
         // Refresh cart data
         const updatedCart = await fetchDataFromApi(`/api/cart?userId=${user.userId}`);
         setCartData(Array.isArray(updatedCart) ? updatedCart : []);
+
+        // Google Analytics tracking
+        trackAddToCart({
+          id: cartItem.id || cartItem.productId,
+          name: cartItem.name || cartItem.productTitle,
+          price: cartItem.price,
+          quantity: cartItem.quantity || 1,
+          category: cartItem.category || 'Custom Print'
+        });
 
         setAlterBox({
           message: "Sản phẩm đã được thêm vào giỏ hàng",

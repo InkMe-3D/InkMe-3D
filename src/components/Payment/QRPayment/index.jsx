@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { MyContext } from '../../../context/MyContext';
 import { startPaymentMonitoring } from '../../../services/PaymentService';
 import { editData } from '../../../utils/api';
+import { trackPurchase } from '../../../utils/analytics';
 
 const QRPayment = ({ order }) => {
     const context = useContext(MyContext);
@@ -37,6 +38,20 @@ const QRPayment = ({ order }) => {
     const handlePaymentDetected = async (transaction) => {
         setPaymentStatus('paid');
         setPaymentMessage('Thanh toán thành công! Đơn hàng của bạn đã được xác nhận.');
+
+        // Google Analytics tracking - Purchase Complete
+        if (order) {
+            trackPurchase({
+                orderId: order.orderId || order._id,
+                amount: order.amount || orderData.amount,
+                products: order.products || context.cartData?.map(item => ({
+                    productId: item.productId || item.id,
+                    productTitle: item.productTitle || item.name,
+                    price: item.price,
+                    quantity: item.quantity
+                })) || []
+            });
+        }
 
         // Cập nhật trạng thái order trong database
         try {

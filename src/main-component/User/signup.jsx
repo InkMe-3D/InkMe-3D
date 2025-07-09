@@ -22,6 +22,7 @@ import { MyContext } from "../../context/MyContext";
 import { baseUrl, postData } from "../../utils/api";
 import hero1 from "../../img/hero/hero-1.gif";
 import logo from "../../img/logo/inkme-logo-gradient.png";
+import { trackSignUp } from "../../utils/analytics";
 
 // CSS cho trang signup
 const signupStyles = `
@@ -769,6 +770,12 @@ const Signup = () => {
       const res = await postData(`/api/user/signup`, formfields);
 
       if (res.error !== true) {
+        // Google Analytics tracking - Sign Up
+        trackSignUp({
+          method: 'email',
+          userId: res.user?.id || 'unknown'
+        });
+
         context.setAlterBox({
           open: true,
           error: false,

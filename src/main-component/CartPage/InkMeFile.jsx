@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import VideoGuidePopup from './VideoGuidePopup'
 import './Cart.css'
+import { trackDownloadInkmeFile } from '../../utils/analytics'
 
 const InkMeFile = ({ inkmeFile }) => {
     const [showGuide, setShowGuide] = useState(false);
@@ -11,6 +12,12 @@ const InkMeFile = ({ inkmeFile }) => {
 
     const downloadFile = () => {
         if (inkmeFile?.url) {
+            // Google Analytics tracking - Download Inkme File
+            trackDownloadInkmeFile({
+                sceneName: inkmeFile.sceneName || 'untitled',
+                fileSize: 0 // File size không có sẵn
+            });
+            
             window.open(inkmeFile.url, '_blank');
         }
     };
