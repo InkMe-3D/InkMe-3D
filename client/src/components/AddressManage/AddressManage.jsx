@@ -99,7 +99,7 @@ const AddressManage = () => {
 
     const fetchAddresses = useCallback(async () => {
         try {
-            const response = await fetchDataFromApi(`/api/address/user/${user.userId}`);
+            const response = await fetchDataFromApi(`/api/address/user/${user?.userId}`);
             setAddresses(response);
             // Set selected address to default address if exists
             const defaultAddress = response.find(addr => addr.isDefault);
@@ -109,7 +109,7 @@ const AddressManage = () => {
         } catch (error) {
             console.error('Error fetching addresses:', error);
         }
-    }, [user.userId, context]);
+    }, [user?.userId, context]);
 
     // Fetch addresses when component mounts
     useEffect(() => {

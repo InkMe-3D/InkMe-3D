@@ -152,7 +152,7 @@ const MyProvider = ({ children }) => {
 
       if (response && !response.error) {
         // Refresh cart data
-        const updatedCart = await fetchDataFromApi(`/api/cart?userId=${user.userId}`);
+        const updatedCart = await fetchDataFromApi(`/api/cart?userId=${user?.userId}`);
         setCartData(Array.isArray(updatedCart) ? updatedCart : []);
 
         // Google Analytics tracking
@@ -192,7 +192,7 @@ const MyProvider = ({ children }) => {
   const getCartData = async () => {
     if (user?.userId) {
       try {
-        const cartRes = await fetchDataFromApi(`/api/cart?userId=${user.userId}`);
+        const cartRes = await fetchDataFromApi(`/api/cart?userId=${user?.userId}`);
         setCartData(Array.isArray(cartRes) ? cartRes : []);
       } catch (error) {
         console.error("Error fetching cart data:", error);

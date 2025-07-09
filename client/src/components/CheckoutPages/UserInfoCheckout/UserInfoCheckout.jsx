@@ -40,7 +40,7 @@ const UserInfoCheckout = () => {
             setUser(updatedUser);
             // Gọi API cập nhật note cho user
             try {
-                await editData(`/api/user/${user.userId}`, { note: value });
+                await editData(`/api/user/${user?.userId}`, { note: value });
             } catch (err) {
                 // Không cần báo lỗi, chỉ log
                 console.error('Lỗi khi cập nhật note:', err);
@@ -50,7 +50,7 @@ const UserInfoCheckout = () => {
 
     const handleEditUser = async () => {
         try {
-            const response = await editData(`/api/user/${user.userId}`, editedUser);
+            const response = await editData(`/api/user/${user?.userId}`, editedUser);
             if (response.error) {
                 setError(response.message);
                 return;

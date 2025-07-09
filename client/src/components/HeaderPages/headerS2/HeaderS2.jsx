@@ -13,6 +13,8 @@ import { useMyContext } from '../../../context/MyContext';
 
 const HeaderS2 = (props) => {
 
+    
+
     const SubmitHandler = (e) => {
         e.preventDefault()
     }
@@ -28,10 +30,6 @@ const HeaderS2 = (props) => {
     const [isSticky, setIsSticky] = useState(false);
 
     const { user } = useMyContext();
-
-    console.log(user?.userId);
-
-
 
     useEffect(() => {
         const handleScroll = () => {
@@ -131,7 +129,7 @@ const HeaderS2 = (props) => {
                             </div>
                             <div className="header-right d-flex justify-content-end align-items-center">
                                 <div className="menu-cart">
-                                    <Link onClick={ClickHandler} to={`/shop-cart/${user.userId}`} className="cart-icon">
+                                    <Link onClick={ClickHandler} to={`/shop-cart/${user?.userId}`} className="cart-icon">
                                         <i className="far fa-shopping-basket"></i>
                                         <span>{totalQuantity}</span>
                                     </Link>

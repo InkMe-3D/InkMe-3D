@@ -180,7 +180,7 @@ const HeaderS3 = (props) => {
                             </div>
                             <div className="header-right d-flex justify-content-end align-items-center">
                                 <div className="menu-cart">
-                                    <Link onClick={ClickHandler} to={`/shop-cart/${user.userId}`} className="cart-icon">
+                                    <Link onClick={ClickHandler} to={`/shop-cart/${user?.userId}`} className="cart-icon">
                                         <i className="far fa-shopping-basket"></i>
                                         <span>{carts.length}</span>
                                     </Link>

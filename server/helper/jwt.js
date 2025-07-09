@@ -7,7 +7,7 @@ function authJwt() {
         algorithms: ["HS256"]
     }).unless(function (req) {
         // Auth routes - không cần JWT
-        if (req.path === '/api/user/signin' ||
+        if (req.path === '/api/user/login' ||
             req.path === '/api/user/signup' ||
             req.path === '/api/user/forgotpassword' ||
             req.path === '/api/user/resetpassword' ||
@@ -28,7 +28,14 @@ function authJwt() {
             req.path.startsWith('/api/subCat') ||
             req.path.startsWith('/api/homeBanner') ||
             req.path.startsWith('/api/search') ||
-            req.path.startsWith('/uploads')
+            req.path.startsWith('/uploads') ||
+            req.path.startsWith('/about') ||
+            req.path.startsWith('/contact') ||
+            req.path.startsWith('/news') ||
+            req.path.startsWith('/blog-single') ||
+            req.path.startsWith('/blog') ||
+            req.path.startsWith('/shop-cart') ||
+            req.path.startsWith('/checkout')
         )) {
             return true;
         }

@@ -75,7 +75,7 @@ router.post('/add', async (req, res) => {
             cartList = await cartList.save();
             res.status(201).json(cartList);
         } else {
-            return res.status(401).json({
+            return res.status(409).json({
                 message: "Sản phẩm với màu sắc và kích thước này đã có trong giỏ hàng",
                 status: false
             });
@@ -121,9 +121,8 @@ router.post('/', async (req, res) => {
             cartList = await cartList.save();
             res.status(201).json(cartList);
         } else {
-            return res.status(401).json({
-                message: "Sản phẩm với màu sắc và kích thước này đã có trong giỏ hàng" + error,
-
+            return res.status(409).json({
+                message: "Sản phẩm với màu sắc và kích thước này đã có trong giỏ hàng",
                 status: false
             });
         }

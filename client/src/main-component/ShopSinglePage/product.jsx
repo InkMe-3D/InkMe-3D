@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MyContext } from '../../context/MyContext';
 import { BsCartFill } from 'react-icons/bs';
 import { trackViewProduct } from '../../utils/analytics';
@@ -16,6 +16,7 @@ const Product = ({ product }) => {
   const [activeSize, setActiveSize] = useState(null);
   const [activeColor, setActiveColor] = useState(null);
 
+  const navigate = useNavigate();
   // Enhanced Color Detection System
   const getColorFromName = (colorName) => {
     if (!colorName) return '#cccccc';
@@ -240,7 +241,7 @@ const Product = ({ product }) => {
 
   useEffect(() => {
     window.scrollTo(10, 0);
-    
+
     // Google Analytics tracking - Product View
     if (product) {
       trackViewProduct({
@@ -252,8 +253,23 @@ const Product = ({ product }) => {
     }
   }, [product]);
 
+  const user = JSON.parse(localStorage.getItem('user'));
+
   const handleAddToCart = () => {
     setTabError(false);
+
+    if (!user) {
+      context.setAlterBox({
+        open: true,
+        error: true,
+        message: "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng",
+      });
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
+
+      return;
+    }
 
     if ((product.color && product.color.length > 0 && !selectedColor) ||
       (product.productSize && product.productSize.length > 0 && !selectedSize)) {

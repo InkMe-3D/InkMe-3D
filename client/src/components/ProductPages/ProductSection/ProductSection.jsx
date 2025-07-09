@@ -86,7 +86,7 @@ const ProductSection = () => {
                 });
                 
                 // Fetch lại cart và cập nhật context
-                const updatedCart = await fetchDataFromApi(`/api/cart?userId=${user.userId}`);
+                const updatedCart = await fetchDataFromApi(`/api/cart?userId=${user?.userId}`);
                 setCartData(updatedCart);
             }
         } catch (error) {
