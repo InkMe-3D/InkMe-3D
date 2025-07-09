@@ -65,7 +65,7 @@ const PortfolioSection = () => {
                                 <Link to="/shop" className="theme-btn wow fadeInUp" data-wow-delay=".3s">Liên Hệ Ngay</Link>
                             </div>
                         </div>
-                        <div className="col-xl-6">
+                        <div className="col-xl-6 portfolio-image-items-wrapper">
                             <div className="portfolio-image-items">
                                 <div className="row g-0">
                                     {Portfolio.slice(0, 4).map((portfoli, index) => (
@@ -77,7 +77,8 @@ const PortfolioSection = () => {
                                             onMouseLeave={handleMouseLeave}
                                         >
                                             <div className="portfolio-image">
-                                                <img src={portfoli.pimg1} alt="img" style={{ width: '448px', height: '448px', objectFit: 'cover' }} />
+                                                
+                                                <img src={portfoli.pimg1} alt="img" />
                                                 <Link onClick={ClickHandler} to={`/project-details/${portfoli.slug}`} className="icon">
                                                     <i className="fa-solid fa-arrow-right"></i>
                                                 </Link>

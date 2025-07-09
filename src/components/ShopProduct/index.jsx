@@ -85,7 +85,7 @@ const ShopProduct = ({ products, addToCartProduct, searchTerm, setSearchTerm,
                     </div>
                     <div className="col-xl-9 col-lg-8 order-1 order-md-2">
                         <div className="woocommerce-notices-wrapper">
-                            <p>Showing <span>{currentProducts.length}</span> of {totalResultsRef.current} Results</p>
+                            <p>Hiển thị <span>{currentProducts.length}</span> trên {totalResultsRef.current} kết quả</p>
                             <div className="form-clt">
                                 
                                 <div className="icon">

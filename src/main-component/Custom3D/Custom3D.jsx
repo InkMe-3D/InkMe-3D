@@ -46,7 +46,8 @@ const Custom3D = () => {
     }, [userId, productId, authorization]);
 
     return (
-        <div style={{
+        <div 
+         style={{
             width: '110vw',
             height: '110vh',
             display: 'flex',
