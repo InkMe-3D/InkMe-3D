@@ -123,7 +123,7 @@ const Header = (props) => {
                                                         <Link onClick={ClickHandler} to="/home">
                                                             Trang chủ
                                                         </Link>
-                                                        <ul className="submenu has-homemenu">
+                                                        {/* <ul className="submenu has-homemenu">
                                                             <li>
                                                                 <div className="homemenu-items">
                                                                     <div className="homemenu">
@@ -173,7 +173,7 @@ const Header = (props) => {
                                                                     </div>
                                                                 </div>
                                                             </li>
-                                                        </ul>
+                                                        </ul> */}
                                                     </li>
                                                     <li className="has-dropdown active d-xl-none">
                                                         <Link onClick={ClickHandler} to="/team" className="border-none">
@@ -243,7 +243,7 @@ const Header = (props) => {
                                             <h5 className="cart-title">
                                                 <Link
                                                     onClick={ClickHandler}
-                                                    to={user ? `/shop-cart/${user.userId}` : "/login"}
+                                                    to={user ? `/shop-cart/${user?.userId}` : "/login"}
                                                 >
                                                     Giỏ hàng <span className='cart-count'>{totalQuantity}</span>
                                                 </Link>

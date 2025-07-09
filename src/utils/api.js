@@ -25,7 +25,7 @@ export const fetchDataFromApi = async (url) => {
             // Token expired or invalid, redirect to login
             localStorage.removeItem('token');
             localStorage.removeItem('authToken');
-            window.location.href = '/signin';
+            window.location.href = '/login';
         }
         return error;
     }
@@ -46,10 +46,22 @@ export const postData = async (url, formData) => {
         });
 
         if (response.status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('authToken');
-            window.location.href = '/signin';
+            console.warn('Unauthorized request detected:', url);
+            // Check if token exists before clearing
+            const currentToken = localStorage.getItem('token');
+            if (currentToken) {
+                console.warn('Token exists but request was unauthorized. Token may be expired.');
+                localStorage.removeItem('token');
+                localStorage.removeItem('authToken');
+                window.location.href = '/login';
+            }
             return { error: true, message: 'Authentication required' };
+        }
+
+        if (response.status === 409) {
+            const errorData = await response.json();
+            console.log('Conflict detected:', errorData.message);
+            return { error: true, message: errorData.message };
         }
 
         if (response.ok) {
@@ -81,7 +93,7 @@ export const editData = async (url, updatedData) => {
         if (res.status === 401) {
             localStorage.removeItem('token');
             localStorage.removeItem('authToken');
-            window.location.href = '/signin';
+            window.location.href = '/login';
             return { error: true, message: 'Authentication required' };
         }
 
@@ -105,7 +117,7 @@ export const deleteData = async (url) => {
         if (error.response?.status === 401) {
             localStorage.removeItem('token');
             localStorage.removeItem('authToken');
-            window.location.href = '/signin';
+            window.location.href = '/login';
         }
         if (error.response) {
             return error.response.data;
@@ -135,7 +147,7 @@ export const uploadImage = async (url, formData) => {
         if (error.response?.status === 401) {
             localStorage.removeItem('token');
             localStorage.removeItem('authToken');
-            window.location.href = '/signin';
+            window.location.href = '/login';
         }
         return { error: true, message: error.message };
     }
@@ -154,7 +166,7 @@ export const deleteImages = async (url, image) => {
         if (error.response?.status === 401) {
             localStorage.removeItem('token');
             localStorage.removeItem('authToken');
-            window.location.href = '/signin';
+            window.location.href = '/login';
         }
         return { error: true, message: error.message };
     }

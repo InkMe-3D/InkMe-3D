@@ -36,7 +36,7 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
 };
 
 export const Login = async (email, password) => {
-  const response = await postData(`/api/user/signin`, {
+  const response = await postData(`/api/user/login`, {
     email,
     password,
   });

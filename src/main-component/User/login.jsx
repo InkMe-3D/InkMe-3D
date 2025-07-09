@@ -771,7 +771,7 @@ const LoginScreen = () => {
     setLoading(true);
 
     try {
-      const res = await postData(`/api/user/signin`, formfields);
+      const res = await postData(`/api/user/login`, formfields);
 
       if (res.error === true) {
         setLoading(false);
