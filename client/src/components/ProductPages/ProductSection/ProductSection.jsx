@@ -5,6 +5,7 @@ import { fetchDataFromApi, postData } from '../../../utils/api';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useMyContext } from '../../../context/MyContext';
+import { trackAddToCart } from '../../../utils/analytics';
 
 const ProductSection = () => {
     const [activeTab, setActiveTab] = useState(0);
@@ -74,6 +75,16 @@ const ProductSection = () => {
                 toast.error(response.message || 'Không thể thêm vào giỏ hàng');
             } else {
                 toast.success(`Sản phẩm đã được thêm vào giỏ hàng`);
+                
+                // Google Analytics tracking
+                trackAddToCart({
+                    id: product._id,
+                    name: product.name,
+                    price: product.price,
+                    quantity: 1,
+                    category: 'Custom Print'
+                });
+                
                 // Fetch lại cart và cập nhật context
                 const updatedCart = await fetchDataFromApi(`/api/cart?userId=${user.userId}`);
                 setCartData(updatedCart);

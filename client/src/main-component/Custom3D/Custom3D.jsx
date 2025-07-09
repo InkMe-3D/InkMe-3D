@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { trackStart3DDesign, trackComplete3DDesign } from '../../utils/analytics';
 
 const Custom3D = () => {
     const iframeRef = useRef(null);
@@ -17,6 +18,12 @@ const Custom3D = () => {
             authorization
         };
       
+        // Google Analytics tracking - Start 3D Design
+        trackStart3DDesign({
+            productType: 'tshirt',
+            userId: userId || 'anonymous',
+            productId: productId
+        });
 
         const sendMessage = () => {
             if (iframeRef.current) {

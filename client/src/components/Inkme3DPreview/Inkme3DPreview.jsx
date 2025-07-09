@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './Inkme3DPreview.css';
+import { trackView3DPreview } from '../../utils/analytics';
 
 const Inkme3DPreview = ({ inkmeFile, onClose }) => {
     const iframeRef = useRef(null);
@@ -11,6 +12,12 @@ const Inkme3DPreview = ({ inkmeFile, onClose }) => {
             setError('Không có file .inkme để load');
             return;
         }
+
+        // Google Analytics tracking - View 3D Preview
+        trackView3DPreview({
+            sceneName: inkmeFile.sceneName || 'untitled',
+            userId: 'anonymous' // Có thể lấy từ context nếu cần
+        });
 
         loadInkmeFile();
     }, [inkmeFile]);

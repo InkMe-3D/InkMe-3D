@@ -12,6 +12,7 @@ import hero1 from '../../../img/hero/hero-1.gif'
 import hero2 from '../../../img/hero/information.png'
 import Custom3D from '../../../main-component/Custom3D/Custom3D'
 import { useMyContext } from '../../../context/MyContext';
+import { trackCTAClick } from '../../../utils/analytics';
 
 
 
@@ -26,6 +27,9 @@ const Hero = () => {
 
     const handleCustom3D = (e) => {
         e.preventDefault();
+
+        // Google Analytics tracking - CTA Click
+        trackCTAClick('Tự tay thiết kế', 'Hero Section');
 
         const token = localStorage.getItem('token');
         const user = localStorage.getItem('user');

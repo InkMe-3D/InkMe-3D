@@ -18,6 +18,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import video from '../../../img/about/demo custom.mp4'
 import Custom3D from '../../../main-component/Custom3D/Custom3D'
 import { useMyContext } from '../../../context/MyContext';
+import { trackCTAClick } from '../../../utils/analytics';
 
 const About = () => {
     const [showPopup, setShowPopup] = React.useState(false);
@@ -30,6 +31,9 @@ const About = () => {
 
     const handleCustom3D = (e) => {
         e.preventDefault();
+
+        // Google Analytics tracking - CTA Click
+        trackCTAClick('Trải nghiệm ngay', 'About Section');
 
         const token = localStorage.getItem('token');
         const user = localStorage.getItem('user');
