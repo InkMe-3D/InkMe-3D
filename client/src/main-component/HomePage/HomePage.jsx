@@ -16,6 +16,7 @@ import Testimonial from '../../components/TestimonialPages/Testimonial/Testimoni
 import BlogSection from '../../components/BlogPages/BlogSection/BlogSection';
 import CtaSection from '../../components/CtaPages/CtaSection/CtaSection';
 import Footer from '../../components/FooterPages/footer/Footer';
+import SocialMetaTags from '../../components/SocialMetaTags/SocialMetaTags';
 
 import ServiceBg from '../../img/service/service-bg.jpg'
 import { connect } from "react-redux";
@@ -35,6 +36,12 @@ const HomePage = ({ addToCart }) => {
 
     return (
         <Fragment>
+            <SocialMetaTags
+                title="InkMe - Dịch vụ in ấn chuyên nghiệp"
+                description="InkMe - Dịch vụ in ấn chuyên nghiệp, tùy chỉnh 3D online. In áo thun, hoodie, túi xách theo yêu cầu với chất lượng cao và giá cả phù hợp."
+                image="/inkme_thumbnail.png"
+                url="/"
+            />
             <Navbar hclass={'header-section'} />
             <Hero />
             {/* <FeatureSection /> */}

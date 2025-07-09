@@ -5,6 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import { ParallaxProvider } from "react-scroll-parallax";
 import "./css/all.min.css";
 import "./css/animate.css";
+import "./css/main.css";
 import "./scss/main.css";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store/index";

@@ -45,6 +45,7 @@ const AllRoute = () => {
           <Route path="blog-single/:slug" element={<BlogDetails />} />
           <Route path="contact" element={<ContactPage />} />
           <Route path="404" element={<ErrorPage />} />
+          {/* User */}
           <Route path="login" element={<LoginScreen />} />
           <Route path="signup" element={<Signup />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
