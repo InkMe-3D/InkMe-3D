@@ -12,9 +12,9 @@ const HeaderTopbar = (props) => {
       <div className="header-top-wrapper">
         <p>
           <Link onClick={ClickHandler} to="del:+41888567890">
-            (+84)968338829
+            (+84)968338829 
           </Link>
-          - 24/7
+           - 24/7
         </p>
         <p> 🔥 Miễn phí vận chuyển với đơn hàng trên 1000.000đ </p>
         <div className="header-top-right">

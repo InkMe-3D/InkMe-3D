@@ -175,6 +175,9 @@ const Header = (props) => {
                                                             </li>
                                                         </ul> */}
                                                     </li>
+                                                    <li>
+                                                        <Link onClick={ClickHandler} to="/shop">Sản phẩm</Link>
+                                                    </li>
                                                     <li className="has-dropdown active d-xl-none">
                                                         <Link onClick={ClickHandler} to="/team" className="border-none">
                                                             Home
@@ -204,11 +207,11 @@ const Header = (props) => {
                                                         <Link onClick={ClickHandler} to="#">
                                                             Dự án
                                                         </Link>
-                                                        <ul className="submenu">
+                                                        {/* <ul className="submenu">
                                                             <li><Link onClick={ClickHandler} to="/project">Dự án</Link></li>
                                                             <li><Link onClick={ClickHandler} to="/project-details/3d-Genareted-Cate">Chi tiết dự án</Link></li>
                                                             <li><Link onClick={ClickHandler} to="/404">404 Page</Link></li>
-                                                        </ul>
+                                                        </ul> */}
                                                     </li>
                                                     {/* <li>
                                                         <Link onClick={ClickHandler} to="#">
@@ -240,14 +243,18 @@ const Header = (props) => {
                                     <div className="header-right header-main-wrapper">
                                         <div className="header-right-section">
                                             <SearchComponent />
-                                            <h5 className="cart-title">
-                                                <Link
-                                                    onClick={ClickHandler}
-                                                    to={user ? `/shop-cart/${user?.userId}` : "/login"}
-                                                >
-                                                    Giỏ hàng <span className='cart-count'>{totalQuantity}</span>
-                                                </Link>
-                                            </h5>
+                                            {user && (
+                                                <h5 className="cart-title">
+                                                    <Link
+                                                        onClick={ClickHandler}
+                                                        to={`/shop-cart/${user?.userId}`}
+                                                    >
+                                                        <i className="fas fa-shopping-cart cart-icon"></i>
+                                                        <span className="cart-text">Giỏ hàng</span>
+                                                        <span className='cart-count'>{totalQuantity}</span>
+                                                    </Link>
+                                                </h5>
+                                            )}
                                             <div
                                                 ref={dropdownRef}
                                                 className="user-dropdown-container"

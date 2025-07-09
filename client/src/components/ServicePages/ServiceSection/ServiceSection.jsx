@@ -49,7 +49,7 @@ const ServiceSection = (props) => {
                     slidesPerView: 2,
                 },
                 0: {
-                    slidesPerView: 1,
+                    slidesPerView: 2,
                 },
             },
         });
@@ -81,11 +81,10 @@ const ServiceSection = (props) => {
                                 <div className="service-card-items">
                                     <div className="service-cotent">
                                         <h3><Link onClick={ClickHandler} to={`/service-details/${category.slug}`}>{category.name}</Link></h3>
-                                        <p>{category.description || 'Không có mô tả'}</p>
+                                        <p className='text-truncate'>{category.description || 'Không có mô tả'}</p>
                                     </div>
                                     <div className="service-image">
-                                        <img src={category.images || 'https://via.placeholder.com/300x200'} alt={category.name}
-                                            style={{ width: '80%', height: '80%', objectFit: 'cover' }} />
+                                        <img src={category.images || 'https://via.placeholder.com/300x200'} alt={category.name} />
                                     </div>
                                     <div className="service-btn">
                                         <Link onClick={ClickHandler} to={`/service-details/${category.slug}`} className="link-btn">Xem thêm <i className="fa-solid fa-arrow-right"></i></Link>

@@ -109,7 +109,6 @@ const Product = ({ product }) => {
       'nâu đậm': '#78716c',
       'nâu nhạt': '#d6d3d1',
       'bạc': '#e5e7eb',
-      'vàng gold': '#ffd700',
 
       // English variants
       'blue': '#3b82f6',

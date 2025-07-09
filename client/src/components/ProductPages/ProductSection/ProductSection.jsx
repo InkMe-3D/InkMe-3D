@@ -75,7 +75,7 @@ const ProductSection = () => {
                 toast.error(response.message || 'Không thể thêm vào giỏ hàng');
             } else {
                 toast.success(`Sản phẩm đã được thêm vào giỏ hàng`);
-                
+
                 // Google Analytics tracking
                 trackAddToCart({
                     id: product._id,
@@ -84,7 +84,7 @@ const ProductSection = () => {
                     quantity: 1,
                     category: 'Custom Print'
                 });
-                
+
                 // Fetch lại cart và cập nhật context
                 const updatedCart = await fetchDataFromApi(`/api/cart?userId=${user?.userId}`);
                 setCartData(updatedCart);
@@ -141,7 +141,7 @@ const ProductSection = () => {
             <div className="row">
                 {products.length > 0 &&
                     products.slice(0, 8).map((product, pitem) => (
-                        <div className="col-xl-3 col-lg-4 col-md-6" key={pitem}>
+                        <div className="col-xl-3 col-lg-4 col-md-6 col-6" key={pitem}>
                             <div className="product-box-items style-2">
                                 <div className="product-image">
                                     <Link to={`/shop-details/${product._id}`}>
@@ -195,7 +195,7 @@ const ProductSection = () => {
     };
 
     return (
-        <section className="product-section section-padding pt-0" style={{ margin: '60px' }}>
+        <section className="product-section section-padding pt-0">
             <div className="shape-image">
                 <img src={ProdactShape} alt="img" />
             </div>

@@ -146,3 +146,391 @@
     justify-content: end;
     align-items: center;
 }
+
+/* ========== DESKTOP STYLES ========== */
+/* Desktop - Show text, hide icon */
+@media (min-width: 1200px) {
+    .header-main-wrapper .header-right-section .cart-title .cart-icon {
+        display: none;
+    }
+
+    .header-main-wrapper .header-right-section .cart-title .cart-text {
+        display: inline;
+    }
+}
+
+/* ========== RESPONSIVE STYLES ========== */
+
+/* Mobile Styles */
+@media (max-width: 1199.98px) {
+
+    /* Header Main */
+    .header-main {
+        padding: 0 15px;
+    }
+
+    /* Navigation Menu - Hide on mobile */
+    .mean__menu-wrapper {
+        display: none;
+    }
+
+    /* Header Right Section - Adjust for mobile */
+    .header-main-wrapper .header-right-section {
+        gap: 10px;
+    }
+
+    /* Cart Title - Make smaller on mobile */
+    .header-main-wrapper .header-right-section .cart-title {
+        font-size: 14px;
+    }
+
+    .header-main-wrapper .header-right-section .cart-title a {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 8px 12px;
+        background-color: #f8f9fa;
+        border-radius: 20px;
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+
+    .header-main-wrapper .header-right-section .cart-title a:hover {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    /* Cart Icon - Show on tablet/mobile */
+    .header-main-wrapper .header-right-section .cart-title .cart-icon {
+        display: inline-block;
+        font-size: 16px;
+        margin-right: 5px;
+    }
+
+    .header-main-wrapper .header-right-section .cart-title .cart-count {
+        background-color: #007bff;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 11px;
+        min-width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    /* User Dropdown Container - Adjust spacing */
+    .header-main-wrapper .user-dropdown-container {
+        margin-left: 15px;
+    }
+
+    /* User Profile Toggle - Make more touch-friendly */
+    .header-main-wrapper .user-profile-toggle {
+        padding: 8px 10px;
+        min-height: 44px;
+        border-radius: 22px;
+    }
+
+    /* Login Button - Adjust for mobile */
+    .header-main-wrapper .login-button {
+        padding: 8px 12px;
+        font-size: 13px;
+        min-height: 44px;
+        border-radius: 22px;
+    }
+
+    /* Dropdown Menu - Adjust for mobile */
+    .header-main-wrapper .user-dropdown-menu {
+        right: -10px;
+        min-width: 220px;
+        margin-top: 8px;
+    }
+}
+
+@media (max-width: 767.98px) {
+
+    /* Extra small mobile adjustments */
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    /* Logo - Make smaller on very small screens */
+    .header-left .logo img {
+        max-height: 35px;
+    }
+
+    /* Header Right Section - Further compress */
+    .header-main-wrapper .header-right-section {
+        gap: 8px;
+    }
+
+    /* Cart Title - More compact */
+    .header-main-wrapper .header-right-section .cart-title {
+        font-size: 13px;
+    }
+
+    .header-main-wrapper .header-right-section .cart-title a {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    /* Hide cart text on small mobile, keep icon */
+    .header-main-wrapper .header-right-section .cart-title .cart-text {
+        display: inline;
+    }
+
+    /* User Dropdown Container - Reduce spacing */
+    .header-main-wrapper .user-dropdown-container {
+        margin-left: 10px;
+    }
+
+    /* Search Component - Ensure proper sizing on mobile */
+    .search-trigger.search-icon {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background-color: #f8f9fa;
+        border-radius: 50%;
+        color: #333;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        border: 1px solid #e0e0e0;
+    }
+
+    .search-trigger.search-icon:hover {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    /* Dropdown Menu - Full width on very small screens */
+    .header-main-wrapper .user-dropdown-menu {
+        right: 0;
+        left: auto;
+        min-width: 200px;
+        max-width: calc(100vw - 20px);
+    }
+}
+
+@media (max-width: 575.98px) {
+
+    /* Very small screens */
+    .header-main {
+        padding: 0 10px;
+    }
+
+    /* Logo - Even smaller */
+    .header-left .logo img {
+        max-height: 30px;
+    }
+
+    /* Header Right Section - Minimal spacing */
+    .header-main-wrapper .header-right-section {
+        gap: 5px;
+    }
+
+    /* Cart Title - Icon only on very small screens */
+    .header-main-wrapper .header-right-section .cart-title a {
+        padding: 8px;
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        justify-content: center;
+        position: relative;
+    }
+
+    .header-main-wrapper .header-right-section .cart-title a .cart-text {
+        display: none;
+    }
+
+    /* Show cart icon on very small screens */
+    .header-main-wrapper .header-right-section .cart-title .cart-icon {
+        display: block;
+        font-size: 18px;
+        margin-right: 0;
+    }
+
+    .header-main-wrapper .header-right-section .cart-title .cart-count {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        font-size: 10px;
+        min-width: 16px;
+        height: 16px;
+    }
+
+    /* User Profile - More compact */
+    .header-main-wrapper .user-profile-toggle {
+        padding: 6px 8px;
+        gap: 5px;
+    }
+
+    .header-main-wrapper .login-button {
+        padding: 8px 10px;
+        font-size: 12px;
+        gap: 5px;
+    }
+}
+
+/* Landscape Phone */
+@media (max-width: 767.98px) and (orientation: landscape) {
+    .header-main {
+        padding: 0 15px;
+    }
+
+    .header-left .logo img {
+        max-height: 32px;
+    }
+}
+
+/* Sticky Header Responsive */
+@media (max-width: 1199.98px) {
+    #header-sticky.sticky {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #header-sticky.sticky .header-main {
+        padding: 8px 15px;
+    }
+
+    #header-sticky.sticky .header-left .logo img {
+        max-height: 35px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    #header-sticky.sticky .header-main {
+        padding: 5px 10px;
+    }
+
+    #header-sticky.sticky .header-left .logo img {
+        max-height: 28px;
+    }
+}
+
+/* Hamburger Menu Styles */
+@media (max-width: 1199.98px) {
+    .header__hamburger {
+        order: 1;
+    }
+
+    .header__hamburger .sidebar__toggle {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .header__hamburger .sidebar__toggle:hover {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    /* Adjust header layout for mobile */
+    .header-main {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .header-left {
+        flex: 0 0 auto;
+    }
+
+    .header-main-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .header-main-wrapper .header-right-section {
+        order: 2;
+    }
+}
+
+/* Additional responsive tweaks */
+@media (max-width: 767.98px) {
+
+    /* Make sure all touch targets are at least 44px */
+    .header-main-wrapper .header-right-section>* {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* Fix for very small screens */
+@media (max-width: 479.98px) {
+    .header-main {
+        padding: 0 5px;
+    }
+
+    .header-main-wrapper .header-right-section {
+        gap: 3px;
+    }
+
+    .header-main-wrapper .user-dropdown-container {
+        margin-left: 5px;
+    }
+
+    /* Make cart button even more compact */
+    .header-main-wrapper .header-right-section .cart-title a {
+        width: 40px;
+        height: 40px;
+        padding: 6px;
+    }
+
+    /* Cart icon sizing for very small screens */
+    .header-main-wrapper .header-right-section .cart-title .cart-icon {
+        font-size: 16px;
+        margin-right: 0;
+    }
+
+    .header-main-wrapper .header-right-section .cart-title .cart-count {
+        font-size: 9px;
+        min-width: 14px;
+        height: 14px;
+    }
+
+    /* User profile more compact */
+    .header-main-wrapper .user-profile-toggle {
+        padding: 4px 6px;
+        min-height: 40px;
+    }
+
+    .header-main-wrapper .login-button {
+        padding: 6px 8px;
+        font-size: 11px;
+        min-height: 40px;
+    }
+
+    /* Search button more compact */
+    .search-trigger.search-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    /* Hamburger more compact */
+    .header__hamburger .sidebar__toggle {
+        width: 40px;
+        height: 40px;
+    }
+}

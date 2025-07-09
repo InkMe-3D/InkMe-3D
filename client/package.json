@@ -55,7 +55,7 @@
     "yet-another-react-lightbox": "^3.12.3"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host --port 3036",
     "build": "vite build",
     "preview": "vite preview",
     "start": "vite"

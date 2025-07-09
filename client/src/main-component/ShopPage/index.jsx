@@ -48,7 +48,7 @@ const ShopPage = ({ addToCart }) => {
                 url="/shop"
             />
             <NavbarS2 hclass={'header-section-2 style-two'} />
-            <PageTitle pageTitle={'Digital printing Service'} pagesub={'Shop'} />
+            <PageTitle pageTitle={'InkMe - Dịch vụ in ấn 3D'} pagesub={'Cửa hàng'} />
             <ShopProduct
                 addToCartProduct={addToCartProduct}
                 products={products}

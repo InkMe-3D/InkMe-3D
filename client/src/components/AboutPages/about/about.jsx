@@ -69,25 +69,6 @@ const About = () => {
                     <div className="row g-4">
                         <div className="col-lg-7 d-flex align-items-center">
                             <div className="about-image-items w-100">
-                                {/* <div className="circle-shape float-bob-y">
-                                    <img src={Abimg3} alt="img" />
-                                </div>
-                                <div className="cap-shape float-bob-x">
-                                    <img src={Abimg4} alt="img" />
-                                </div>
-                                <div className="shape-img">
-                                    <img src={Abimg5} alt="img" />
-                                </div>
-                                <div className="about-image-1 wow fadeInUp">
-                                    <img src={Abimg6} alt="img" />
-                                </div>
-                                <div className="about-image-2">
-                                    <img src={Abimg7} alt="img" />
-                                </div>
-                                <div className="about-image-3">
-                                    <img src={Abimg8} alt="img" />
-                                </div> */}
-
                                 <div className="about-video wow fadeInUp">
                                     <video
                                         className="w-100"
@@ -98,7 +79,6 @@ const About = () => {
                                         playsInline
                                     >
                                         <source src={video} type="video/mp4" />
-                                        Your browser does not support the video tag.
                                     </video>
                                 </div>
                             </div>
@@ -116,7 +96,17 @@ const About = () => {
                                     Dù bạn muốn tạo áo cho chính mình hay mở rộng thương hiệu thời trang online –
                                     InkMe cung cấp kho mẫu thiết kế đẹp mắt, dễ tùy chỉnh và sẵn sàng in ấn.
                                 </p>
-                                <div className="row g-4">
+                                <video
+                                    className="w-100 video-2 d-block d-md-none"
+                                    // controls
+                                    autoPlay
+                                    muted
+                                    loop
+                                    playsInline
+                                >
+                                    <source src={video} type="video/mp4" />
+                                </video>
+                                <div className="row g-4 d-none d-md-flex">
                                     <div className="col-xl-6 col-md-6 col-lg-12 wow fadeInUp" data-wow-delay=".3s">
                                         <div className="icon-box-items active">
                                             <div className="icon-items">

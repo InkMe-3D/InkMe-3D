@@ -797,6 +797,7 @@ const LoginScreen = () => {
 
       const user = {
         name: res.user.name,
+        phone: res.user.phone,
         email: res.user.email,
         userId: res.user.id,
       };
@@ -844,13 +845,13 @@ const LoginScreen = () => {
       }
       setLoading(true);
       localStorage.setItem("token", res.token);
-      
+
       // Google Analytics tracking - Login with Google
       trackLogin({
         method: 'google',
         userId: res.user?.id || 'unknown'
       });
-      
+
       context.setAlterBox({
         open: true,
         error: false,
@@ -878,7 +879,7 @@ const LoginScreen = () => {
       <section className="loginSection">
         <div className="container h-100">
           <div className="row justify-content-center align-items-center h-100">
-            <div className="col-12">
+            <div className="col-12 col-md-6">
               <div className="loginBox modern-card">
                 <div className="logo text-center mb-4">
                   <Link to={"/"} className="d-inline-block mb-3">
