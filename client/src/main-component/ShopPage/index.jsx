@@ -7,6 +7,7 @@ import api from "../../api";
 import NavbarS2 from '../../components/NavbarPages/NavbarS2/NavbarS2';
 import CtaSectionS2 from '../../components/CtaPages/CtaSectionS2/CtaSectionS2';
 import FooterS3 from '../../components/FooterPages/footerS3/FooterS3';
+import SocialMetaTags from '../../components/SocialMetaTags/SocialMetaTags';
 
 import { getProducts } from '../../services/ShopServices';
 
@@ -40,6 +41,12 @@ const ShopPage = ({ addToCart }) => {
 
     return (
         <Fragment>
+            <SocialMetaTags 
+                title="InkMe Shop - Sản phẩm in ấn chuyên nghiệp"
+                description="Khám phá bộ sưu tập sản phẩm in ấn của InkMe: áo thun, hoodie, túi xách và nhiều sản phẩm khác. Thiết kế 3D online, chất lượng cao, giá cả phù hợp."
+                image="/inkme_thumbnail.png"
+                url="/shop"
+            />
             <NavbarS2 hclass={'header-section-2 style-two'} />
             <PageTitle pageTitle={'Digital printing Service'} pagesub={'Shop'} />
             <ShopProduct
