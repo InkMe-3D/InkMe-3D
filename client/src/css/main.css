@@ -6819,6 +6819,10 @@ input.main-search-input::placeholder {
   .portfolio-wrapper .portfolio-image-items {
     margin-right: 0;
   }
+  .portfolio-wrapper .portfolio-image-items>.row.g-0 {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .portfolio-wrapper .portfolio-image-items .portfolio-image {
@@ -6916,8 +6920,8 @@ input.main-search-input::placeholder {
 @media (max-width: 767px) {
 
   .portfolio-wrapper .portfolio-image-items .portfolio-image img {
-    width: 230px;
-    height: 230px;
+    width: 215px;
+    height: 215px;
     object-fit: cover;
     }
 

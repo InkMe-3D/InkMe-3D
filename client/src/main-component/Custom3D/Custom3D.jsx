@@ -46,7 +46,7 @@ const Custom3D = () => {
     }, [userId, productId, authorization]);
 
     return (
-        <div 
+        <div className='custom-3d-popup-section'
          style={{
             width: '110vw',
             height: '110vh',
