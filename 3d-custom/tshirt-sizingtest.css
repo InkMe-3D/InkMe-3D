@@ -18,6 +18,17 @@ body {
   height: 100%;
 }
 
+.cf_button.cf_sticker-button {
+  background: linear-gradient(135deg, #4d97e7 0%, #6a7cfb 100%) !important;
+  color: white !important;
+}
+
+.cf_block.cf_sticker {
+  margin-bottom: 0 !important;
+}
+
+
+
 /* Mobile Layout Adjustments */
 @media (max-width: 768px) {
 
