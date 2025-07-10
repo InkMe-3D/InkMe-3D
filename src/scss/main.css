@@ -3381,7 +3381,7 @@ span {
 }
 
 .header-1 .header-right .cart-title span {
-  display: inline-block;
+  /* display: inline-block;
   width: 16px;
   height: 16px;
   line-height: 16px;
@@ -3389,7 +3389,8 @@ span {
   background-color: var(--header);
   color: var(--white);
   text-align: center;
-  font-size: 12px;
+  font-size: 12px; */
+  margin: 0 10px
 }
 
 .header-1 .header-right .search-icon {
@@ -10118,6 +10119,12 @@ input.main-search-input::placeholder {
 .main-cart-wrapper .cart-wrapper {
   box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.06);
   padding: 40px 40px;
+}
+
+@media (max-width: 767px) {
+  .main-cart-wrapper .cart-wrapper {
+    padding: 20px 20px;
+  }
 }
 
 .main-cart-wrapper .cart-wrapper .theme-btn {

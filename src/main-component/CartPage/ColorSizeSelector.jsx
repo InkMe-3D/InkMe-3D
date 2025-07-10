@@ -310,7 +310,7 @@ const ColorSizeSelector = ({ item, onUpdate, loading, type }) => {
                                     );
                                 })()}
                             </div>
-                            <span style={{ fontSize: '14px' }}>{currentValue}</span>
+                            <span className='color-name' style={{ fontSize: '14px' }}>{currentValue}</span>
                         </>
                     )}
                     {!currentValue && (
@@ -323,7 +323,7 @@ const ColorSizeSelector = ({ item, onUpdate, loading, type }) => {
                     value={currentValue}
                     onChange={(e) => handleChange(e.target.value)}
                     disabled={loading}
-                    className="form-select form-select-sm"
+                    className="form-select form-select-sm size-selector"
                     style={{ fontSize: '14px', padding: '4px 8px' }}
                 >
                     <option value="" >
