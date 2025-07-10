@@ -13871,11 +13871,15 @@ Thêm Ảnh
         "\n" +
         "  " +
         "\n" +
-        "  if (savedLayers[i].className == 'Image')" +
+        "  if (savedLayers[i].className == 'Image') {" +
+        "\n" +
+        "    console.log('🔄 Restoring image/sticker:', a.name, 'at position:', adjustedX, adjustedY);" +
         "\n" +
         "    savedLayers[i] = createImageLayer(readyImages[a.name], adjustedX, adjustedY," +
         "\n" +
         "          a.rotation, a.scaleX, a.scaleY, adjustedWidth, adjustedHeight, a.name);" +
+        "\n" +
+        "  }" +
         "\n" +
         "  else if (savedLayers[i].className == 'Text')" +
         "\n" +
@@ -13921,13 +13925,39 @@ Thêm Ảnh
         "\n" +
         "  });" +
         "\n" +
+        "  " +
+        "\n" +
+        "  // Add standard event listeners for images and stickers" +
+        "\n" +
         "  imageLayer.on('dragmove transform', function() {" +
+        "\n" +
+        "    if (typeof stopDrawing === 'function') stopDrawing();" +
         "\n" +
         "    layer.draw();" +
         "\n" +
-        "    window.updateTexture(stage);" +
+        "    if (typeof window.updateTexture === 'function') window.updateTexture(stage);" +
         "\n" +
         "  });" +
+        "\n" +
+        "  " +
+        "\n" +
+        "  imageLayer.on('mousedown', function() {" +
+        "\n" +
+        "    if (typeof stopDrawing === 'function') stopDrawing();" +
+        "\n" +
+        "  });" +
+        "\n" +
+        "  " +
+        "\n" +
+        "  imageLayer.on('dragend transformend', function() {" +
+        "\n" +
+        "    if (typeof window.saveStateToHistory === 'function') window.saveStateToHistory();" +
+        "\n" +
+        "  });" +
+        "\n" +
+        "  " +
+        "\n" +
+        "  console.log('✅ Created image layer:', name, 'isSticker:', name && name.includes('sticker_'));" +
         "\n" +
         "  return imageLayer;" +
         "\n" +
@@ -14082,9 +14112,13 @@ Thêm Ảnh
         "\n" +
         "    layers.forEach(function(item) {" +
         "\n" +
-        "      if (item.className == 'Image' && item.attrs.name != 'bg_image')" +
+        "      if (item.className == 'Image' && item.attrs.name != 'bg_image') {" +
         "\n" +
         "        state.savedImages[item.attrs.name] = item.attrs.image.src;" +
+        "\n" +
+        "        console.log('💾 Saving image/sticker:', item.attrs.name, item.attrs.image.src.substring(0, 50) + '...');" +
+        "\n" +
+        "      }" +
         "\n" +
         "    });" +
         "\n" +
@@ -14307,6 +14341,7 @@ Thêm Ảnh
                 const image = new Image();
                 image.src = state.savedImages[name];
                 state.readyImages[name] = image;
+                console.log('🔄 Loading image/sticker for restoration:', name, 'isSticker:', name.includes('sticker_'));
                 delete state.savedImages[name];
               }
     
@@ -14320,6 +14355,21 @@ Thêm Ảnh
                 console.log('🎨 No images to load, creating canvas drawer...');
                 PROC.create_canvas_drawer(true);
                 showUrlLoadingSuccess('Tải thành công', 'Thiết kế đã được áp dụng');
+                
+                // Debug: Check if stickers are restored
+                setTimeout(function() {
+                  if (VARS.myDrawer2) {
+                    const stageId = VARS.myDrawer2.dataset.stage;
+                    const stage = Konva.ids[stageId];
+                    if (stage) {
+                      const layer = stage.children[0];
+                      const children = layer.children;
+                      const stickers = children.filter(child => child.attrs.name && child.attrs.name.includes('sticker_'));
+                      console.log('🎯 Stickers found after restoration:', stickers.length, stickers.map(s => s.attrs.name));
+                    }
+                  }
+                }, 1000);
+                
                 hideUrlLoadingOverlay();
               }
     
@@ -14354,6 +14404,21 @@ Thêm Ảnh
                   console.log('✅ All images loaded, creating canvas drawer...');
                   PROC.create_canvas_drawer(true);
                   showUrlLoadingSuccess('Tải thành công', 'Thiết kế đã được áp dụng');
+                  
+                  // Debug: Check if stickers are restored
+                  setTimeout(function() {
+                    if (VARS.myDrawer2) {
+                      const stageId = VARS.myDrawer2.dataset.stage;
+                      const stage = Konva.ids[stageId];
+                      if (stage) {
+                        const layer = stage.children[0];
+                        const children = layer.children;
+                        const stickers = children.filter(child => child.attrs.name && child.attrs.name.includes('sticker_'));
+                        console.log('🎯 Stickers found after restoration:', stickers.length, stickers.map(s => s.attrs.name));
+                      }
+                    }
+                  }, 1000);
+                  
                   hideUrlLoadingOverlay();
                 } else {
                   setTimeout(function() {
@@ -14445,6 +14510,7 @@ Thêm Ảnh
             layers.forEach(function(item) {
               if (item.className == 'Image' && item.attrs.name != 'bg_image') {
                 state.savedImages[item.attrs.name] = item.attrs.image.src;
+                console.log('💾 Saving for sharing:', item.attrs.name, 'type:', item.attrs.name && item.attrs.name.includes('sticker_') ? 'STICKER' : 'IMAGE');
               }
             });
           }
@@ -14497,8 +14563,8 @@ Thêm Ảnh
           console.log('✅ Uploaded layout file:', fileUrl);
     
           // TẠO SHAREABLE LINK
-          const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-          const currentUrl = isDevelopment ? 'http://127.0.0.1/3d-custom/index.html' : 'https://inkme-3d-page-custom-production.up.railway.app/tshirt-sizingtest.html';
+          const isDevelopment = window.location.hostname === 'inkme3d.com';
+          const currentUrl = isDevelopment ? 'https://inkme-3d-page-custom-production.up.railway.app/tshirt-sizingtest.html' : 'http://0.0.0.0:3000/3d-custom/tshirt-sizingtest.html';
           const shareableLink = \`\${currentUrl}?layout=\${encodeURIComponent(fileUrl)}\`;
           
           console.log('🔗 Shareable link created:', shareableLink);
@@ -15078,6 +15144,7 @@ if (typeof showShareModal === 'function') {
     currentSceneState = {};
     dictSet(currentSceneState, "savedLayers", {});
     dictSet(currentSceneState, "savedImages", {});
+    console.log('🎬 Scene state initialized:', currentSceneState);
 
     /* load from file */
 
