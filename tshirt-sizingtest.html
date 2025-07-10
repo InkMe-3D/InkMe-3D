@@ -605,6 +605,7 @@
           <div class="cf_tools-container">
             <div class="cf_tools-toggle"></div>
             <div class="cf_tools-wrapper">
+              <button class="cf_tools-close" onclick="toggleMobileTools()">×</button>
               <div class="cf_block cf_drawing">
                 <input id="cf_drawing-enable1" type="checkbox" class="cf_drawing-enable" data-stage="cf_stage1" />
                 <label class="cf_label cf_label-checkbox" for="cf_drawing-enable1"></label>
@@ -674,6 +675,12 @@
               </div>
             </div>
           </div>
+          <!-- Mobile Tools Toggle Button -->
+          <button class="cf_tools-toggle" onclick="toggleMobileTools()">
+            <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; fill: currentColor;">
+              <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+            </svg>
+          </button>
           <div class="cf_context-menu" style="display: none">
             <div class="cf_button cf_context-menu__button" data-action="up">
               Lớp lên
@@ -921,6 +928,36 @@
 
     // Make refresh function available globally  
     window.forceRefreshButton = forceRefreshButton;
+
+    // Mobile Tools Toggle Functionality
+    function toggleMobileTools() {
+      const toolsWrapper = document.querySelector('.cf_tools-wrapper');
+      const toggleButton = document.querySelector('.cf_tools-toggle');
+      const cartSection = document.querySelector('.cart-section');
+
+      if (!toolsWrapper || !toggleButton) return;
+
+      const isHidden = toolsWrapper.classList.contains('hidden');
+
+      if (isHidden) {
+        // Show tools
+        toolsWrapper.classList.remove('hidden');
+        toggleButton.classList.remove('show');
+        if (cartSection) {
+          cartSection.style.bottom = '15px';
+        }
+      } else {
+        // Hide tools
+        toolsWrapper.classList.add('hidden');
+        toggleButton.classList.add('show');
+        if (cartSection) {
+          cartSection.style.bottom = '20px';
+        }
+      }
+    }
+
+    // Make toggle function available globally
+    window.toggleMobileTools = toggleMobileTools;
 
     // Check user and update cart button
     function checkUserAndUpdateButton() {

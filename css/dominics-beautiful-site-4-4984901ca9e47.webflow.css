@@ -5660,7 +5660,7 @@ figcaption {
   .grid-5 {
     grid-column-gap: 0px;
     grid-row-gap: 0px;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     margin-left: 10px;
     margin-right: 10px;
     overflow: visible;

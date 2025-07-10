@@ -14,7 +14,9 @@
   border-radius: 50%;
 }
 
-
+.db-none {
+  display: none;
+}
 
 #color-changer4 {
   -webkit-appearance: square-button;
@@ -158,6 +160,7 @@
   overflow: hidden;
 }
 
+/* Chat button */
 .chat-button {
   position: fixed;
   left: 20px;
@@ -173,6 +176,12 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   transition: transform 0.2s;
+}
+
+@media (max-width: 768px) {
+  .chat-button {
+   display: none;
+  }
 }
 
 .chat-button:hover {
