@@ -497,9 +497,7 @@ const Product = ({ product }) => {
             <span>{product.rating} <i className="fa-solid fa-star text-warning"></i></span>
           </div>
           <h3 className="pb-4 split-text right">{product.name}</h3>
-          <p className="mb-4">
-            {product.description}
-          </p>
+         
           <div className="price-list d-flex align-items-center mb-4">
             <span className="fw-bold fs-4 text-primary me-3">
               {product.price?.toLocaleString('vi-VN')} VND
