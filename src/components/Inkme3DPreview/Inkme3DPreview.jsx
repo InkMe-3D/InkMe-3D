@@ -99,7 +99,7 @@ const Inkme3DPreview = ({ inkmeFile, onClose }) => {
                         <div className="iframe-container">
                             <iframe
                                 ref={iframeRef}
-                                src={`http://127.0.0.1:3000/3dpage/index.html?preview=true&sceneName=${inkmeFile?.sceneName}`}
+                                src={`http://0.0.0.0:3000/3dpage/index.html?preview=true&sceneName=${inkmeFile?.sceneName}`}
                                 width="100%"
                                 height="100%"
                                 style={{
