@@ -18,11 +18,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { styled } from '@mui/material/styles';
 import { deleteData, fetchDataFromApi } from '../../utils/api';
 import Checkbox from '@mui/material/Checkbox';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 
 
 
@@ -105,26 +100,6 @@ const Products = () => {
     })
   }, []);
 
-  const [openDialog, setOpenDialog] = useState(false);
-  const [productIdToDelete, setProductIdToDelete] = useState(null);
-
-  const handleOpenDialog = (id) => {
-    setProductIdToDelete(id);
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setProductIdToDelete(null);
-  };
-
-  const handleConfirmDelete = () => {
-    if (productIdToDelete) {
-      deleteProduct(productIdToDelete);
-    }
-    handleCloseDialog();
-  };
-
   const deleteProduct = (id) => {
     context.setProgress(40);
     deleteData(`/api/products/${id}`).then((res) => {
@@ -139,30 +114,6 @@ const Products = () => {
       })
     })
   }
-  const handleChangeCat = (id) => {
-    setCatBy(id);
-  }
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 10;
-
-  // Ensure filteredProducts is correctly defined
-  const filteredProducts = productList && productList.products ? productList.products.filter(product => {
-    if (showBysetCatBy) {
-      return product.category._id === showBysetCatBy;
-    }
-    return product;
-  }) : [];
-
-  // Calculate the products to display based on the current page
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
-
-  // Handle page change
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
 
   return (
     <>
@@ -196,7 +147,23 @@ const Products = () => {
           <h3 className='hd'>Sản phẩm bán chạy</h3>
 
           <div className="row cardFilters mt-3">
-           
+            <div className="col-md-3">
+              <h4>Sắp xếp theo</h4>
+              <FormControl size='small' className='w-100'>
+                <Select
+                  value={showBy}
+                  onChange={(e) => setShowBy(e.target.value)}
+                  displayEmpty
+                  inputProps={{ 'aria-label': 'Without label' }}
+                  labelId='demo-simple-small-label'
+                  className='w-100'
+                >
+                  <MenuItem value=""><em>None</em></MenuItem>
+                  <MenuItem value={10}>Tảng</MenuItem>
+                  <MenuItem value={20}>Giá</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
 
             <div className="col-md-3">
               <h4>Danh Mục</h4>
@@ -210,7 +177,7 @@ const Products = () => {
                   className='w-100'
                 >
                   <MenuItem value="">
-                    <em value={null}>Tất cả</em>
+                    <em value={null}>None</em>
                   </MenuItem>
 
                   {
@@ -218,7 +185,7 @@ const Products = () => {
                     context.catData?.categoryList?.map((cat, index) => {
                       return (
                         <MenuItem className="text-capitalize"
-                          value={cat.id} key={index} onClick={() => handleChangeCat(cat.id)}>{cat.name}
+                          value={cat.id} key={index}>{cat.name}
                         </MenuItem>
                       )
                     })
@@ -230,24 +197,23 @@ const Products = () => {
             </div>
           </div>
 
-          <div className='total-products'>
-            <p>Tổng số lượng sản phẩm: {filteredProducts.length}</p>
-          </div>
-
           <div className='table-responsive mt-3'>
             <table className='table table-bordered v-align'>
               <thead className='thead-dark'>
                 <tr>
-                  <th>STT</th>
+                  <th>#ID</th>
                   <th style={{ width: '250px' }}>Sản Phẩm</th>
-                  <th>Tên sản phẩm</th>
-                  <th>Danh mục</th>
+                  <th>Danh Mục</th>
+                  <th>Danh mục con</th>
                   <th>Nhãn hiệu</th>
                   <th>Giá bán</th>
                   <th>Giảm giá</th>
                   <th>Số lượng</th>
+                  <th>Rams sản phẩm</th>
                   <th>Kích thước</th>
+                  <th>Cân nặng</th>
                   <th>Đánh giá</th>
+                  <th>Đặt hàng</th>
                   <th>Hành động</th>
                 </tr>
               </thead>
@@ -255,12 +221,12 @@ const Products = () => {
               <tbody>
 
                 {
-                  currentProducts?.length !== 0 && currentProducts?.map((item, index) => {
+                  productList?.products?.length !== 0 && productList.products?.map((item, index) => {
                     return (
                       <tr>
                         <td>
                           <div className="d-flex align-items-center">
-                            <Checkbox /> <span>{index + 1 + indexOfFirstProduct}</span>
+                            <Checkbox /> <span>#{index + 1}</span>
                           </div>
                         </td>
                         <td>
@@ -272,17 +238,29 @@ const Products = () => {
                                   alt="" />
                               </div>
                             </div>
+                            <div className="info pl-0">
+                              <h6>{item?.name}</h6>
+                              <p>{item?.description}</p>
+                            </div>
                           </div>
                         </td>
-                        <td>{item?.name}</td>
                         <td>{item?.category?.name}</td>
+                        <td>{item?.subCat.subCat}</td>
                         <td>{item?.brand}</td>
                         <td>
                           <del className='old'>{item?.oldPrice}</del>
                           <span className='new text-danger'>{item?.price}</span>
                         </td>
-                        <td>{item?.discount}%</td>
+                        <td>10%</td>
                         <td>{item?.countInStock}</td>
+
+                        <td>
+                          {item?.productRams?.map((ram) => {
+                            return (
+                              <span className='badge badge-primary mr-2'>{ram}</span>
+                            )
+                          })}
+                        </td>
 
                         <td>
                           {item?.productSize?.map((size) => {
@@ -292,10 +270,12 @@ const Products = () => {
                           })}
                         </td>
 
+                        <td>{item?.productWeight}</td>
                         <td>
                           <Rating name="read-only" defaultValue={item?.rating}
                             precision={0.5} size='small' readOnly />
                         </td>
+                        <td>380</td>
                         <td>
                           <div className='actions d-flex align-items-center justify-content-center'>
                             <Link to={`/product/details/${item?.id}`}>
@@ -305,7 +285,7 @@ const Products = () => {
                               <Button className='success' color='success'><FaPencilAlt /></Button>
                             </Link>
                             <Button className='error' color='error'
-                              onClick={() => handleOpenDialog(item?.id)}><MdDelete />
+                              onClick={() => deleteProduct(item?.id)}><MdDelete />
                             </Button>
                           </div>
                         </td>
@@ -317,41 +297,20 @@ const Products = () => {
 
             </table>
 
-            <Pagination 
-              count={Math.ceil(filteredProducts.length / productsPerPage)} 
-              page={currentPage} 
-              onChange={handlePageChange} 
-              color="primary" 
-              className="mt-3 d-flex justify-content-center"
-            />
+            {
+              productList?.totalPages > 1 &&
+              < div className="d-flex tableFooter">
+                <p>showing <b>12</b> of <b>100</b> results </p>
+                <Pagination className='pagination' count={productList?.totalPages} onChange={handleChange}
+                  color='primary' showFirstButton showLastButton />
+              </div>
+            }
+
           </div>
 
         </div>
 
       </div >
-
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Xác nhận xóa sản phẩm"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Bạn có chắc chắn muốn xóa sản phẩm này không?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Hủy
-          </Button>
-          <Button onClick={handleConfirmDelete} color="primary" autoFocus>
-            Xác nhận
-          </Button>
-        </DialogActions>
-      </Dialog>
-
     </>
   )
 }

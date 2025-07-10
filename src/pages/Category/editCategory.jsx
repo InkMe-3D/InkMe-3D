@@ -130,9 +130,9 @@ const EditCategory = () => {
 
             setIsSelectedFiles(true);
 
-          
+            console.log(imgArray);
             postData(apiEndPoint, formdata).then((res) => {
-               
+                console.log(res);
             });
 
         } catch (error) {

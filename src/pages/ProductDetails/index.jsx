@@ -9,7 +9,7 @@ import Rating from "@mui/material/Rating";
 import Button from "@mui/material/Button";
 import { FaReply } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
-import { fetchDataFromApi } from "../../utils/api";
+import { fetchDataFromApi, postData } from "../../utils/api";
 
 //breadcrumb
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
@@ -70,15 +70,11 @@ const ProductDetails = () => {
 
         fetchDataFromApi(`/api/products/${id}`).then((res) => {
             setProductData(res);
-        }).catch((error) => {
-            console.error('Failed to fetch product data:', error);
-        });
+        })
 
         fetchDataFromApi(`/api/productReviews?productId=${id}`).then((res) => {
             setReviewData(res);
-        }).catch((error) => {
-            console.error('Failed to fetch product reviews:', error);
-        });
+        })
 
     }, [id])
 
@@ -105,7 +101,7 @@ const ProductDetails = () => {
                     </Breadcrumbs>
                 </div>
 
-                <div className="card productDetailsSection" style={{ padding: '50px' }}>
+                <div className="card productDetailsSection">
                     <div className="row">
                         <div className="col-md-5">
                             <div className="sliderWrapper pt-3 pb-3 ps-4 pe-4">
@@ -302,23 +298,85 @@ const ProductDetails = () => {
                         </h5>
 
                         <div className="ratingSection">
-                            {[5, 4, 3, 2, 1].map((star) => (
-                                <div className="ratingrow d-flex align-items-center" key={star}>
-                                    <span className="col1">
-                                        {star} Star
-                                    </span>
-                                    <span className="col2">
-                                        <div className="progress">
-                                            <div className="progress-bar" style={{ width: `${star * 20}%` }}>
+                            <div className="ratingrow d-flex align-items-center">
+                                <span className="col1">
+                                    5 Star
+                                </span>
+                                <span className="col2">
+                                    <div className="progress">
+                                        <div className="progress-bar" style={{ width: "70%" }}>
 
-                                            </div>
                                         </div>
-                                    </span>
-                                    <span className="col3">
-                                        (22)
-                                    </span>
-                                </div>
-                            ))}
+                                    </div>
+                                </span>
+                                <span className="col3">
+                                    (22)
+                                </span>
+                            </div>
+
+                            <div className="ratingrow d-flex align-items-center">
+                                <span className="col1">
+                                    4 Star
+                                </span>
+                                <span className="col2">
+                                    <div className="progress">
+                                        <div className="progress-bar" style={{ width: "50%" }}>
+
+                                        </div>
+                                    </div>
+                                </span>
+                                <span className="col3">
+                                    (22)
+                                </span>
+                            </div>
+
+                            <div className="ratingrow d-flex align-items-center">
+                                <span className="col1">
+                                    3 Star
+                                </span>
+                                <span className="col2">
+                                    <div className="progress">
+                                        <div className="progress-bar" style={{ width: "70%" }}>
+
+                                        </div>
+                                    </div>
+                                </span>
+                                <span className="col3">
+                                    (22)
+                                </span>
+                            </div>
+
+                            <div className="ratingrow d-flex align-items-center">
+                                <span className="col1">
+                                    2 Star
+                                </span>
+                                <span className="col2">
+                                    <div className="progress">
+                                        <div className="progress-bar" style={{ width: "70%" }}>
+
+                                        </div>
+                                    </div>
+                                </span>
+                                <span className="col3">
+                                    (22)
+                                </span>
+                            </div>
+
+                            <div className="ratingrow d-flex align-items-center">
+                                <span className="col1">
+                                    1 Star
+                                </span>
+                                <span className="col2">
+                                    <div className="progress">
+                                        <div className="progress-bar" style={{ width: "70%" }}>
+
+                                        </div>
+                                    </div>
+                                </span>
+                                <span className="col3">
+                                    (22)
+                                </span>
+                            </div>
                         </div>
 
                         <br />

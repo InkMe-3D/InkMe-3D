@@ -2,14 +2,15 @@ import axios from "axios";
 // require('dotenv/config');
 
 export const fetchDataFromApi = async (url) => {
-  try {
-    const { data } = await axios.get(import.meta.env.VITE_APP_BASE_URL + url);
-    return data;
-  } catch (error) {
-    console.log("API fetch error:", error);
-    return error;
-  }
-};
+    try {
+        const { data } = await axios.get(import.meta.env.VITE_APP_BASE_URL + url);
+        return data;
+    } catch (error) {
+        console.log('API fetch error:', error);
+        return error;
+    }
+}
+
 
 // export const postData = async (url, formData) => {
 //     try {
@@ -21,35 +22,15 @@ export const fetchDataFromApi = async (url) => {
 //     }
 // }
 
-export const postData = async (url, formData) => {
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    } else {
-      const errorData = await response.json();
-      return errorData;
-    }
-  } catch (error) {
-    console.log("API edit error:", error);
-    return error;
-  }
-};
-
 // export const postData = async (url, formData) => {
 //     try {
-//         const response = await fetch(import.meta.env.VITE_APP_BASE_URL + url, {
+//         const response = await fetch("http://localhost:4000" + url, {
 //             method: 'POST',
-//             body: formData, // Gửi trực tiếp `FormData`
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify(formData),
 //         });
-
 //         if (response.ok) {
 //             const data = await response.json();
 //             return data;
@@ -61,50 +42,60 @@ export const postData = async (url, formData) => {
 //         console.log('API edit error:', error);
 //         return error;
 //     }
-// };
+// }
+
+export const postData = async (url, formData) => {
+    try {
+        const response = await fetch(import.meta.env.VITE_APP_BASE_URL + url, {
+            method: 'POST',
+            body: formData, // Gửi trực tiếp `FormData`
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            const errorData = await response.json();
+            return errorData;
+        }
+    } catch (error) {
+        console.log('API edit error:', error);
+        return error;
+    }
+};
+
 
 export const editData = async (url, updatedData) => {
-  try {
-    const { res } = await axios.put(
-      `${import.meta.env.VITE_APP_BASE_URL}${url}`,
-      updatedData
-    );
-    return res;
-  } catch (error) {
-    console.log("API edit error:", error);
-    return error;
-  }
-};
+    try {
+        const { res } = await axios.put(`${import.meta.env.VITE_APP_BASE_URL}${url}`, updatedData);
+        return res
+    } catch (error) {
+        console.log('API edit error:', error);
+        return error;
+    }
+}
 
 export const deleteData = async (url) => {
-  try {
-    const { res } = await axios.delete(
-      `${import.meta.env.VITE_APP_BASE_URL}${url}`
-    );
-    return res;
-  } catch (error) {
-    console.log("API edit error:", error);
-    return error;
-  }
-};
+    try {
+        const { res } = await axios.delete(`${import.meta.env.VITE_APP_BASE_URL}${url}`);
+        return res
+    } catch (error) {
+        console.log('API edit error:', error);
+        return error;
+    }
+}
 
 export const uploadImage = async (url, formData) => {
-  try {
-    const { res } = await axios.post(
-      import.meta.env.VITE_APP_BASE_URL + url,
-      formData
-    );
-    return res;
-  } catch (error) {
-    console.log("API edit error:", error);
-    return error;
-  }
-};
+    try {
+        const { res } = await axios.post(import.meta.env.VITE_APP_BASE_URL + url, formData);
+        return res
+    } catch (error) {
+        console.log('API edit error:', error);
+        return error;
+    }
+}
 
 export const deleteImages = async (url, image) => {
-  const { res } = await axios.delete(
-    `${import.meta.env.VITE_APP_BASE_URL}${url}`,
-    image
-  );
-  return res;
-};
+    const { res } = await axios.delete(`${import.meta.env.VITE_APP_BASE_URL}${url}`, image);
+    return res
+}
