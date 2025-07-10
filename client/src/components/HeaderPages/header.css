@@ -6,7 +6,14 @@
 /* User Dropdown Container - Level 2 */
 .header-main-wrapper .user-dropdown-container {
     position: relative;
-    margin-left: 90px;
+    margin-left: 90px !important;
+}
+
+@media (max-width: 767px) {
+    .header-main-wrapper .user-dropdown-container {
+        position: relative;
+        margin-left: 0px !important;
+    }
 }
 
 /* User Profile Toggle Button - Level 2 */
@@ -161,6 +168,17 @@
 
 /* ========== RESPONSIVE STYLES ========== */
 
+.header-main-wrapper .header-right-section .cart-title .cart-count {
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 11px;
+    min-width: 18px;
+    height: 18px;
+}
+
+
 /* Mobile Styles */
 @media (max-width: 1199.98px) {
 
@@ -217,8 +235,8 @@
         border-radius: 50%;
         padding: 2px 6px;
         font-size: 11px;
-        min-width: 18px;
-        height: 18px;
+        min-width: 16px;
+        height: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -362,11 +380,11 @@
 
     .header-main-wrapper .header-right-section .cart-title .cart-count {
         position: absolute;
-        top: -2px;
-        right: -2px;
+        top: -6px;
+        right: -15px;
         font-size: 10px;
         min-width: 16px;
-        height: 16px;
+        min-height: 18px;
     }
 
     /* User Profile - More compact */
@@ -505,8 +523,8 @@
 
     .header-main-wrapper .header-right-section .cart-title .cart-count {
         font-size: 9px;
-        min-width: 14px;
-        height: 14px;
+        min-width: 16px;
+        height: 16px;
     }
 
     /* User profile more compact */

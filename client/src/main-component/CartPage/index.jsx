@@ -269,6 +269,9 @@ const CartPage = () => {
                                 <i className="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
                                 <h5>Giỏ hàng trống</h5>
                                 <p className="text-muted">Hãy thêm sản phẩm vào giỏ hàng để bắt đầu mua sắm</p>
+                                <Link to="/shop" className="theme-btn mt-3">
+                                  <span>Tiếp tục mua sắm</span>
+                                </Link>
                               </div>
                             </td>
                           </tr>
@@ -276,6 +279,96 @@ const CartPage = () => {
                       </tbody>
                     </table>
                   </div>
+
+                  {/* Mobile Card Layout */}
+                  <div className="cart-items-mobile">
+                    {Array.isArray(cartData) && cartData.length !== 0 ? (
+                      cartData.map((item) => (
+                        <div key={item._id} className="cart-item-card">
+                          <div className="cart-item-remove-mobile">
+                            <button
+                              onClick={() => removeItem(item._id)}
+                              disabled={loading[item._id]}
+                              className="remove-btn"
+                            >
+                              <i className="fas fa-times"></i>
+                            </button>
+                          </div>
+
+                          <div className="cart-item-card-header">
+                            <div className="cart-item-card-image">
+                              {item.inkmeFile ? (
+                                <div className="cart-item-image-wrapper">
+                                  <InkMeFile inkmeFile={item.inkmeFile} />
+                                </div>
+                              ) : (
+                                <img
+                                  src={item.images[0]}
+                                  alt={item.productTitle}
+                                  className="product-image"
+                                />
+                              )}
+                            </div>
+                            <div className="cart-item-card-info">
+                              <h6 className="cart-item-card-title">{item.productTitle}</h6>
+                              <p className="cart-item-card-price">{formatCurrency(item.price)}</p>
+                            </div>
+                          </div>
+
+                          <div className="cart-item-card-details">
+                            {!item.inkmeFile && (
+                              <>
+                                <div className="cart-item-detail-group">
+                                  <span className="cart-item-detail-label">Màu sắc</span>
+                                  <ColorSizeSelector
+                                    item={item}
+                                    onUpdate={updateColorSize}
+                                    loading={loading[item._id]}
+                                    type="color"
+                                  />
+                                </div>
+                                <div className="cart-item-detail-group">
+                                  <span className="cart-item-detail-label">Kích thước</span>
+                                  <ColorSizeSelector
+                                    item={item}
+                                    onUpdate={updateColorSize}
+                                    loading={loading[item._id]}
+                                    type="size"
+                                  />
+                                </div>
+                              </>
+                            )}
+                          </div>
+
+                          <div className="cart-item-actions">
+                            <div className="cart-item-quantity-wrapper">
+                              <span className="cart-item-detail-label">Số lượng</span>
+                              <QuantityBox
+                                item={item}
+                                value={selectedQuantity[item._id]}
+                                onQuantityChange={(newQuantity) => updateQuantity(item, newQuantity)}
+                                loading={loading[item._id]}
+                              />
+                            </div>
+                            <div className="cart-item-total">
+                              <span className="cart-item-total-label">Tổng cộng</span>
+                              <span className="cart-item-total-price">{formatCurrency(item.subTotal)}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="empty-cart">
+                        <i className="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                        <h5>Giỏ hàng trống</h5>
+                        <p className="text-muted">Hãy thêm sản phẩm vào giỏ hàng để bắt đầu mua sắm</p>
+                        <Link to="/shop" className="theme-btn mt-3">
+                          <span>Tiếp tục mua sắm</span>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="cart-wrapper-footer">
                     <form>
                       <input type="text" name="promo-code" id="promoCode" placeholder="Mã giảm giá" />

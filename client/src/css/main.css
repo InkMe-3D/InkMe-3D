@@ -3413,7 +3413,7 @@ span {
 }
 
 .header-1 .header-right .cart-title span {
-  display: inline-block;
+  /* display: inline-block;
   width: 16px;
   height: 16px;
   line-height: 16px;
@@ -3421,7 +3421,7 @@ span {
   background-color: var(--header);
   color: var(--white);
   text-align: center;
-  font-size: 12px;
+  font-size: 12px; */
 }
 
 .header-1 .header-right .search-icon {
