@@ -17,7 +17,7 @@ const Custom3D = () => {
             productId,
             authorization
         };
-      
+
         // Google Analytics tracking - Start 3D Design
         trackStart3DDesign({
             productType: 'tshirt',
@@ -29,7 +29,7 @@ const Custom3D = () => {
             if (iframeRef.current) {
                 iframeRef.current.contentWindow.postMessage(dataToSend, '*');
             }
-           
+
         };
 
         // Đợi iframe load xong rồi mới gửi
@@ -47,15 +47,15 @@ const Custom3D = () => {
 
     return (
         <div className='custom-3d-popup-section'
-         style={{
-            width: '110vw',
-            height: '110vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'transparent',
-            position: 'relative'
-        }}>
+            style={{
+                width: '110vw',
+                height: '110vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'transparent',
+                position: 'relative'
+            }}>
             {isProcessing && (
                 <div style={{
                     position: 'absolute',
@@ -84,9 +84,9 @@ const Custom3D = () => {
             )}
             <iframe
                 ref={iframeRef}
-                src={window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                    ? `http://127.0.0.1:3000/3d-custom/index.html`
-                    : `https://inkme-3d-page-custom-production.up.railway.app/index.html`}
+                src={window.location.hostname === 'inkme3d.com'
+                    ? `https://inkme-3d-page-custom-production.up.railway.app/index.html`
+                    : `http://0.0.0.0:3000/3d-custom/index.html`}
                 width="100%"
                 height="100%"
                 style={{

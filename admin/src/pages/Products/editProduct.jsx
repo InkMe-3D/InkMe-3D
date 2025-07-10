@@ -1,11 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { Breadcrumbs, Chip, emphasize, styled, TextField, FormControl, InputLabel, Select, MenuItem, Button, Grid, Typography, FormLabel, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Breadcrumbs, Chip, emphasize, OutlinedInput, styled } from "@mui/material"
 import HomeIcon from "@mui/icons-material/Home";
-import { FaCloudUploadAlt, FaRegImages } from "react-icons/fa";
-import { useParams } from "react-router-dom";
-import { editData, fetchDataFromApi } from "../../utils/api";
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Rating from "@mui/material/Rating";
+import { FaCloudUploadAlt } from "react-icons/fa";
+import Button from "@mui/material/Button";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import { FaRegImages } from "react-icons/fa6";
+import { IoCloseSharp } from "react-icons/io5";
+import { deleteImages, editData, fetchDataFromApi, postData } from "../../utils/api";
+import { MyContext } from "../../App";
+import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
-// Styled breadcrumb component
+//breadcrumb
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     const backgroundColor =
         theme.palette.mode === "light"
@@ -27,391 +37,815 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     };
 });
 
-// Form section styling
-const formSectionStyle = {
-    padding: '16px',
-    borderRadius: '8px',
-    border: '1px solid #ddd',
-    marginBottom: '16px',
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
 };
 
-const EditProduct = () => {
-    const [product, setProduct] = useState({});
-    const [categories, setCategories] = useState([]);
-    const [newColor, setNewColor] = useState('');
-    const [newSize, setNewSize] = useState('');
-    const [selectedImages, setSelectedImages] = useState([]);
-    const { id } = useParams();
+function getStyles(name, personName, theme) {
+    return {
+        fontWeight:
+            personName.indexOf(name) === -1
+                ? theme.typography.fontWeightMedium
+                : theme.typography.fontWeightRegular,
+    };
+}
 
-    // Fetch product details
-    const fetchProduct = async () => {
-        try {
-            const response = await fetchDataFromApi(`/api/products/${id}`);
-            setProduct(response);
-        } catch (error) {
-            console.error('Failed to fetch product:', error);
-        }
+
+const EditProduct = () => {
+
+    const [categoryValue, setCategoryValue] = useState('');
+    const [subCategoryValue, setSubCategoryValue] = useState('');
+    const [ratingsValue, setRatingsValue] = React.useState(0);
+    const [isFeaturedValue, setisFeaturedValue] = React.useState(true);
+    const [productRams, setProductRams] = useState([]);
+    const [productWeight, setProductWeight] = useState('');
+    const [productSize, setProductSize] = useState([]);
+
+    const [catData, setCatData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [productRamsData, setProductRamsData] = useState([]);
+    const [productSizeData, setProductSizeData] = useState([]);
+
+    const [files, setFiles] = useState([]);
+    const [imgFiles, setImgFiles] = useState();
+    const [preview, setPreview] = useState();
+    const [isSelectedFiles, setIsSelectedFiles] = useState(false);
+    const [products, setProducts] = useState([]);
+
+    const [uploading, setUploading] = useState(false);
+
+    const history = useNavigate();
+    const productImages = useRef();
+    const context = useContext(MyContext);
+    const formdata = new FormData();
+    let { id } = useParams();
+
+    const [formFields, setformFields] = useState({
+        name: "",
+        description: "",
+        images: [],
+        brand: "",
+        price: null,
+        oldPrice: null,
+        discount: null,
+        category: "",
+        catName: "",
+        subCatId: "",
+        subCat: "",
+        countInStock: null,
+        rating: 0,
+        productRams: [],
+        productSize: [],
+        productWeight: "",
+        isFeatured: false
+    });
+
+    const handleChangeCategory = (event) => {
+        setCategoryValue(event.target.value);
+        setformFields(() => ({
+            ...formFields,
+            category: event.target.value
+        }));
     };
 
-    // Fetch categories
-    const fetchCategories = async () => {
-        try {
-            const response = await fetchDataFromApi('/api/category');
-            setCategories(response.categoryList);
-        } catch (error) {
-            console.error('Failed to fetch categories:', error);
-        }
+    const handleChangeSubCategory = (event) => {
+        setSubCategoryValue(event.target.value);
+        setformFields(() => ({
+            ...formFields,
+            subCat: event.target.value
+        }));
+
+        formFields.subCatId = event.target.value;
+
+    };
+
+    const handleChangeProductRams = (event) => {
+        // setProductRams(event.target.value);
+        // setformFields(() => ({
+        //     ...formFields,
+        //     productRams: event.target.value
+        // }));
+
+        const {
+            target: { value },
+        } = event;
+        setProductRams(
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(',') : value,
+        );
+
+        // Cập nhật formFields với mảng productRams mới
+        setformFields((prevFields) => ({
+            ...prevFields,
+            productRams: typeof value === 'string' ? value.split(',') : value,
+        }));
+
+    };
+
+    const handleChangeProductSize = (event) => {
+        // setProductSize(event.target.value);
+        // setformFields(() => ({
+        //     ...formFields,
+        //     productSize: event.target.value
+        // }));
+
+        const {
+            target: { value },
+        } = event;
+        setProductSize(
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(',') : value,
+        );
+
+        // Cập nhật formFields với mảng productSize mới
+        setformFields((prevFields) => ({
+            ...prevFields,
+            productSize: typeof value === 'string' ? value.split(',') : value,
+        }));
+
+    };
+
+    const handleChangeisFeaturedValue = (event) => {
+        setisFeaturedValue(event.target.value);
+        setformFields(() => ({
+            ...formFields,
+            isFeatured: event.target.value
+        }));
     };
 
     useEffect(() => {
-        fetchProduct();
-        fetchCategories();
+        window.scrollTo(0, 0);
+        context.setProgress(20);
+
+        fetchDataFromApi(`/api/products/${id}`).then((res) => {
+            setProducts(res);
+            setformFields({
+                name: res.name,
+                description: res.description,
+                brand: res.brand,
+                price: res.price,
+                oldPrice: res.oldPrice,
+                discount: res.discount,
+                category: res.category,
+                catName: res.catName,
+                subCatId: res.subCatId,
+                subCat: res.subCat,
+                countInStock: res.countInStock,
+                rating: res.rating,
+                productRams: res.productRams,
+                productSize: res.productSize,
+                productWeight: res.productWeight,
+                isFeatured: res.isFeatured
+            });
+            setCategoryValue(res.category);
+            setSubCategoryValue(res.subCat);
+            setRatingsValue(res.rating);
+            setProductRams(res.productRams);
+            setProductSize(res.productSize);
+            setProductWeight(res.productWeight);
+            setisFeaturedValue(res.isFeatured);
+            setPreview(res.images);
+            context.setProgress(100);
+        });
+
+        fetchDataFromApi("/api/productSize/").then((res) => {
+            setProductSizeData(res);
+        });
+
+        fetchDataFromApi("/api/productRams/").then((res) => {
+            setProductRamsData(res);
+        });
+
     }, []);
 
-    // Handle form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    useEffect(() => {
+        if (!imgFiles) return;
+
+        let tmp = [];
+        for (let i = 0; i < imgFiles.length; i++) {
+            tmp.push(URL.createObjectURL(imgFiles[i]));
+        }
+
+        const objectUrls = tmp;
+        setPreview(objectUrls);
+
+        // free memory
+        for (let i = 0; i < objectUrls.length; i++) {
+            return () => {
+                URL.revokeObjectURL(objectUrls[i]);
+            }
+        }
+
+    }, [imgFiles])
+
+    const selectCat = (cat) => {
+        setformFields((prevFields) => ({
+            ...prevFields,
+            catName: cat
+        }));
+    };
+
+
+    const inputChange = (e) => {
+        setformFields({
+            ...formFields,
+            [e.target.name]: e.target.value
+        });
+    }
+
+    const removeImg = async (index, imgUrl) => {
+        const imgIndex = preview.indexOf(imgUrl);
+
+        deleteImages(`/api/category/deleteImage?img=${imgUrl}`).then((res) => {
+            context.setAlterBox({
+                open: true,
+                error: false,
+                message: "Xóa hình ảnh thành công"
+            })
+        })
+
+        if (imgIndex > -1) {
+            preview.splice(index, 1);
+        }
+    }
+
+    let img_arr = [];
+    let uniqueArray = [];
+
+    const onChangeFile = async (e, apiEndPoint) => {
         try {
-            await editData(`/api/products/${id}`, product);
-            alert('Product updated successfully!');
+            const files = e.target.files;
+
+            setUploading(true);
+
+            for (var i = 0; i < files.length; i++) {
+
+                // validate file type
+                if (files[i] && (files[i].type === 'image/jpeg' ||
+                    files[i].type === 'image/png' ||
+                    files[i].type === 'image/gif' ||
+                    files[i].type === 'image/jpg' ||
+                    files[i].type === 'image/webp')) {
+                    setImgFiles(files);
+
+                    const file = files[i];
+                    formdata.append(`images`, file);
+
+                } else {
+                    context.setAlterBox({
+                        open: true,
+                        color: true,
+                        message: "Vui lòng chọn hình ảnh đúng định dạng (jpeg, png, gif, jpg, webp)"
+                    });
+                    return false;
+                }
+            }
+
         } catch (error) {
-            console.error('Failed to update product:', error);
-            alert('Failed to update product. Please try again.');
+            console.log(error);
         }
-    };
 
-    // Add new color
-    const addNewColor = () => {
-        if (newColor && !product.color.includes(newColor)) {
-            setProduct({ ...product, color: [...product.color, newColor] });
-            setNewColor('');
+        postData(apiEndPoint, formdata).then((res) => {
+
+            fetchDataFromApi("/api/imageUpload").then((response) => {
+                if (response !== undefined && response !== null && response !== "" && response.length !== 0) {
+
+                    response.length !== 0 && response.map((item) => {
+                        item?.images.length !== 0 && item?.images?.map((img) => {
+                            img_arr.push(img);
+
+                        })
+                    })
+
+                    const uniqueArray = img_arr.filter((item, index) => img_arr.indexOf(item) === index);
+
+                    const appendedArray = [...preview, ...uniqueArray];
+
+                    setPreview(appendedArray);
+                    setTimeout(() => {
+                        setUploading(false);
+                        img_arr = [];
+                        context.setAlterBox({
+                            open: true,
+                            error: false,
+                            message: "Thêm hình ảnh thành công"
+                        })
+                    }, 200);
+                }
+            });
+
+        });
+    }
+
+    const editProduct = (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        const appendedArray = [...preview, ...uniqueArray];
+
+        img_arr = [];
+
+        formdata.append('name', formFields.name);
+        formdata.append('description', formFields.description);
+        formdata.append('brand', formFields.brand);
+        formdata.append('price', formFields.price);
+        formdata.append('oldPrice', formFields.oldPrice);
+        formdata.append('discount', formFields.discount);
+        formdata.append('countInStock', formFields.countInStock);
+        formdata.append('category', formFields.category);
+        formdata.append('subCatId', formFields.subCatId);
+        formdata.append('catName', formFields.catName);
+        formdata.append('subCat', formFields.subCat);
+        formdata.append('rating', formFields.rating);
+        formdata.append('productRams', formFields.productRams);
+        formdata.append('productSize', formFields.productSize);
+        formdata.append('productWeight', formFields.productWeight);
+        formdata.append('isFeatured', formFields.isFeatured);
+
+        formFields.images = appendedArray;
+
+        // -------------- if ermpty
+        if (formFields.name === "") {
+            context.setAlterBox({
+                open: true,
+                error: true,
+                message: "Vui lòng nhập tên sản phẩm"
+            });
+            setLoading(false);
+            return false;
         }
-    };
 
-    // Add new size
-    const addNewSize = () => {
-        if (newSize && !product.productSize.includes(newSize)) {
-            setProduct({ ...product, productSize: [...product.productSize, newSize] });
-            setNewSize('');
+        if (formFields.description === "") {
+            context.setAlterBox({
+                open: true,
+                error: true,
+                message: "Vui lòng nhập mô tả sản phẩm"
+            });
+            setLoading(false);
+            return false;
         }
-    };
 
-    // Handle image change
-    const handleImageChange = (e) => {
-        const files = Array.from(e.target.files);
-        const imageUrls = files.map(file => URL.createObjectURL(file));
-        setSelectedImages(prevImages => [...prevImages, ...imageUrls]);
-        setProduct(prevProduct => ({ ...prevProduct, images: [...prevProduct.images, ...imageUrls] }));
-    };
+        if (formFields.category === "") {
+            context.setAlterBox({
+                open: true,
+                error: true,
+                message: "Vui lòng chọn danh mục sản phẩm"
+            });
+            setLoading(false);
+            return false;
+        }
 
-    // Delete an existing image
-    const deleteImage = (index) => {
-        const updatedImages = product.images.filter((_, i) => i !== index);
-        setProduct({ ...product, images: updatedImages });
-    };
+        if (formFields.price === null || formFields.price <= 0 || !/^\d+(\.\d+)?$/.test(formFields.price)) {
+            context.setAlterBox({
+                open: true,
+                error: true,
+                message: "Vui lòng nhập giá sản phẩm là số lớn hơn 0 và không chứa ký tự đặc biệt hoặc chữ"
+            });
+            setLoading(false);
+            return false;
+        }
 
-    // Update an existing image
-    const updateImage = (index, newImage) => {
-        const updatedImages = [...product.images];
-        updatedImages[index] = newImage;
-        setProduct({ ...product, images: updatedImages });
-    };
+        if (formFields.oldPrice === null || formFields.oldPrice <= 0 || !/^\d+(\.\d+)?$/.test(formFields.price)) {
+            context.setAlterBox({
+                open: true,
+                error: true,
+                message: "Vui lòng nhập giá cũ sản phẩm là số lớn hơn 0 và không chứa ký tự đặc biệt hoặc chữ"
+            });
+            setLoading(false);
+            return false;
+        }
+
+        if (formFields.discount === null || formFields.discount <= 0 || !/^\d+(\.\d+)?$/.test(formFields.discount)) {
+            context.setAlterBox({
+                open: true,
+                error: true,
+                message: "Vui lòng nhập đầy đủ thông tin"
+            });
+            setLoading(false);
+            return false;
+        }
+
+        if (formFields.countInStock === null || formFields.countInStock <= 0 || !/^\d+(\.\d+)?$/.test(formFields.countInStock)) {
+            context.setAlterBox({
+                open: true,
+                error: true,
+                message: "Vui lòng nhập số lượng sản phẩm"
+            });
+            setLoading(false);
+            return false;
+        }
+
+
+        // if (formFields.images.length === 0) {
+        //     context.setAlterBox({
+        //         open: true,
+        //         error: true,
+        //         message: "Vui lòng chọn ít nhất một hình ảnh"
+        //     });
+        //     setLoading(false);
+        //     return false;
+        // }
+        //--------------  if empty
+
+        editData(`/api/products/${id}`, formFields).then((res) => {
+            context.setAlterBox({
+                open: true,
+                error: false,
+                message: "Chỉnh sửa sản phẩm thành công"
+            });
+
+            setLoading(false);
+
+            setformFields({
+                name: "",
+                description: "",
+                images: [],
+                brand: "",
+                price: null,
+                oldPrice: null,
+                discount: null,
+                category: null,
+                subCat: null,
+                countInStock: null,
+                rating: 0,
+                productRams: null,
+                productSize: null,
+                productWeight: null,
+                isFeatured: null
+            });
+
+            history('/products');
+        })
+    }
 
     return (
-        <div className="edit-product-container">
-            <div className="card shadow border-0 w-100 flex-row p-4">
-                <Typography variant="h5" component="h1" className="mb-0">Chỉnh sửa sản phẩm</Typography>
-                <Breadcrumbs aria-label="breadcrumb" className="ml-auto breadcrumbs_">
-                    <StyledBreadcrumb component="a" href="#" label="Trang chủ" icon={<HomeIcon fontSize="small" />} />
-                    <StyledBreadcrumb label="Sản phẩm" component="a" href="#" />
-                    <StyledBreadcrumb label="Chỉnh sửa sản phẩm" />
-                </Breadcrumbs>
-            </div>
-
-            <form className="form" onSubmit={handleSubmit}>
-                <div className="form-section" style={formSectionStyle}>
-                    <Typography variant="h6" className="section-title">Thông tin cơ bản</Typography>
-                    <TextField
-                        label="Tên sản phẩm"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        value={product.name || ''}
-                        onChange={(e) => setProduct({ ...product, name: e.target.value })}
-                    />
-                    <TextField
-                        label="Mô tả"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        multiline
-                        rows={4}
-                        value={product.description || ''}
-                        onChange={(e) => setProduct({ ...product, description: e.target.value })}
-                    />
+        <>
+            <div className="right-content w-100">
+                <div className="card shadow border-0 w-100 flex-row p-4">
+                    <h5 className="mb-0">Chỉnh sửa sản phẩm</h5>
+                    <Breadcrumbs aria-label="breadcrumb" className="ml-auto breadcrumbs_">
+                        <StyledBreadcrumb
+                            component="a"
+                            href="#"
+                            label="Trang chủ"
+                            icon={<HomeIcon fontSize="small" />}
+                        />
+                        <StyledBreadcrumb
+                            label="Sản phẩm"
+                            component="a"
+                            href="#"
+                        />
+                        <StyledBreadcrumb
+                            label="Chỉnh sửa sản phẩm"
+                        />
+                    </Breadcrumbs>
                 </div>
 
-                <div className="form-section" style={formSectionStyle}>
-                    <Typography variant="h6" className="section-title">Thông tin giá cả</Typography>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                            <TextField
-                                label="Giá bán"
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                type="number"
-                                value={product.price || ''}
-                                onChange={(e) => setProduct({ ...product, price: e.target.value })}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <TextField
-                                label="Giá cũ"
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                type="number"
-                                value={product.oldPrice || ''}
-                                onChange={(e) => setProduct({ ...product, oldPrice: e.target.value })}
-                            />
-                        </Grid>
-                    </Grid>
-                </div>
+                <form className="form" onSubmit={editProduct}>
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="card shadow border-0 p-4 mt-0">
+                                <h5 className="mb-4">Thông tin cơ bản</h5>
 
-                <div className="form-section" style={formSectionStyle}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                            <FormControl fullWidth margin="normal">
-                                <InputLabel>Danh Mục</InputLabel>
-                                <Select
-                                    value={product.category?.id || ''}
-                                    onChange={(e) => setProduct({ ...product, category: categories.find(cat => cat.id === e.target.value) })}
-                                    displayEmpty
-                                >
-                                    <MenuItem value=""><em>-- Chọn danh mục --</em></MenuItem>
-                                    {categories.map(category => (
-                                        <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <TextField
-                                label="Số lượng"
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                type="number"
-                                value={product.countInStock || ''}
-                                onChange={(e) => setProduct({ ...product, countInStock: e.target.value })}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <FormControl component="fieldset" fullWidth margin="normal">
-                                <FormLabel component="legend">Kích thước</FormLabel>
-                                <FormGroup>
-                                    {product.productSize?.map(existingSize => (
-                                        <FormControlLabel
-                                            key={existingSize}
-                                            control={
-                                                <Checkbox
-                                                    checked={true}
-                                                    onChange={(e) => {
-                                                        const newSizes = e.target.checked
-                                                            ? [...product.productSize]
-                                                            : product.productSize.filter(s => s !== existingSize);
-                                                        setProduct({ ...product, productSize: newSizes });
-                                                    }}
-                                                    name={existingSize}
-                                                />
+                                <div className="form-group">
+                                    <h6>Tên sản phẩm</h6>
+                                    <input type="text"
+                                        name="name" value={formFields.name} onChange={inputChange} />
+                                </div>
+
+                                <div className="form-group">
+                                    <h6>Mô tả</h6>
+                                    <textarea row={5} col={10}
+                                        name="description" value={formFields.description} onChange={inputChange} />
+                                </div>
+
+                                <div className="row">
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Danh Mục</h6>
+                                            <Select
+                                                value={formFields.category}
+                                                onChange={(e) => {
+                                                    const selectedCategory = context.catData?.categoryList?.find(cat => cat.id === e.target.value);
+                                                    setformFields(prev => ({
+                                                        ...prev,
+                                                        category: e.target.value,
+                                                        catName: selectedCategory?.name || ""
+                                                    }));
+                                                }}
+                                                displayEmpty
+                                                inputProps={{ 'aria-label': 'Without label' }}
+                                                className="w-100"
+                                            >
+                                                <MenuItem value="">
+                                                    <em value={null}> -- Chọn danh mục --</em>
+                                                </MenuItem>
+
+                                                {context.catData?.categoryList?.map((cat, index) => (
+                                                    <MenuItem key={index} value={cat.id}>
+                                                        {cat.name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+
+                                        </div>
+                                    </div>
+
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Danh Mục Con</h6>
+                                            <Select
+                                                value={subCategoryValue}
+                                                onChange={handleChangeSubCategory}
+                                                displayEmpty
+                                                inputProps={{ 'aria-label': 'Without label' }}
+                                                className="w-100"
+                                            >
+                                                <MenuItem value="">
+                                                    <em value={null}> -- Chọn danh mục con --</em>
+                                                </MenuItem>
+
+                                                {
+                                                    context.subCatData?.subCategoryList?.length !== 0 &&
+                                                    context.subCatData?.subCategoryList?.map((subCat, index) => {
+                                                        return (
+                                                            <MenuItem className="text-capitalize"
+                                                                value={subCat.id} key={index}>{subCat.subCat}
+                                                            </MenuItem>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <div className="row">
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Giá bán</h6>
+                                            <input type="text"
+                                                name="price" value={formFields.price} onChange={inputChange} />
+                                        </div>
+                                    </div>
+
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Giá cũ</h6>
+                                            <input type="text"
+                                                name="oldPrice" value={formFields.oldPrice} onChange={inputChange} />
+                                        </div>
+                                    </div>
+
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Giảm giá</h6>
+                                            <input type="text"
+                                                name="discount" value={formFields.discount} onChange={inputChange} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="row">
+
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Đăng bán</h6>
+                                            <Select
+                                                value={isFeaturedValue}
+                                                onChange={handleChangeisFeaturedValue}
+                                                displayEmpty
+                                                inputProps={{ 'aria-label': 'Without label' }}
+                                                className="w-100"
+                                            >
+                                                <MenuItem className="text-capitalize" selected value={true}>Đăng</MenuItem>
+                                                <MenuItem className="text-capitalize" value={false}>Lưu bản nháp</MenuItem>
+                                            </Select>
+                                        </div>
+                                    </div>
+
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Số lượng</h6>
+                                            <input type="text"
+                                                name="countInStock" value={formFields.countInStock} onChange={inputChange} />
+                                        </div>
+                                    </div>
+
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Thương hiệu</h6>
+                                            <input type="text"
+                                                name="brand" value={formFields.brand} onChange={inputChange} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="row">
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>PRODUCT RAMS</h6>
+                                            <Select
+                                                multiple
+                                                value={productRams}
+                                                onChange={handleChangeProductRams}
+                                                displayEmpty
+                                                // input={<OutlinedInput label="Name" />}
+                                                MenuProps={MenuProps}
+                                                className="w-100"
+                                            >
+
+                                                {
+                                                    productRamsData?.map((item, index) => {
+                                                        return (
+                                                            <MenuItem className="text-capitalize"
+                                                                value={item.productRams}>{item.productRams}
+                                                            </MenuItem>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        </div>
+                                    </div>
+
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Cân Nặng</h6>
+                                            <input type="text"
+                                                name="productWeight" value={formFields.productWeight} onChange={inputChange} />
+                                        </div>
+                                    </div>
+
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Kích thước</h6>
+                                            <Select
+                                                multiple
+                                                value={productSize}
+                                                onChange={handleChangeProductSize}
+                                                displayEmpty
+                                                // input={<OutlinedInput label="Name" />}
+                                                MenuProps={MenuProps}
+                                                className="w-100"
+                                            >
+
+                                                {
+                                                    productSizeData?.map((item, index) => {
+                                                        return (
+                                                            <MenuItem
+                                                                value={item.productSize}>{item.productSize}
+                                                            </MenuItem>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="row">
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Đánh giá</h6>
+                                            <Rating
+                                                name="simple-controlled"
+                                                value={ratingsValue}
+                                                onChange={(event, newValue) => {
+                                                    setRatingsValue(newValue);
+                                                    setformFields(() => ({
+                                                        ...formFields,
+                                                        rating: newValue
+
+                                                    }));
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* <div className="row">
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6 className="text-uppercase">URL ảnh sản phẩm</h6>
+                                            <div className="position-relative inputBtn">
+                                                <input type="text" ref={productImages}
+                                                    name="images" onChange={inputChange}
+                                                    style={{ paddingRight: "100px" }} />
+                                                <Button className="btn-blue"
+                                                    onClick={addProductImages}>Thêm</Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> */}
+
+                            </div>
+                        </div >
+
+                        <div className="col-md-12">
+                            <div className="card shadow border p-4 mt-0">
+                                <div className="imageUploadSec">
+                                    <h5 className="mb-4">Thêm ảnh sản phẩm</h5>
+                                    <div className="imgUploadBox d-flex align-items-center">
+                                        {
+                                            preview?.length !== 0 && preview?.map((img, index) => {
+                                                return (
+                                                    <div className="uploadBox" key={index}>
+                                                        <span className="remove" onClick={() => removeImg(index, img)}><IoCloseSharp /></span>
+                                                        <div className="box">
+                                                            {
+                                                                isSelectedFiles === true ?
+                                                                    <LazyLoadImage
+                                                                        alt="image"
+                                                                        effect="blur"
+                                                                        className="w-100"
+                                                                        src={`${img}`}
+                                                                    />
+                                                                    :
+                                                                    <LazyLoadImage
+                                                                        alt="image"
+                                                                        effect="blur"
+                                                                        className="w-100"
+                                                                        src={`${img}`}
+                                                                    />
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                        <div className="uploadBox">
+                                            {
+                                                uploading === true ?
+                                                    <div className="progressBar text-center d-flex align-items-center justify-content-center flex-column">
+                                                        <CircularProgress color='inherit'
+                                                            className='loader ml-2' />
+                                                        <p>Uploading...</p>
+
+                                                    </div>
+                                                    :
+                                                    <>
+                                                        <input type="file" multiple name="images"
+                                                            onChange={(e) => onChangeFile(e, `/api/products/upload`)} />
+                                                        <div className="info">
+                                                            <FaRegImages />
+                                                            <h5>Thêm ảnh</h5>
+                                                        </div>
+                                                    </>
                                             }
-                                            label={existingSize}
-                                        />
-                                    ))}
-                                </FormGroup>
-                            </FormControl>
-                            <FormControl fullWidth margin="normal" sx={{ maxWidth: '300px', margin: '0 auto' }}>
-                                <TextField
-                                    label="Thêm kích thước mới"
-                                    variant="outlined"
-                                    value={newSize}
-                                    onChange={(e) => setNewSize(e.target.value)}
-                                />
-                                <Button onClick={addNewSize} variant="contained" color="primary" sx={{ marginTop: '10px' }}>Thêm kích thước</Button>
-                            </FormControl>
+                                        </div>
+                                    </div>
+                                </div>
 
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <FormControl component="fieldset" fullWidth margin="normal">
-                                <FormLabel component="legend">Màu sắc</FormLabel>
-                                <FormGroup>
-                                    {product.color?.map(existingColor => (
-                                        <FormControlLabel
-                                            key={existingColor}
-                                            control={
-                                                <Checkbox
-                                                    checked={true}
-                                                    onChange={(e) => {
-                                                        const newColors = e.target.checked
-                                                            ? [...product.color]
-                                                            : product.color.filter(c => c !== existingColor);
-                                                        setProduct({ ...product, color: newColors });
-                                                    }}
-                                                    name={existingColor}
-                                                />
-                                            }
-                                            label={existingColor}
-                                        />
-                                    ))}
-                                </FormGroup>
+                                <br />
 
-                            </FormControl>
-                            <FormControl fullWidth margin="normal" sx={{ maxWidth: '300px', margin: '0 auto' }}>
-                                <TextField
-                                    label="Thêm màu mới"
-                                    variant="outlined"
-                                    value={newColor}
-                                    onChange={(e) => setNewColor(e.target.value)}
-                                />
-                                <Button onClick={addNewColor} variant="contained" color="primary" sx={{ marginTop: '10px' }}>Thêm màu</Button>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <TextField
-                                label="Trọng lượng sản phẩm"
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                type="number"
-                                value={product.productWeight || ''}
-                                onChange={(e) => setProduct({ ...product, productWeight: e.target.value })}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <TextField
-                                label="Giảm giá"
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                type="number"
-                                value={product.discount || ''}
-                                onChange={(e) => setProduct({ ...product, discount: e.target.value })}
-                            />
-                        </Grid>
-                    </Grid>
-                </div>
-
-                <div className="imageUploadSec">
-                    <Typography variant="h6" className="mb-4">Thêm ảnh sản phẩm</Typography>
-                    <div className="existing-images">
-                        {product.images?.map((image, index) => (
-                            <div key={index} className="image-container">
-                                <img
-                                    src={image}
-                                    width={100}
-                                    height={100}
-                                    
-                                    alt={`Existing ${index}`}
-                                    className="selected-image"
-                                />
-                                <Button
-                                    onClick={() => deleteImage(index)}
-                                    variant="contained"
-                                    color="error"
-                                    size="medium"
-                                    sx={{
-                                        margin: '5px',
-                                        boxShadow: 2,
-                                        '&:hover': {
-                                            backgroundColor: 'error.dark',
-                                            boxShadow: 4,
-                                        },
-                                    }}
-                                >
-                                    Delete
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    size="medium"
-                                    component="label"
-                                    sx={{
-                                        margin: '5px',
-                                        boxShadow: 2,
-                                        '&:hover': {
-                                            backgroundColor: 'primary.dark',
-                                            boxShadow: 4,
-                                        },
-                                    }}
-                                >
-                                    Update
-                                    <input
-                                        type="file"
-                                        hidden
-                                        onChange={(e) => {
-                                            const file = e.target.files[0];
-                                            if (file) {
-                                                const newImage = URL.createObjectURL(file);
-                                                updateImage(index, newImage);
-                                            }
-                                        }}
-                                    />
+                                <Button type="submit" className="btn-blue btn-lg btn-big">
+                                    <FaCloudUploadAlt /> &nbsp;
+                                    {loading === true ? <CircularProgress color='inherit'
+                                        className='loader ml-2' /> : 'Đăng bán'}
                                 </Button>
                             </div>
-                        ))}
-                    </div>
-                    <div className="imgUploadBox d-flex align-items-center">
-                        <input type="file" multiple name="images" onChange={handleImageChange} className="form-control-file" />
-                        <div className="info">
-                            <FaRegImages />
-                            <Typography variant="body1">Thêm ảnh</Typography>
+
+
                         </div>
-                    </div>
-                   
-                    <div className="selected-images">
-                        {selectedImages.map((image, index) => (
-                            <img
-                                style={{ width: '100px', height: '100px', objectFit: 'cover', margin: '10px' }}
-                                key={index}
-                                src={image}
-                                width={100}
-                                height={100}
 
-                                
-                                alt={`Selected ${index}`}
-                                className="selected-image"
-                                
-                            />
-                        ))}
-                    </div>
-                </div>
+                        {/* <div className="col-sm-3">
+                            <div className="stickyBox">
+                                {
+                                    productImagesArray?.length !== 0 &&
+                                    <h4>Ảnh sản phẩm</h4>
+                                }
+                                <div className="imgGrid d-flex" id="imgGrid">
+                                    {
+                                        productImagesArray?.map((image, index) => {
+                                            return (
+                                                <div className="img" key={index}>
+                                                    <img src={image} alt="images" className="w-100" />
+                                                </div>
+                                            )
+                                        })
+                                    }
 
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="success"
-                        startIcon={<FaCloudUploadAlt />}
-                        size="large"
-                        sx={{
-                            padding: '10px 20px',
-                            boxShadow: 3,
-                            marginBottom: '50px',
-                            '&:hover': {
-                                backgroundColor: 'success.dark',
-                                boxShadow: 6,
-                            },
-                        }}
-                    >
-                        Cập nhật sản phẩm
-                    </Button>
-                </div>
-            </form>
-        </div>
-    );
+                                </div>
+                            </div>
+                        </div> */}
+
+                    </div>
+
+                </form >
+
+            </div >
+        </>
+    )
 }
 
 export default EditProduct;
-
-
