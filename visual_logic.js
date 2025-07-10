@@ -11133,7 +11133,7 @@ function createPL(v3d = window.v3d) {
                         }
 
                         .cf_drawer .cf_image-wrapper {
-                            background: #070722;
+                            background: linear-gradient(135deg, #4d97e7 0%, #6a7cfb 100%) !important;
                             color: white;
                             height: 30px;
                         }
@@ -11686,133 +11686,6 @@ function createPL(v3d = window.v3d) {
                 });
             }
 
-            if (extensions.add_transform_mode) {
-              let contextMenuNode = document.createElement("div");
-              contextMenuNode.className = "cf_context-menu";
-              contextMenuNode.style.display = "none";
-              contextMenuNode.innerHTML = `
-                    <div class="cf_button cf_context-menu__button" data-action="up">Lớp trên</div>
-                    <div class="cf_button cf_context-menu__button" data-action="down">Lớp dưới</div>
-                    <div class="cf_button cf_context-menu__button" data-action="remove">Xóa</div>
-                    <div class="cf_button cf_context-menu__button" data-action="remove-bg" id="open-remove-bg" style="color: #4d97e7;">Xóa nền ảnh</div>
-                    `;
-              contextMenuNode = wrapper.appendChild(contextMenuNode);
-              stage.cfTransforming = {
-                menuNode: contextMenuNode,
-              };
-
-              //menu buttons event bounding
-              contextMenuNode
-                .querySelectorAll(".cf_context-menu__button")
-                .forEach(function (item) {
-                  item.addEventListener("click", (e) => {
-                    let btnNode = e.target;
-                    var action = btnNode.dataset.action;
-                    const tr = layer
-                      .find("Transformer")
-                      .toArray()
-                      .find(
-                        (tr) =>
-                          tr.nodes()[0] === stage.cfTransforming.currentShape
-                      );
-
-                    if (action == "up") {
-                      stage.cfTransforming.currentShape.moveUp();
-                    } else if (action == "down") {
-                      stage.cfTransforming.currentShape.moveDown();
-                    } else if (action == "remove") {
-                      stage.cfTransforming.currentShape.destroy();
-                      if (tr) {
-                        tr.destroy();
-                      }
-
-                      //hide menu after action
-                      stage.cfTransforming.menuNode.style.display = "none";
-                    } else if (action == "remove-bg") {
-                      if (action == "remove-bg") {
-                        // Hiện popup xóa nền
-                        document.getElementById(
-                          "remove-bg-popup"
-                        ).style.display = "flex";
-                      }
-                    }
-
-                    layer.draw();
-                    window.saveStateToHistory();
-                    updateTexture(stage);
-                  });
-                });
-
-              stage.on("click tap", function (e) {
-                clearTransforms();
-
-                let elem = e.target;
-                let elemName = elem.attrs.name || null;
-                if (elem !== stage && elemName !== null && elemName != "line") {
-                  let transformArgs = {
-                    nodes: [elem],
-                    keepRatio: true,
-                    borderEnabled: true,
-                    boundBoxFunc: (oldBox, newBox) => {
-                      if (newBox.width < 10 || newBox.height < 10) {
-                        return oldBox;
-                      }
-                      return newBox;
-                    },
-                  };
-
-                  if (elemName.includes("text")) {
-                    transformArgs.enabledAnchors = [
-                      "middle-left",
-                      "middle-right",
-                    ];
-                  }
-                  const tr = new Konva.Transformer(transformArgs);
-                  layer.add(tr);
-                }
-
-                if (elem === stage || elemName == null || elemName == "line") {
-                  stage.cfTransforming.menuNode.style.display = "none";
-                }
-
-                layer.draw();
-                updateTexture(stage);
-              });
-
-              stage.on("contextmenu", function (e) {
-                //prevent drawing
-                stopDrawing();
-
-                // prevent default behavior
-                e.evt.preventDefault();
-
-                let elem = e.target;
-                let elemName = elem.attrs.name || null;
-                if (elem === stage || elemName == null || elemName == "line") {
-                  stage.cfTransforming.menuNode.style.display = "none";
-                  return;
-                }
-
-                stage.cfTransforming.currentShape = elem;
-                // show menu
-                stage.cfTransforming.menuNode.style.display = "block";
-                stage.cfTransforming.menuNode.style.position = "absolute";
-                stage.cfTransforming.menuNode.style.top = e.evt.layerY + "px";
-                stage.cfTransforming.menuNode.style.left = e.evt.layerX + "px";
-
-                let menuBounds =
-                  stage.cfTransforming.menuNode.getBoundingClientRect();
-                if (menuBounds.bottom > window.innerHeight) {
-                  stage.cfTransforming.menuNode.style.top = `${e.evt.layerY - menuBounds.height
-                    }px`;
-                }
-                if (menuBounds.right > window.innerWidth) {
-                  stage.cfTransforming.menuNode.style.left = `${e.evt.layerX - menuBounds.width
-                    }px`;
-                }
-              });
-            }
-
             if (extensions.add_text_mode) {
               stage.cfTextConfig = {
                 fontSize: 12,
@@ -12100,6 +11973,543 @@ function createPL(v3d = window.v3d) {
                     }
                   });
                 });
+            }
+
+            // Thêm chức năng sticker nếu được bật
+            if (extensions.add_sticker_mode) {
+              // Danh sách stickers với các file thực tế có trong folder
+              const stickerList = [];
+
+              // SVG Icons
+              const svgStickers = [
+                { name: 'heart', file: 'heart.svg', title: 'Trái tim' },
+                { name: 'star', file: 'star.svg', title: 'Ngôi sao' },
+                { name: 'smiley', file: 'smiley.svg', title: 'Mặt cười' },
+                { name: 'flower', file: 'flower.svg', title: 'Hoa' },
+                { name: 'peace', file: 'peace.svg', title: 'Hòa bình' },
+                { name: 'lightning', file: 'lightning.svg', title: 'Tia chớp' },
+                { name: 'diamond', file: 'diamond.svg', title: 'Kim cương' }
+              ];
+
+              // Thêm SVG stickers
+              svgStickers.forEach(sticker => {
+                stickerList.push({ ...sticker, type: 'svg' });
+              });
+
+              // Danh sách ảnh thực tế trong folder
+              const imageFiles = [
+                // JPEG files (1-3, 14-35)
+                '1.jpeg', '2.jpeg', '3.jpeg',
+                '14.jpeg', '15.jpeg', '16.jpeg', '17.jpeg', '18.jpeg', '19.jpeg', '20.jpeg',
+                '21.jpeg', '22.jpeg', '23.jpeg', '24.jpeg', '25.jpeg', '26.jpeg', '27.jpeg',
+                '28.jpeg', '29.jpeg', '30.jpeg', '31.jpeg', '32.jpeg', '33.jpeg', '34.jpeg', '35.jpeg',
+                // JPG file
+                '36.jpg',
+                // PNG files (4-13)
+                '4.png', '5.png', '6.png', '7.png', '8.png', '9.png', '10.png', '11.png', '12.png', '13.png'
+              ];
+
+              // Thêm image stickers
+              imageFiles.forEach(filename => {
+                const number = filename.split('.')[0];
+                const ext = filename.split('.')[1];
+                stickerList.push({
+                  name: `sticker${number}_${ext}`,
+                  file: filename,
+                  title: `Sticker ${number}`,
+                  type: 'image'
+                });
+              });
+
+              // Tạo block cho sticker
+              let stickerBlock = document.createElement("div");
+              stickerBlock.className = "cf_block cf_sticker";
+              stickerBlock.innerHTML = `
+                <button class="cf_button cf_sticker-button">
+                  Thêm Sticker
+                </button>
+              `;
+              stickerBlock = toolsWrapper.appendChild(stickerBlock);
+
+              // Tạo modal sticker
+              let stickerModal = document.createElement("div");
+              stickerModal.className = "cf_sticker-modal";
+              stickerModal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.8); display: none; justify-content: center;
+                align-items: center; z-index: 10002; backdrop-filter: blur(5px);
+              `;
+
+              stickerModal.innerHTML = `
+                <div class="cf_sticker-modal-content" style="
+                  background: white; border-radius: 15px; box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+                  max-width: 600px; width: 90%; max-height: 80vh; animation: fadeInScale 0.3s ease-out;
+                ">
+                  <div class="cf_sticker-modal-header" style="
+                    display: flex; justify-content: space-between; align-items: center;
+                    padding: 20px 30px 15px; border-bottom: 1px solid #eee;
+                  ">
+                    <h3 style="margin: 0; color: #333; font-size: 20px;">🎨 Chọn Sticker</h3>
+                    <button class="cf_sticker-modal-close" style="
+                      background: none; border: none; font-size: 24px; cursor: pointer;
+                      color: #666; padding: 0; width: 30px; height: 30px; display: flex;
+                      align-items: center; justify-content: center; border-radius: 50%;
+                      transition: all 0.2s;
+                    ">×</button>
+                  </div>
+                  <div class="cf_sticker-modal-body" style="
+                    padding: 20px 30px 30px; max-height: calc(80vh - 100px); overflow-y: auto;
+                  ">
+                    <div class="cf_sticker-gallery" style="
+                      display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                      gap: 15px; padding: 10px 0;
+                    "></div>
+                  </div>
+                </div>
+              `;
+
+              document.body.appendChild(stickerModal);
+
+              // Event handlers
+              const stickerButton = stickerBlock.querySelector('.cf_sticker-button');
+              const closeButton = stickerModal.querySelector('.cf_sticker-modal-close');
+              const gallery = stickerModal.querySelector('.cf_sticker-gallery');
+
+              // Function to show sticker modal
+              function showStickerModal() {
+                stickerModal.style.display = 'flex';
+                loadStickerGallery();
+              }
+
+              // Function to close sticker modal
+              function closeStickerModal() {
+                stickerModal.style.display = 'none';
+              }
+
+              // Function to load stickers into gallery
+              function loadStickerGallery() {
+                gallery.innerHTML = `
+                  <div style="
+                    grid-column: 1 / -1; display: flex; justify-content: center;
+                    align-items: center; min-height: 100px; flex-direction: column; gap: 15px;
+                  ">
+                    <div style="
+                      width: 40px; height: 40px; border: 4px solid #f3f3f3;
+                      border-top: 4px solid #4d97e7; border-radius: 50%;
+                      animation: spin 1s linear infinite;
+                    "></div>
+                    <div style="color: #666; font-size: 16px;">Đang tải stickers...</div>
+                  </div>
+                `;
+
+                // Simulate loading delay and then load stickers
+                setTimeout(() => {
+                  gallery.innerHTML = '';
+
+                  stickerList.forEach(sticker => {
+                    const stickerItem = document.createElement('div');
+                    stickerItem.style.cssText = `
+                      width: 80px; height: 80px; border: 2px solid transparent;
+                      border-radius: 10px; cursor: pointer; display: flex;
+                      align-items: center; justify-content: center; background: #f8f9fa;
+                      transition: all 0.2s; padding: 8px; box-sizing: border-box;
+                      position: relative; overflow: hidden;
+                    `;
+                    stickerItem.title = sticker.title;
+
+                    const img = document.createElement('img');
+                    img.src = `./stickers/${sticker.file}`;
+                    img.alt = sticker.title;
+
+                    // Khác biệt style cho SVG và ảnh
+                    if (sticker.type === 'svg') {
+                      img.style.cssText = `
+                        width: 100%; height: 100%; object-fit: contain; pointer-events: none;
+                      `;
+                    } else {
+                      img.style.cssText = `
+                        width: 100%; height: 100%; object-fit: cover; pointer-events: none;
+                        border-radius: 6px;
+                      `;
+                    }
+
+                    // Thêm badge để phân biệt loại sticker
+                    const badge = document.createElement('div');
+                    badge.style.cssText = `
+                      position: absolute; top: 2px; right: 2px; 
+                      background: ${sticker.type === 'svg' ? '#4caf50' : '#ff9800'}; 
+                      color: white; font-size: 8px; padding: 2px 4px; 
+                      border-radius: 3px; font-weight: bold;
+                      text-transform: uppercase;
+                    `;
+                    badge.textContent = sticker.type === 'svg' ? 'SVG' : 'IMG';
+
+                    // Error handling for missing stickers
+                    img.onerror = function () {
+                      this.src = 'data:image/svg+xml;base64,' + btoa(`
+                        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="60" height="60" fill="#f0f0f0" stroke="#ddd"/>
+                          <text x="30" y="30" font-family="Arial" font-size="8" text-anchor="middle" fill="#999">Lỗi</text>
+                          <text x="30" y="40" font-family="Arial" font-size="6" text-anchor="middle" fill="#999">${sticker.file}</text>
+                        </svg>
+                      `);
+                    };
+
+                    stickerItem.appendChild(img);
+                    stickerItem.appendChild(badge);
+
+                    // Hover effects
+                    stickerItem.addEventListener('mouseenter', function () {
+                      this.style.borderColor = '#4d97e7';
+                      this.style.background = '#e3f2fd';
+                      this.style.transform = 'scale(1.05)';
+                      this.style.boxShadow = '0 4px 12px rgba(77, 151, 231, 0.3)';
+                    });
+
+                    stickerItem.addEventListener('mouseleave', function () {
+                      this.style.borderColor = 'transparent';
+                      this.style.background = '#f8f9fa';
+                      this.style.transform = 'scale(1)';
+                      this.style.boxShadow = 'none';
+                    });
+
+                    // Click handler to add sticker
+                    stickerItem.addEventListener('click', function () {
+                      // Hiệu ứng click
+                      this.style.transform = 'scale(0.95)';
+                      setTimeout(() => {
+                        this.style.transform = 'scale(1.05)';
+                        addStickerToCanvas(`./stickers/${sticker.file}`, sticker.title, sticker.type);
+                        closeStickerModal();
+                      }, 100);
+                    });
+
+                    gallery.appendChild(stickerItem);
+                  });
+                }, 500);
+              }
+
+              // Function to add sticker to canvas
+              function addStickerToCanvas(stickerPath, stickerTitle, stickerType) {
+                console.log('Adding sticker to canvas:', stickerPath, stickerTitle, stickerType);
+
+                stopDrawing();
+
+                // Create image element and load sticker
+                const imageObj = new Image();
+                imageObj.crossOrigin = 'anonymous';
+
+                imageObj.onload = function () {
+                  // Tính toán kích thước khác nhau cho SVG và ảnh
+                  let defaultWidth, defaultHeight;
+
+                  if (stickerType === 'svg') {
+                    // SVG thường có kích thước nhỏ hơn và clean hơn
+                    defaultWidth = 80;
+                    defaultHeight = 80;
+                  } else {
+                    // Ảnh thường cần kích thước phù hợp với aspect ratio
+                    const aspectRatio = imageObj.naturalWidth / imageObj.naturalHeight;
+                    if (aspectRatio > 1) {
+                      // Landscape
+                      defaultWidth = 100;
+                      defaultHeight = 100 / aspectRatio;
+                    } else {
+                      // Portrait or square
+                      defaultWidth = 80 * aspectRatio;
+                      defaultHeight = 80;
+                    }
+                  }
+
+                  // Create Konva image
+                  const stickerImage = new Konva.Image({
+                    x: 50, // Default position
+                    y: 50,
+                    image: imageObj,
+                    width: defaultWidth,
+                    height: defaultHeight,
+                    draggable: true,
+                    name: `sticker_${stickerType}_${Date.now()}`,
+                  });
+
+                  // Không áp dụng styling đặc biệt để tránh conflict với Konva.js version
+                  // Cả SVG và ảnh sẽ có appearance giống nhau
+
+                  // Add event listeners
+                  stickerImage.on('dragmove transform', function () {
+                    stopDrawing();
+                    layer.draw();
+                    updateTexture(stage);
+                  });
+
+                  stickerImage.on('mousedown', stopDrawing);
+                  stickerImage.on('dragend transformend', function () {
+                    window.saveStateToHistory();
+                  });
+
+                  // Add to layer
+                  layer.add(stickerImage);
+                  layer.draw();
+                  window.saveStateToHistory();
+                  updateTexture(stage);
+
+                  console.log(`✅ ${stickerType.toUpperCase()} sticker added successfully:`, stickerTitle);
+                };
+
+                imageObj.onerror = function () {
+                  console.error('Failed to load sticker:', stickerPath);
+                  alert(`Lỗi: Không thể tải ${stickerType} sticker. Vui lòng thử lại.`);
+                };
+
+                imageObj.src = stickerPath;
+              }
+
+              // Event listeners
+              stickerButton.addEventListener('click', showStickerModal);
+              closeButton.addEventListener('click', closeStickerModal);
+
+              // Close modal when clicking outside
+              stickerModal.addEventListener('click', function (e) {
+                if (e.target === stickerModal) {
+                  closeStickerModal();
+                }
+              });
+
+              // Close modal with Escape key
+              document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && stickerModal.style.display === 'flex') {
+                  closeStickerModal();
+                }
+              });
+            }
+
+            if (extensions.add_transform_mode) {
+              let contextMenuNode = document.createElement("div");
+              contextMenuNode.className = "cf_context-menu";
+              contextMenuNode.style.display = "none";
+              contextMenuNode.innerHTML = `
+                    <div class="cf_button cf_context-menu__button" data-action="up">Lớp trên</div>
+                    <div class="cf_button cf_context-menu__button" data-action="down">Lớp dưới</div>
+                    <div class="cf_button cf_context-menu__button" data-action="remove">Xóa</div>
+                    <div class="cf_button cf_context-menu__button" data-action="remove-bg" id="open-remove-bg" style="color: #4d97e7;">Xóa nền ảnh</div>
+                    `;
+              contextMenuNode = wrapper.appendChild(contextMenuNode);
+              stage.cfTransforming = {
+                menuNode: contextMenuNode,
+              };
+
+              //menu buttons event bounding
+              contextMenuNode
+                .querySelectorAll(".cf_context-menu__button")
+                .forEach(function (item) {
+                  item.addEventListener("click", (e) => {
+                    let btnNode = e.target;
+                    var action = btnNode.dataset.action;
+                    const tr = layer
+                      .find("Transformer")
+                      .toArray()
+                      .find(
+                        (tr) =>
+                          tr.nodes()[0] === stage.cfTransforming.currentShape
+                      );
+
+                    if (action == "up") {
+                      stage.cfTransforming.currentShape.moveUp();
+                    } else if (action == "down") {
+                      stage.cfTransforming.currentShape.moveDown();
+                    } else if (action == "remove") {
+                      stage.cfTransforming.currentShape.destroy();
+                      if (tr) {
+                        tr.destroy();
+                      }
+
+                      //hide menu after action
+                      stage.cfTransforming.menuNode.style.display = "none";
+                    } else if (action == "remove-bg") {
+                      // Xóa nền trực tiếp từ ảnh hiện tại
+                      removeBackgroundFromCurrentImage(stage.cfTransforming.currentShape);
+                      stage.cfTransforming.menuNode.style.display = "none";
+                    }
+
+                    layer.draw();
+                    window.saveStateToHistory();
+                    updateTexture(stage);
+                  });
+                });
+
+              stage.on("click tap", function (e) {
+                clearTransforms();
+
+                let elem = e.target;
+                let elemName = elem.attrs.name || null;
+                if (elem !== stage && elemName !== null && elemName != "line") {
+                  let transformArgs = {
+                    nodes: [elem],
+                    keepRatio: true,
+                    borderEnabled: true,
+                    boundBoxFunc: (oldBox, newBox) => {
+                      if (newBox.width < 10 || newBox.height < 10) {
+                        return oldBox;
+                      }
+                      return newBox;
+                    },
+                  };
+
+                  if (elemName.includes("text")) {
+                    transformArgs.enabledAnchors = [
+                      "middle-left",
+                      "middle-right",
+                    ];
+                  }
+                  const tr = new Konva.Transformer(transformArgs);
+                  layer.add(tr);
+                }
+
+                if (elem === stage || elemName == null || elemName == "line") {
+                  stage.cfTransforming.menuNode.style.display = "none";
+                }
+
+                layer.draw();
+                updateTexture(stage);
+              });
+
+              stage.on("contextmenu", function (e) {
+                //prevent drawing
+                stopDrawing();
+
+                // prevent default behavior
+                e.evt.preventDefault();
+
+                let elem = e.target;
+                let elemName = elem.attrs.name || null;
+                if (elem === stage || elemName == null || elemName == "line") {
+                  stage.cfTransforming.menuNode.style.display = "none";
+                  return;
+                }
+
+                stage.cfTransforming.currentShape = elem;
+                // show menu
+                stage.cfTransforming.menuNode.style.display = "block";
+                stage.cfTransforming.menuNode.style.position = "absolute";
+                stage.cfTransforming.menuNode.style.top = e.evt.layerY + "px";
+                stage.cfTransforming.menuNode.style.left = e.evt.layerX + "px";
+
+                let menuBounds =
+                  stage.cfTransforming.menuNode.getBoundingClientRect();
+                if (menuBounds.bottom > window.innerHeight) {
+                  stage.cfTransforming.menuNode.style.top = `${e.evt.layerY - menuBounds.height
+                    }px`;
+                }
+                if (menuBounds.right > window.innerWidth) {
+                  stage.cfTransforming.menuNode.style.left = `${e.evt.layerX - menuBounds.width
+                    }px`;
+                }
+              });
+            }
+
+
+
+            // Function to remove background from current selected image
+            async function removeBackgroundFromCurrentImage(imageNode) {
+              if (!imageNode || imageNode.getClassName() !== 'Image') {
+                alert('Vui lòng chọn một ảnh để xóa nền!');
+                return;
+              }
+
+              // Show loading indicator
+              const loadingOverlay = document.createElement('div');
+              loadingOverlay.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0, 0, 0, 0.7); display: flex; align-items: center;
+                justify-content: center; z-index: 9999; color: white; font-size: 18px;
+              `;
+              loadingOverlay.innerHTML = `
+                <div style="text-align: center; background: rgba(255,255,255,0.1); padding: 30px; border-radius: 10px;">
+                  <div style="margin-bottom: 15px;">🎨 Đang xóa nền ảnh...</div>
+                  <div style="font-size: 14px; opacity: 0.8;">Vui lòng chờ trong giây lát</div>
+                </div>
+              `;
+              document.body.appendChild(loadingOverlay);
+
+              try {
+                // Get image data from Konva Image
+                const originalImageElement = imageNode.image();
+                if (!originalImageElement) {
+                  throw new Error('Không thể lấy dữ liệu ảnh');
+                }
+
+                // Convert image to canvas to get clean data
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = originalImageElement.naturalWidth || originalImageElement.width;
+                tempCanvas.height = originalImageElement.naturalHeight || originalImageElement.height;
+                tempCtx.drawImage(originalImageElement, 0, 0);
+
+                // Convert canvas to blob
+                const blob = await new Promise((resolve) => {
+                  tempCanvas.toBlob(resolve, 'image/jpeg', 0.9);
+                });
+
+                if (!blob) {
+                  throw new Error('Không thể chuyển đổi ảnh');
+                }
+
+                // Create FormData for Remove.bg API
+                const formData = new FormData();
+                formData.append('image_file', blob, 'image.jpg');
+
+                console.log('🚀 Sending image to Remove.bg API...');
+
+                // Call Remove.bg API
+                const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+                  method: 'POST',
+                  headers: {
+                    'X-Api-Key': 'rQFhfUyWaG1qBo1CffWLk6bn'
+                  },
+                  body: formData
+                });
+
+                if (!response.ok) {
+                  throw new Error(`API Error: ${response.status} - ${response.statusText}`);
+                }
+
+                // Get processed image
+                const processedBlob = await response.blob();
+                const processedImageUrl = URL.createObjectURL(processedBlob);
+
+                console.log('✅ Background removal successful!');
+
+                // Load processed image and update Konva node
+                const newImg = new Image();
+                newImg.crossOrigin = 'anonymous';
+
+                newImg.onload = function () {
+                  // Update the Konva Image with new processed image
+                  imageNode.image(newImg);
+
+                  // Redraw layer and update texture
+                  layer.draw();
+                  updateTexture(stage);
+                  window.saveStateToHistory();
+
+                  // Cleanup
+                  URL.revokeObjectURL(processedImageUrl);
+                  document.body.removeChild(loadingOverlay);
+
+                  console.log('🎉 Image updated on canvas successfully!');
+                };
+
+                newImg.onerror = function () {
+                  throw new Error('Không thể load ảnh đã xử lý');
+                };
+
+                newImg.src = processedImageUrl;
+
+              } catch (error) {
+                console.error('❌ Error removing background:', error);
+                document.body.removeChild(loadingOverlay);
+                alert(`Lỗi xóa nền: ${error.message}\nVui lòng thử lại sau.`);
+              }
             }
 
             // Hàm kiểm tra kích thước file
@@ -12981,7 +13391,7 @@ Thêm Ảnh
           340,
           340,
           4,
-          '{"add_image_upload_mode":true,"add_transform_mode":true}',
+          '{"add_image_upload_mode":true,"add_transform_mode":true,"add_sticker_mode":true}',
           (stage, layer, isWrapperLayer = false) => {
             try {
               cf_stageBackgroundLayerImage(
@@ -13055,7 +13465,7 @@ Thêm Ảnh
           450,
           450,
           4,
-          '{"add_draw_mode":true,"add_drawing_tools_mode":true,"add_transform_mode":true,"add_text_mode":true,"add_image_upload_mode":true}',
+          '{"add_draw_mode":true,"add_drawing_tools_mode":true,"add_transform_mode":true,"add_text_mode":true,"add_image_upload_mode":true,"add_sticker_mode":true}',
           (stage, layer, isWrapperLayer = false) => {
             try {
               cf_stageBackgroundLayerImage(
@@ -13090,6 +13500,7 @@ Thêm Ảnh
         setHTMLElemStyle("marginLeft", "220px", "closecanvas", false);
         /* add export/import buttons to the drawer interface */
         setCSSRuleStyle("padding", "10px", ".cf_button", false, "");
+
         addHTMLElement(
           "button",
           "exportButton",
