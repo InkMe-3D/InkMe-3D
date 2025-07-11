@@ -800,6 +800,7 @@ const LoginScreen = () => {
         phone: res.user.phone,
         email: res.user.email,
         userId: res.user.id,
+        isAdmin: res.user.isAdmin // Thêm thông tin admin
       };
 
       localStorage.setItem('user', JSON.stringify(user));
@@ -818,7 +819,20 @@ const LoginScreen = () => {
 
       setTimeout(() => {
         setLoading(false);
-        window.location.href = "/";
+        // Chuyển hướng dựa trên role admin
+        if (res.user.isAdmin === true) {
+          // Encode user data để truyền qua URL
+          const userData = encodeURIComponent(JSON.stringify({
+            id: res.user.id,
+            name: res.user.name,
+            email: res.user.email,
+            phone: res.user.phone,
+            isAdmin: res.user.isAdmin
+          }));
+          window.location.href = `http://localhost:5173/dashboard?token=${res.token}&user=${userData}`;
+        } else {
+          window.location.href = "/";
+        }
       }, 2000);
     } catch (error) {
       console.error("Login error:", error);
@@ -846,6 +860,16 @@ const LoginScreen = () => {
       setLoading(true);
       localStorage.setItem("token", res.token);
 
+      // Lưu thông tin user vào localStorage
+      const user = {
+        name: res.user.name,
+        phone: res.user.phone,
+        email: res.user.email,
+        userId: res.user.id,
+        isAdmin: res.user.isAdmin
+      };
+      localStorage.setItem('user', JSON.stringify(user));
+
       // Google Analytics tracking - Login with Google
       trackLogin({
         method: 'google',
@@ -859,7 +883,20 @@ const LoginScreen = () => {
       });
       setTimeout(() => {
         setLoading(false);
-        window.location.href = "/";
+        // Chuyển hướng dựa trên role admin
+        if (res.user.isAdmin === true) {
+          // Encode user data để truyền qua URL
+          const userData = encodeURIComponent(JSON.stringify({
+            id: res.user.id,
+            name: res.user.name,
+            email: res.user.email,
+            phone: res.user.phone,
+            isAdmin: res.user.isAdmin
+          }));
+          window.location.href = `http://localhost:5173/dashboard?token=${res.token}&user=${userData}`;
+        } else {
+          window.location.href = "/";
+        }
       }, 2000);
     } catch (error) {
       context.setAlterBox({

@@ -68,11 +68,18 @@ const ProductUpload = () => {
     const [subCatData, setSubCatData] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const [productRams, setProductRams] = useState([]);
     const [productWeight, setProductWeight] = useState('');
     const [productSize, setProductSize] = useState([]);
-    const [productRamsData, setProductRamsData] = useState([]);
+    const [productColor, setProductColor] = useState([]);
     const [productSizeData, setProductSizeData] = useState([]);
+    const [productColorData, setProductColorData] = useState([]);
+
+    // State cho input tạm thời
+    const [newSizeInput, setNewSizeInput] = useState('');
+    const [newColorInput, setNewColorInput] = useState('');
+
+    // Product Classifications
+    const [productClassify, setProductClassify] = useState([]);
 
     const history = useNavigate();
     const context = useContext(MyContext);
@@ -87,18 +94,21 @@ const ProductUpload = () => {
         description: "",
         images: [],
         brand: "",
-        price: null,
-        oldPrice: null,
-        discount: null,
+        price: 0,
+        originalPrice: 0,
+        discountPercent: 0,
+        oldPrice: null, // Giữ lại cho tương thích
+        discount: null, // Giữ lại cho tương thích
         category: "",
         catName: "",
         subCatId: "",
         subCat: "",
         countInStock: null,
         rating: 0,
-        productRams: [],
         productSize: [],
+        productColor: [],
         productWeight: "",
+        productClassify: [],
         isFeatured: true
     });
 
@@ -121,36 +131,7 @@ const ProductUpload = () => {
 
     };
 
-    const handleChangeProductRams = (event) => {
-        // setProductRams(event.target.value);
-        // setformFields(() => ({
-        //     ...formFields,
-        //     productRams: event.target.value
-        // }));
-
-        const {
-            target: { value },
-        } = event;
-        setProductRams(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value,
-        );
-
-        // Cập nhật formFields với mảng productRams mới
-        setformFields((prevFields) => ({
-            ...prevFields,
-            productRams: typeof value === 'string' ? value.split(',') : value,
-        }));
-
-    };
-
     const handleChangeProductSize = (event) => {
-        // setProductSize(event.target.value);
-        // setformFields(() => ({
-        //     ...formFields,
-        //     productSize: event.target.value
-        // }));
-
         const {
             target: { value },
         } = event;
@@ -167,6 +148,19 @@ const ProductUpload = () => {
 
     };
 
+    const handleChangeProductColor = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setProductColor(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+
+        setformFields((prevFields) => ({
+            ...prevFields,
+            productColor: typeof value === 'string' ? value.split(',') : value,
+        }));
+    };
 
     const handleChangeisFeaturedValue = (event) => {
         setisFeaturedValue(event.target.value);
@@ -174,6 +168,99 @@ const ProductUpload = () => {
             ...formFields,
             isFeatured: event.target.value
         }));
+    };
+
+    // Xử lý Product Classify
+    const addProductClassify = () => {
+        const newClassify = {
+            name: "",
+            image: "",
+            quantity: 0,
+            price: 0
+        };
+        setProductClassify([...productClassify, newClassify]);
+        setformFields(prev => ({
+            ...prev,
+            productClassify: [...prev.productClassify, newClassify]
+        }));
+    };
+
+    const removeProductClassify = (index) => {
+        const updatedClassify = productClassify.filter((_, i) => i !== index);
+        setProductClassify(updatedClassify);
+        setformFields(prev => ({
+            ...prev,
+            productClassify: updatedClassify
+        }));
+    };
+
+    const updateProductClassify = (index, field, value) => {
+        const updatedClassify = [...productClassify];
+        updatedClassify[index] = { ...updatedClassify[index], [field]: value };
+        setProductClassify(updatedClassify);
+        setformFields(prev => ({
+            ...prev,
+            productClassify: updatedClassify
+        }));
+    };
+
+    // Hàm xử lý kích thước
+    const addProductSize = () => {
+        if (newSizeInput.trim() && !productSize.includes(newSizeInput.trim())) {
+            const updatedSizes = [...productSize, newSizeInput.trim()];
+            setProductSize(updatedSizes);
+            setformFields(prev => ({
+                ...prev,
+                productSize: updatedSizes
+            }));
+            setNewSizeInput('');
+        }
+    };
+
+    const removeProductSize = (indexToRemove) => {
+        const updatedSizes = productSize.filter((_, index) => index !== indexToRemove);
+        setProductSize(updatedSizes);
+        setformFields(prev => ({
+            ...prev,
+            productSize: updatedSizes
+        }));
+    };
+
+    // Hàm xử lý màu sắc
+    const addProductColor = () => {
+        if (newColorInput.trim() && !productColor.includes(newColorInput.trim())) {
+            const updatedColors = [...productColor, newColorInput.trim()];
+            setProductColor(updatedColors);
+            setformFields(prev => ({
+                ...prev,
+                productColor: updatedColors
+            }));
+            setNewColorInput('');
+        }
+    };
+
+    const removeProductColor = (indexToRemove) => {
+        const updatedColors = productColor.filter((_, index) => index !== indexToRemove);
+        setProductColor(updatedColors);
+        setformFields(prev => ({
+            ...prev,
+            productColor: updatedColors
+        }));
+    };
+
+    // Hàm xử lý phím Enter
+    const handleSizeKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addProductSize();
+        }
+    };
+
+    const handleColorKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addProductColor();
+        }
     };
 
     useEffect(() => {
@@ -189,15 +276,29 @@ const ProductUpload = () => {
                     })
                 })
             })
+        }).catch((error) => {
+            console.error("Error fetching image upload data:", error);
         });
 
         fetchDataFromApi("/api/productSize/").then((res) => {
             setProductSizeData(res);
+        }).catch((error) => {
+            console.error("Error fetching product size data:", error);
+            setProductSizeData([]);
         });
 
-        fetchDataFromApi("/api/productRams/").then((res) => {
-            setProductRamsData(res);
-        });
+        // Giả sử có API cho productColor, nếu không có thì dùng dữ liệu mặc định
+        const defaultColors = [
+            { productColor: "Đỏ" },
+            { productColor: "Xanh" },
+            { productColor: "Vàng" },
+            { productColor: "Đen" },
+            { productColor: "Trắng" },
+            { productColor: "Xám" },
+            { productColor: "Nâu" },
+            { productColor: "Hồng" }
+        ];
+        setProductColorData(defaultColors);
 
     }, []);
 
@@ -207,6 +308,69 @@ const ProductUpload = () => {
             [e.target.name]: e.target.value
         });
     }
+
+    // Hàm tính toán giá tự động (price luôn được nhập thủ công)
+    const calculatePricing = (changedField, value, currentFields) => {
+        const numValue = parseFloat(value) || 0;
+        const updatedFields = { ...currentFields };
+
+        switch (changedField) {
+            case 'price':
+                updatedFields.price = numValue;
+                // Khi thay đổi price, tính originalPrice hoặc discountPercent
+                if (updatedFields.discountPercent > 0 && numValue > 0) {
+                    // Nếu có % giảm giá, tính giá gốc
+                    updatedFields.originalPrice = (numValue / (1 - updatedFields.discountPercent / 100)).toFixed(2);
+                }
+                else if (updatedFields.originalPrice > 0 && numValue > 0) {
+                    // Nếu có giá gốc, tính % giảm giá
+                    updatedFields.discountPercent = (((updatedFields.originalPrice - numValue) / updatedFields.originalPrice) * 100).toFixed(2);
+                }
+                break;
+
+            case 'originalPrice':
+                updatedFields.originalPrice = numValue;
+                // Chỉ tính discountPercent, KHÔNG tính price
+                if (updatedFields.price > 0 && numValue > 0) {
+                    updatedFields.discountPercent = (((numValue - updatedFields.price) / numValue) * 100).toFixed(2);
+                }
+                break;
+
+            case 'discountPercent':
+                updatedFields.discountPercent = numValue;
+                // Chỉ tính originalPrice, KHÔNG tính price
+                if (updatedFields.price > 0 && numValue >= 0) {
+                    updatedFields.originalPrice = (updatedFields.price / (1 - numValue / 100)).toFixed(2);
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        return updatedFields;
+    };
+
+    // Hàm xử lý thay đổi giá bán
+    const handlePriceChange = (e) => {
+        const value = e.target.value;
+        const updatedFields = calculatePricing('price', value, formFields);
+        setformFields(updatedFields);
+    };
+
+    // Hàm xử lý thay đổi giá gốc
+    const handleOriginalPriceChange = (e) => {
+        const value = e.target.value;
+        const updatedFields = calculatePricing('originalPrice', value, formFields);
+        setformFields(updatedFields);
+    };
+
+    // Hàm xử lý thay đổi phần trăm giảm giá
+    const handleDiscountPercentChange = (e) => {
+        const value = e.target.value;
+        const updatedFields = calculatePricing('discountPercent', value, formFields);
+        setformFields(updatedFields);
+    };
 
     const selectCat = (cat) => {
         setformFields((prev) => ({
@@ -260,7 +424,7 @@ const ProductUpload = () => {
                     context.setAlterBox({
                         open: true,
                         color: true,
-                        message: "Vui lòng chọn hình ảnh đúng định dạng (jpeg, png, gif, jpg, webp)"
+                        message: "Vui lòng chọn hình ảnh đúng định dạng (jpeg, png, gif, jpg, webp)"
                     });
                     return false;
                 }
@@ -315,8 +479,12 @@ const ProductUpload = () => {
         formdata.append('description', formFields.description);
         formdata.append('brand', formFields.brand);
         formdata.append('price', formFields.price);
-        formdata.append('oldPrice', formFields.oldPrice);
-        formdata.append('discount', formFields.discount);
+        // Gửi dữ liệu mới
+        formdata.append('originalPrice', formFields.originalPrice || formFields.price);
+        formdata.append('discountPercent', formFields.discountPercent || 0);
+        // Tương thích ngược với API cũ
+        formdata.append('oldPrice', formFields.originalPrice || formFields.price);
+        formdata.append('discount', formFields.discountPercent || 0);
         formdata.append('countInStock', formFields.countInStock);
         formdata.append('catName', formFields.catName);
         formdata.append('subCatId', formFields.subCatId);
@@ -324,9 +492,10 @@ const ProductUpload = () => {
         formdata.append('subCat', formFields.subCat);
         formdata.append('rating', formFields.rating);
         formdata.append('isFeatured', formFields.isFeatured);
-        formdata.append('productRams', formFields.productRams);
         formdata.append('productSize', formFields.productSize);
+        formdata.append('productColor', formFields.productColor);
         formdata.append('productWeight', formFields.productWeight);
+        formdata.append('productClassify', JSON.stringify(formFields.productClassify));
 
         formFields.images = appendedArray;
 
@@ -361,31 +530,33 @@ const ProductUpload = () => {
             return false;
         }
 
-        // if (formFields.subCat === "") {
-        //     context.setAlterBox({
-        //         open: true,
-        //         error: true,
-        //         message: "Vui lòng chọn danh mục con của sản phẩm"
-        //     });
-        //     setLoading(false);
-        //     return false;
-        // }
-
-        if (formFields.price === null || formFields.price <= 0 || !/^\d+(\.\d+)?$/.test(formFields.price)) {
+        if (!formFields.price || formFields.price <= 0) {
             context.setAlterBox({
                 open: true,
                 error: true,
-                message: "Vui lòng nhập giá sản phẩm là số lớn hơn 0 và không chứa ký tự đặc biệt hoặc chữ"
+                message: "Vui lòng nhập giá bán hợp lệ (lớn hơn 0)"
             });
             setLoading(false);
             return false;
         }
 
-        if (formFields.oldPrice === null || formFields.oldPrice <= 0 || !/^\d+(\.\d+)?$/.test(formFields.price)) {
+        // Validation cho originalPrice - chỉ kiểm tra nếu có giá trị
+        if (formFields.originalPrice && formFields.originalPrice < formFields.price) {
             context.setAlterBox({
                 open: true,
                 error: true,
-                message: "Vui lòng nhập giá cũ sản phẩm là số lớn hơn 0 và không chứa ký tự đặc biệt hoặc chữ"
+                message: "Giá gốc phải lớn hơn hoặc bằng giá bán hiện tại"
+            });
+            setLoading(false);
+            return false;
+        }
+
+        // Validation cho discountPercent
+        if (formFields.discountPercent && (formFields.discountPercent < 0 || formFields.discountPercent > 100)) {
+            context.setAlterBox({
+                open: true,
+                error: true,
+                message: "Phần trăm giảm giá phải từ 0 đến 100"
             });
             setLoading(false);
             return false;
@@ -401,15 +572,6 @@ const ProductUpload = () => {
             return false;
         }
 
-        // if (formFields.images.length === 0) {
-        //     context.setAlterBox({
-        //         open: true,
-        //         error: true,
-        //         message: "Vui lòng chọn ít nhất một hình ảnh"
-        //     });
-        //     setLoading(false);
-        //     return false;
-        // }
         //--------------  if empty
 
         postData('/api/products/create', formFields).then((res) => {
@@ -500,7 +662,7 @@ const ProductUpload = () => {
                                         </div>
                                     </div>
 
-                                    <div className="col">
+                                    {/* <div className="col">
                                         <div className="form-group">
                                             <h6>Danh Mục Con</h6>
                                             <Select
@@ -520,20 +682,11 @@ const ProductUpload = () => {
                                                         return (
                                                             <MenuItem className="text-capitalize"
                                                                 value={subCat.id} key={index}>{subCat.subCat}
-                                                    </MenuItem>
+                                                            </MenuItem>
                                                         )
                                                     })
                                                 }
                                             </Select>
-                                        </div>
-                                    </div>
-
-
-                                    {/* <div className="col">
-                                        <div className="form-group">
-                                            <h6>Thương hiệu</h6>
-                                            <input type="text"
-                                                name="brand" value={formFields.brand} onChange={inputChange} />
                                         </div>
                                     </div> */}
                                 </div>
@@ -541,25 +694,53 @@ const ProductUpload = () => {
                                 <div className="row">
                                     <div className="col">
                                         <div className="form-group">
-                                            <h6>Giá bán</h6>
-                                            <input type="text"
-                                                name="price" value={formFields.price} onChange={inputChange} />
+                                            <h6>Giá bán hiện tại (VNĐ) <span className="text-primary">*</span></h6>
+                                            <input
+                                                type="number"
+                                                name="price"
+                                                value={formFields.price || ''}
+                                                onChange={handlePriceChange}
+                                                placeholder="Nhập giá bán chính thức"
+                                                min="0"
+                                                step="1000"
+                                                className="form-control"
+                                                style={{ borderColor: '#007bff', borderWidth: '2px' }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="col">``
+                                        <div className="form-group">
+                                            <h6>Giá gốc (VNĐ) </h6>
+                                            <input
+                                                type="number"
+                                                name="originalPrice"
+                                                value={formFields.originalPrice || ''}
+                                                onChange={handleOriginalPriceChange}
+                                                placeholder="Tự động tính hoặc nhập thủ công"
+                                                min="0"
+                                                step="1000"
+                                                className="form-control"
+                                                style={{ backgroundColor: '#f8fff8' }}
+                                            />
                                         </div>
                                     </div>
 
                                     <div className="col">
                                         <div className="form-group">
-                                            <h6>Giá cũ</h6>
-                                            <input type="text"
-                                                name="oldPrice" value={formFields.oldPrice} onChange={inputChange} />
-                                        </div>
-                                    </div>
-
-                                    <div className="col">
-                                        <div className="form-group">
-                                            <h6>Giảm giá</h6>
-                                            <input type="text"
-                                                name="discount" value={formFields.discount} onChange={inputChange} />
+                                            <h6>Giảm giá (%) </h6>
+                                            <input
+                                                type="number"
+                                                name="discountPercent"
+                                                value={formFields.discountPercent || ''}
+                                                onChange={handleDiscountPercentChange}
+                                                placeholder="Tự động tính hoặc nhập thủ công"
+                                                min="0"
+                                                max="100"
+                                                step="0.1"
+                                                className="form-control"
+                                                style={{ backgroundColor: '#f8fff8' }}
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -594,7 +775,7 @@ const ProductUpload = () => {
                                         <div className="form-group">
                                             <h6>Thương hiệu</h6>
                                             <input type="text"
-                                                name="brand" value={formFields.brand} onChange={inputChange} />
+                                                name="brand" value={formFields.brand || "InkMe3D"} onChange={inputChange} />
                                         </div>
                                     </div>
 
@@ -603,61 +784,89 @@ const ProductUpload = () => {
                                 <div className="row">
                                     <div className="col">
                                         <div className="form-group">
-                                            <h6>PRODUCT RAMS</h6>
-                                            <Select
-                                                multiple
-                                                value={productRams}
-                                                onChange={handleChangeProductRams}
-                                                displayEmpty
-                                                // input={<OutlinedInput label="Name" />}
-                                                MenuProps={MenuProps}
-                                                className="w-100"
-                                            >
-
-                                                {
-                                                    productRamsData?.map((item, index) => {
-                                                        return (
-                                                            <MenuItem className="text-capitalize"
-                                                                value={item.productRams}>{item.productRams}
-                                                            </MenuItem>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
+                                            <h6>Kích thước</h6>
+                                            <div className="d-flex gap-2 mb-2">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={newSizeInput}
+                                                    onChange={(e) => setNewSizeInput(e.target.value)}
+                                                    onKeyPress={handleSizeKeyPress}
+                                                    placeholder="Nhập kích thước (VD: S, M, L, XL)"
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    onClick={addProductSize}
+                                                    variant="outlined"
+                                                    size="small"
+                                                    style={{ minWidth: '120px' }}
+                                                >
+                                                    + Thêm size
+                                                </Button>
+                                            </div>
+                                            {/* Hiển thị danh sách kích thước */}
+                                            <div className="d-flex flex-wrap gap-2">
+                                                {productSize.map((size, index) => (
+                                                    <div key={index} className="badge bg-primary d-flex align-items-center gap-1" style={{ fontSize: '12px', padding: '5px 8px' }}>
+                                                        {size}
+                                                        <span
+                                                            className="cursor-pointer text-white"
+                                                            onClick={() => removeProductSize(index)}
+                                                            style={{ cursor: 'pointer', marginLeft: '5px' }}
+                                                        >
+                                                            ×
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div className="col">
                                         <div className="form-group">
-                                            <h6>Cân Nặng</h6>
+                                            <h6>Màu sắc</h6>
+                                            <div className="d-flex gap-2 mb-2">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={newColorInput}
+                                                    onChange={(e) => setNewColorInput(e.target.value)}
+                                                    onKeyPress={handleColorKeyPress}
+                                                    placeholder="Nhập màu sắc (VD: Đỏ, Xanh, Vàng)"
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    onClick={addProductColor}
+                                                    variant="outlined"
+                                                    size="small"
+                                                    style={{ minWidth: '120px' }}
+                                                >
+                                                    + Thêm màu
+                                                </Button>
+                                            </div>
+                                            {/* Hiển thị danh sách màu sắc */}
+                                            <div className="d-flex flex-wrap gap-2">
+                                                {productColor.map((color, index) => (
+                                                    <div key={index} className="badge bg-success d-flex align-items-center gap-1" style={{ fontSize: '12px', padding: '5px 8px' }}>
+                                                        {color}
+                                                        <span
+                                                            className="cursor-pointer text-white"
+                                                            onClick={() => removeProductColor(index)}
+                                                            style={{ cursor: 'pointer', marginLeft: '5px' }}
+                                                        >
+                                                            ×
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Cân Nặng (g)</h6>
                                             <input type="text"
                                                 name="productWeight" value={formFields.productWeight} onChange={inputChange} />
-                                        </div>
-                                    </div>
-
-                                    <div className="col">
-                                        <div className="form-group">
-                                            <h6>Kích thước</h6>
-                                            <Select
-                                                multiple
-                                                value={productSize}
-                                                onChange={handleChangeProductSize}
-                                                displayEmpty
-                                                // input={<OutlinedInput label="Name" />}
-                                                MenuProps={MenuProps}
-                                                className="w-100"
-                                            >
-
-                                                {
-                                                    productSizeData?.map((item, index) => {
-                                                        return (
-                                                            <MenuItem
-                                                                value={item.productSize}>{item.productSize}
-                                                            </MenuItem>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
                                         </div>
                                     </div>
                                 </div>
@@ -680,6 +889,82 @@ const ProductUpload = () => {
                                             />
                                         </div>
                                     </div>
+                                </div>
+
+                                {/* Product Classify Section */}
+                                <div className="form-group">
+                                    <h6>Phân loại sản phẩm</h6>
+                                    <div className="mb-3">
+                                        <Button type="button" onClick={addProductClassify} variant="outlined" size="small">
+                                            + Thêm phân loại
+                                        </Button>
+                                    </div>
+                                    {productClassify.map((classify, index) => (
+                                        <div key={index} className="border p-3 mb-3 rounded">
+                                            <div className="row">
+                                                <div className="col-md-3">
+                                                    <div className="form-group">
+                                                        <label>Tên phân loại</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            value={classify.name}
+                                                            onChange={(e) => updateProductClassify(index, 'name', e.target.value)}
+                                                            placeholder="VD: Áo thun nam size M"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-2">
+                                                    <div className="form-group">
+                                                        <label>Số lượng</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            value={classify.quantity}
+                                                            onChange={(e) => updateProductClassify(index, 'quantity', parseInt(e.target.value) || 0)}
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-2">
+                                                    <div className="form-group">
+                                                        <label>Giá</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            value={classify.price}
+                                                            onChange={(e) => updateProductClassify(index, 'price', parseInt(e.target.value) || 0)}
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-3">
+                                                    <div className="form-group">
+                                                        <label>URL hình ảnh</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            value={classify.image}
+                                                            onChange={(e) => updateProductClassify(index, 'image', e.target.value)}
+                                                            placeholder="https://..."
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-2 d-flex align-items-end">
+                                                    <Button
+                                                        type="button"
+                                                        onClick={() => removeProductClassify(index)}
+                                                        variant="outlined"
+                                                        color="error"
+                                                        size="small"
+                                                        className="mb-3"
+                                                    >
+                                                        Xóa
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
 
                             </div>
@@ -722,7 +1007,7 @@ const ProductUpload = () => {
                                                             onChange={(e) => onChangeFile(e, `/api/products/upload`)} />
                                                         <div className="info">
                                                             <FaRegImages />
-                                                            <h5>Thêm ảnh</h5>
+                                                            <h5>Thêm ảnh</h5>
                                                         </div>
                                                     </>
                                             }
@@ -741,27 +1026,6 @@ const ProductUpload = () => {
 
 
                         </div>
-
-                        {/* <div className="col-sm-3">
-                            <div className="stickyBox">
-                                {
-                                    productImagesArray?.length !== 0 &&
-                                    <h4>Ảnh sản phẩm</h4>
-                                }
-                                <div className="imgGrid d-flex" id="imgGrid">
-                                    {
-                                        productImagesArray?.map((image, index) => {
-                                            return (
-                                                <div className="img" key={index}>
-                                                    <img src={image} alt="images" className="w-100" />
-                                                </div>
-                                            )
-                                        })
-                                    }
-
-                                </div>
-                            </div>
-                        </div> */}
 
                     </div>
 

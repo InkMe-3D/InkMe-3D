@@ -65,14 +65,17 @@ const EditProduct = () => {
     const [subCategoryValue, setSubCategoryValue] = useState('');
     const [ratingsValue, setRatingsValue] = React.useState(0);
     const [isFeaturedValue, setisFeaturedValue] = React.useState(true);
-    const [productRams, setProductRams] = useState([]);
     const [productWeight, setProductWeight] = useState('');
     const [productSize, setProductSize] = useState([]);
+    const [productColor, setProductColor] = useState([]);
 
     const [catData, setCatData] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [productRamsData, setProductRamsData] = useState([]);
     const [productSizeData, setProductSizeData] = useState([]);
+    const [productColorData, setProductColorData] = useState([]);
+
+    // Product Classifications
+    const [productClassify, setProductClassify] = useState([]);
 
     const [files, setFiles] = useState([]);
     const [imgFiles, setImgFiles] = useState();
@@ -102,9 +105,10 @@ const EditProduct = () => {
         subCat: "",
         countInStock: null,
         rating: 0,
-        productRams: [],
         productSize: [],
+        productColor: [],
         productWeight: "",
+        productClassify: [],
         isFeatured: false
     });
 
@@ -127,45 +131,14 @@ const EditProduct = () => {
 
     };
 
-    const handleChangeProductRams = (event) => {
-        // setProductRams(event.target.value);
-        // setformFields(() => ({
-        //     ...formFields,
-        //     productRams: event.target.value
-        // }));
-
-        const {
-            target: { value },
-        } = event;
-        setProductRams(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value,
-        );
-
-        // Cập nhật formFields với mảng productRams mới
-        setformFields((prevFields) => ({
-            ...prevFields,
-            productRams: typeof value === 'string' ? value.split(',') : value,
-        }));
-
-    };
-
     const handleChangeProductSize = (event) => {
-        // setProductSize(event.target.value);
-        // setformFields(() => ({
-        //     ...formFields,
-        //     productSize: event.target.value
-        // }));
-
         const {
             target: { value },
         } = event;
         setProductSize(
-            // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
         );
 
-        // Cập nhật formFields với mảng productSize mới
         setformFields((prevFields) => ({
             ...prevFields,
             productSize: typeof value === 'string' ? value.split(',') : value,
@@ -173,11 +146,59 @@ const EditProduct = () => {
 
     };
 
+    const handleChangeProductColor = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setProductColor(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+
+        setformFields((prevFields) => ({
+            ...prevFields,
+            productColor: typeof value === 'string' ? value.split(',') : value,
+        }));
+    };
+
     const handleChangeisFeaturedValue = (event) => {
         setisFeaturedValue(event.target.value);
         setformFields(() => ({
             ...formFields,
             isFeatured: event.target.value
+        }));
+    };
+
+    // Xử lý Product Classify
+    const addProductClassify = () => {
+        const newClassify = {
+            name: "",
+            image: "",
+            quantity: 0,
+            price: 0
+        };
+        setProductClassify([...productClassify, newClassify]);
+        setformFields(prev => ({
+            ...prev,
+            productClassify: [...prev.productClassify, newClassify]
+        }));
+    };
+
+    const removeProductClassify = (index) => {
+        const updatedClassify = productClassify.filter((_, i) => i !== index);
+        setProductClassify(updatedClassify);
+        setformFields(prev => ({
+            ...prev,
+            productClassify: updatedClassify
+        }));
+    };
+
+    const updateProductClassify = (index, field, value) => {
+        const updatedClassify = [...productClassify];
+        updatedClassify[index] = { ...updatedClassify[index], [field]: value };
+        setProductClassify(updatedClassify);
+        setformFields(prev => ({
+            ...prev,
+            productClassify: updatedClassify
         }));
     };
 
@@ -200,17 +221,19 @@ const EditProduct = () => {
                 subCat: res.subCat,
                 countInStock: res.countInStock,
                 rating: res.rating,
-                productRams: res.productRams,
                 productSize: res.productSize,
+                productColor: res.productColor,
                 productWeight: res.productWeight,
+                productClassify: res.productClassify,
                 isFeatured: res.isFeatured
             });
             setCategoryValue(res.category);
             setSubCategoryValue(res.subCat);
             setRatingsValue(res.rating);
-            setProductRams(res.productRams);
-            setProductSize(res.productSize);
+            setProductSize(res.productSize || []);
+            setProductColor(res.productColor || []);
             setProductWeight(res.productWeight);
+            setProductClassify(res.productClassify || []);
             setisFeaturedValue(res.isFeatured);
             setPreview(res.images);
             context.setProgress(100);
@@ -220,9 +243,18 @@ const EditProduct = () => {
             setProductSizeData(res);
         });
 
-        fetchDataFromApi("/api/productRams/").then((res) => {
-            setProductRamsData(res);
-        });
+        // Giả sử có API cho productColor, nếu không có thì dùng dữ liệu mặc định
+        const defaultColors = [
+            { productColor: "Đỏ" },
+            { productColor: "Xanh" },
+            { productColor: "Vàng" },
+            { productColor: "Đen" },
+            { productColor: "Trắng" },
+            { productColor: "Xám" },
+            { productColor: "Nâu" },
+            { productColor: "Hồng" }
+        ];
+        setProductColorData(defaultColors);
 
     }, []);
 
@@ -365,9 +397,10 @@ const EditProduct = () => {
         formdata.append('catName', formFields.catName);
         formdata.append('subCat', formFields.subCat);
         formdata.append('rating', formFields.rating);
-        formdata.append('productRams', formFields.productRams);
         formdata.append('productSize', formFields.productSize);
+        formdata.append('productColor', formFields.productColor);
         formdata.append('productWeight', formFields.productWeight);
+        formdata.append('productClassify', JSON.stringify(formFields.productClassify));
         formdata.append('isFeatured', formFields.isFeatured);
 
         formFields.images = appendedArray;
@@ -476,8 +509,8 @@ const EditProduct = () => {
                 subCat: null,
                 countInStock: null,
                 rating: 0,
-                productRams: null,
                 productSize: null,
+                productColor: null,
                 productWeight: null,
                 isFeatured: null
             });
@@ -654,61 +687,57 @@ const EditProduct = () => {
                                 <div className="row">
                                     <div className="col">
                                         <div className="form-group">
-                                            <h6>PRODUCT RAMS</h6>
-                                            <Select
-                                                multiple
-                                                value={productRams}
-                                                onChange={handleChangeProductRams}
-                                                displayEmpty
-                                                // input={<OutlinedInput label="Name" />}
-                                                MenuProps={MenuProps}
-                                                className="w-100"
-                                            >
-
-                                                {
-                                                    productRamsData?.map((item, index) => {
-                                                        return (
-                                                            <MenuItem className="text-capitalize"
-                                                                value={item.productRams}>{item.productRams}
-                                                            </MenuItem>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
-                                        </div>
-                                    </div>
-
-                                    <div className="col">
-                                        <div className="form-group">
-                                            <h6>Cân Nặng</h6>
-                                            <input type="text"
-                                                name="productWeight" value={formFields.productWeight} onChange={inputChange} />
-                                        </div>
-                                    </div>
-
-                                    <div className="col">
-                                        <div className="form-group">
                                             <h6>Kích thước</h6>
                                             <Select
                                                 multiple
                                                 value={productSize}
                                                 onChange={handleChangeProductSize}
                                                 displayEmpty
-                                                // input={<OutlinedInput label="Name" />}
                                                 MenuProps={MenuProps}
                                                 className="w-100"
                                             >
-
                                                 {
                                                     productSizeData?.map((item, index) => {
                                                         return (
-                                                            <MenuItem
+                                                            <MenuItem key={index}
                                                                 value={item.productSize}>{item.productSize}
                                                             </MenuItem>
                                                         )
                                                     })
                                                 }
                                             </Select>
+                                        </div>
+                                    </div>
+
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Màu sắc</h6>
+                                            <Select
+                                                multiple
+                                                value={productColor}
+                                                onChange={handleChangeProductColor}
+                                                displayEmpty
+                                                MenuProps={MenuProps}
+                                                className="w-100"
+                                            >
+                                                {
+                                                    productColorData?.map((item, index) => {
+                                                        return (
+                                                            <MenuItem key={index}
+                                                                value={item.productColor}>{item.productColor}
+                                                            </MenuItem>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        </div>
+                                    </div>
+
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <h6>Cân Nặng (g)</h6>
+                                            <input type="text"
+                                                name="productWeight" value={formFields.productWeight} onChange={inputChange} />
                                         </div>
                                     </div>
                                 </div>
@@ -731,6 +760,82 @@ const EditProduct = () => {
                                             />
                                         </div>
                                     </div>
+                                </div>
+
+                                {/* Product Classify Section */}
+                                <div className="form-group">
+                                    <h6>Phân loại sản phẩm</h6>
+                                    <div className="mb-3">
+                                        <Button type="button" onClick={addProductClassify} variant="outlined" size="small">
+                                            + Thêm phân loại
+                                        </Button>
+                                    </div>
+                                    {productClassify.map((classify, index) => (
+                                        <div key={index} className="border p-3 mb-3 rounded">
+                                            <div className="row">
+                                                <div className="col-md-3">
+                                                    <div className="form-group">
+                                                        <label>Tên phân loại</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            value={classify.name}
+                                                            onChange={(e) => updateProductClassify(index, 'name', e.target.value)}
+                                                            placeholder="VD: Áo thun nam size M"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-2">
+                                                    <div className="form-group">
+                                                        <label>Số lượng</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            value={classify.quantity}
+                                                            onChange={(e) => updateProductClassify(index, 'quantity', parseInt(e.target.value) || 0)}
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-2">
+                                                    <div className="form-group">
+                                                        <label>Giá</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            value={classify.price}
+                                                            onChange={(e) => updateProductClassify(index, 'price', parseInt(e.target.value) || 0)}
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-3">
+                                                    <div className="form-group">
+                                                        <label>URL hình ảnh</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            value={classify.image}
+                                                            onChange={(e) => updateProductClassify(index, 'image', e.target.value)}
+                                                            placeholder="https://..."
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-2 d-flex align-items-end">
+                                                    <Button
+                                                        type="button"
+                                                        onClick={() => removeProductClassify(index)}
+                                                        variant="outlined"
+                                                        color="error"
+                                                        size="small"
+                                                        className="mb-3"
+                                                    >
+                                                        Xóa
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
 
                                 {/* <div className="row">

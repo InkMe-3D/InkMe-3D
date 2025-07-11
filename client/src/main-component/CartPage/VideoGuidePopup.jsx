@@ -11,10 +11,9 @@ const VideoGuidePopup = ({ isVisible, onClose, inkmeFile }) => {
 
             // Tạo shareable link từ inkmeFile.url
             if (inkmeFile?.url) {
-                const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                const baseUrl = isDevelopment
+                const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
                     ? 'http://0.0.0.0:3000/3d-custom/tshirt-sizingtest.html'
-                    : 'https://inkme-3d-page-custom-production.up.railway.app/tshirt-sizingtest.html';
+                    : 'https://www.inkme3d.com/3d-custom/tshirt-sizingtest.html';
                 const link = `${baseUrl}?layout=${encodeURIComponent(inkmeFile.url)}`;
                 setShareableLink(link);
             }
