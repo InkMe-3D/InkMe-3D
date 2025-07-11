@@ -24,10 +24,16 @@ const Sidebar = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token !== null && token !== "" && token !== undefined) {
+        if (token !== null && token !== "" && token !== undefined && token !== "undefined") {
             setIsLogin(true);
         } else {
-            history('/login');
+            // Chỉ redirect đến login nếu không có token và không có URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlToken = urlParams.get('token');
+
+            if (!urlToken) {
+                history('/login');
+            }
         }
     }, []);
 
@@ -53,10 +59,10 @@ const Sidebar = () => {
                         <div className={`submenuWrapper ${activeTab === 1 && isToggleMenu === true ? 'colapse' : 'colapsed'}`}>
                             <ul className='submenu'>
                                 <li><Link to="/products">Danh Sách Sản Phẩm</Link></li>
-                                <li><Link to="/product/details">View Sản Phẩm</Link></li>
+                                {/* <li><Link to="/product/details">View Sản Phẩm</Link></li> */}
                                 <li><Link to="/product/upload">Thêm Sản Phẩm</Link></li>
-                                <li><Link to="/productRams/add">Thêm Rams sản phẩm</Link></li>
-                                <li><Link to="/productSize/add">Thêm kích thước sản phẩm</Link></li>
+                                {/* <li><Link to="/productRams/add">Thêm Rams sản phẩm</Link></li>
+                                <li><Link to="/productSize/add">Thêm kích thước sản phẩm</Link></li> */}
                             </ul>
                         </div>
                     </li>

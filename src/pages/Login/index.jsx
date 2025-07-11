@@ -75,7 +75,10 @@ const Login = () => {
                     const user = {
                         name: res.user?.name,
                         email: res.user?.email,
-                        userId: res.user?.id
+                        userId: res.user?.id,
+                        isAdmin: res.user?.isAdmin,
+                        phone: res.user?.phone,
+                        token: res.token
                     }
 
                     localStorage.setItem("user", JSON.stringify(user));

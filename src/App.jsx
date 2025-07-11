@@ -79,8 +79,26 @@ function App() {
     if (token !== null && token !== "" && token !== undefined) {
       setIsLogin(true);
 
-      const userData = JSON.parse(localStorage.getItem('user'));
-      setUser(userData);
+      try {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+          const parsedUser = JSON.parse(userData);
+          setUser({
+            name: parsedUser.name || '',
+            email: parsedUser.email || '',
+            userId: parsedUser.id || parsedUser.userId || '',
+            isAdmin: parsedUser.isAdmin || false
+          });
+        }
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        setUser({
+          name: '',
+          email: '',
+          userId: '',
+          isAdmin: false
+        });
+      }
 
     } else {
       setIsLogin(false);

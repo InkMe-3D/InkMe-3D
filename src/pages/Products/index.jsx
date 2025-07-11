@@ -204,13 +204,12 @@ const Products = () => {
                   <th>#ID</th>
                   <th style={{ width: '250px' }}>Sản Phẩm</th>
                   <th>Danh Mục</th>
-                  <th>Danh mục con</th>
                   <th>Nhãn hiệu</th>
                   <th>Giá bán</th>
                   <th>Giảm giá</th>
                   <th>Số lượng</th>
-                  <th>Rams sản phẩm</th>
                   <th>Kích thước</th>
+                  <th>Màu sắc</th>
                   <th>Cân nặng</th>
                   <th>Đánh giá</th>
                   <th>Đặt hàng</th>
@@ -245,7 +244,6 @@ const Products = () => {
                           </div>
                         </td>
                         <td>{item?.category?.name}</td>
-                        <td>{item?.subCat.subCat}</td>
                         <td>{item?.brand}</td>
                         <td>
                           <del className='old'>{item?.oldPrice}</del>
@@ -255,17 +253,17 @@ const Products = () => {
                         <td>{item?.countInStock}</td>
 
                         <td>
-                          {item?.productRams?.map((ram) => {
+                          {item?.productSize?.map((size, sizeIndex) => {
                             return (
-                              <span className='badge badge-primary mr-2'>{ram}</span>
+                              <span key={sizeIndex} className='badge badge-primary mr-2'>{size}</span>
                             )
                           })}
                         </td>
 
                         <td>
-                          {item?.productSize?.map((size) => {
+                          {item?.productColor?.map((color, colorIndex) => {
                             return (
-                              <span className='badge badge-primary mr-2'>{size}</span>
+                              <span key={colorIndex} className='badge badge-secondary mr-2'>{color}</span>
                             )
                           })}
                         </td>

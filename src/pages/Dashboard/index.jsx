@@ -67,6 +67,50 @@ const Dashboard = () => {
   useEffect(() => {
     context.setIsHideSidebarAndHeader(false);
     window.scrollTo(0, 0);
+
+    // Kiểm tra URL parameters cho token và user data từ client login
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const userData = urlParams.get('user');
+
+    if (token && userData) {
+      try {
+        // Lưu token và user data vào localStorage của admin
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', userData);
+        localStorage.setItem('themeMode', 'light');
+
+        // Decode user data để hiển thị thông báo
+        const decodedUser = JSON.parse(decodeURIComponent(userData));
+
+        context.setAlterBox({
+          open: true,
+          error: false,
+          message: `Chào mừng ${decodedUser.name} đến với Admin Dashboard!`
+        });
+
+        // Cập nhật context user
+        context.setUser({
+          name: decodedUser.name,
+          email: decodedUser.email,
+          userId: decodedUser.id
+        });
+
+        context.setIsLogin(true);
+
+        // Xóa parameters khỏi URL để tránh reload lại
+        window.history.replaceState({}, document.title, window.location.pathname);
+
+      } catch (error) {
+        console.error('Error processing login data:', error);
+        context.setAlterBox({
+          open: true,
+          error: true,
+          message: "Có lỗi xảy ra khi xử lý đăng nhập"
+        });
+      }
+    }
+
     context.setProgress(40);
     fetchDataFromApi('/api/products').then((res) => {
       setProductList(res);
@@ -222,7 +266,6 @@ const Dashboard = () => {
                   <th>#ID</th>
                   <th style={{ width: '250px' }}>Sản Phẩm</th>
                   <th>Danh Mục</th>
-                  <th>Danh mục con</th>
                   <th>Nhãn hiệu</th>
                   <th>Giá bán</th>
                   <th>Số lượng</th>
@@ -260,7 +303,6 @@ const Dashboard = () => {
                           </div>
                         </td>
                         <td>{item?.category?.name}</td>
-                        {/* <td>{item?.subCat.subCat}</td> */}
                         <td>{item?.brand}</td>
                         <td>
                           <del className='old'>{item?.oldPrice}</del>
