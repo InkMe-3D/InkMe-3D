@@ -328,6 +328,32 @@ router.post(`/create`, requireAuth, checkUserStatus, requireAdmin, async (req, r
     })
     images_Arr();
 
+    // Xử lý productClassify từ JSON string
+    let productClassify = [];
+    if (req.body.productClassify) {
+        try {
+            productClassify = JSON.parse(req.body.productClassify);
+        } catch (error) {
+            console.log("Error parsing productClassify:", error);
+            productClassify = [];
+        }
+    }
+
+    // Xử lý productSize và productColor từ string hoặc array
+    let productSize = [];
+    if (req.body.productSize) {
+        productSize = Array.isArray(req.body.productSize)
+            ? req.body.productSize
+            : req.body.productSize.split(',');
+    }
+
+    let productColor = [];
+    if (req.body.productColor) {
+        productColor = Array.isArray(req.body.productColor)
+            ? req.body.productColor
+            : req.body.productColor.split(',');
+    }
+
     let product = new Product({
         name: req.body.name,
         description: req.body.description,
@@ -342,10 +368,10 @@ router.post(`/create`, requireAuth, checkUserStatus, requireAdmin, async (req, r
         subCat: req.body.subCat,
         countInStock: req.body.countInStock,
         rating: req.body.rating,
-        // numReviews: req.body.numReviews,
-        productRams: req.body.productRams,
-        productSize: req.body.productSize,
-        productWeight: req.body.productWeight,
+        productSize: productSize,
+        productColor: productColor,
+        productWeight: req.body.productWeight || 0,
+        productClassify: productClassify,
         isFeatured: req.body.isFeatured
     });
 
@@ -396,7 +422,6 @@ router.post(`/recentlyProducts`, requireAuth, checkUserStatus, async (req, res) 
                 subCat: req.body.subCat,
                 countInStock: req.body.countInStock,
                 rating: req.body.rating,
-                productRams: req.body.productRams,
                 productSize: req.body.productSize,
                 productWeight: req.body.productWeight,
                 isFeatured: req.body.isFeatured,
@@ -489,6 +514,34 @@ router.delete(`/:id`, requireAuth, checkUserStatus, requireAdmin, async (req, re
 // Chỉ admin mới được cập nhật sản phẩm
 router.put(`/:id`, requireAuth, checkUserStatus, requireAdmin, async (req, res) => {
 
+    // Xử lý productClassify từ JSON string
+    let productClassify = [];
+    if (req.body.productClassify) {
+        try {
+            productClassify = typeof req.body.productClassify === 'string'
+                ? JSON.parse(req.body.productClassify)
+                : req.body.productClassify;
+        } catch (error) {
+            console.log("Error parsing productClassify:", error);
+            productClassify = [];
+        }
+    }
+
+    // Xử lý productSize và productColor từ string hoặc array
+    let productSize = [];
+    if (req.body.productSize) {
+        productSize = Array.isArray(req.body.productSize)
+            ? req.body.productSize
+            : req.body.productSize.split(',');
+    }
+
+    let productColor = [];
+    if (req.body.productColor) {
+        productColor = Array.isArray(req.body.productColor)
+            ? req.body.productColor
+            : req.body.productColor.split(',');
+    }
+
     const product = await Product.findByIdAndUpdate(
         req.params.id,
         {
@@ -505,10 +558,10 @@ router.put(`/:id`, requireAuth, checkUserStatus, requireAdmin, async (req, res) 
             subCat: req.body.subCat,
             countInStock: req.body.countInStock,
             rating: req.body.rating,
-            numReviews: req.body.numReviews,
-            productRams: req.body.productRams,
-            productSize: req.body.productSize,
-            productWeight: req.body.productWeight,
+            productSize: productSize,
+            productColor: productColor,
+            productWeight: req.body.productWeight || 0,
+            productClassify: productClassify,
             isFeatured: req.body.isFeatured
         },
         {
