@@ -14563,8 +14563,8 @@ Thêm Ảnh
           console.log('✅ Uploaded layout file:', fileUrl);
     
           // TẠO SHAREABLE LINK
-          const isDevelopment = window.location.hostname === 'inkme3d.com';
-          const currentUrl = isDevelopment ? 'https://inkme-3d-page-custom-production.up.railway.app/tshirt-sizingtest.html' : 'http://0.0.0.0:3000/3d-custom/tshirt-sizingtest.html';
+          const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+          const currentUrl = isDevelopment ? 'http://0.0.0.0:3000/3d-custom/tshirt-sizingtest.html' : 'https://inkme-3d-page-custom-production.up.railway.app/tshirt-sizingtest.html';
           const shareableLink = \`\${currentUrl}?layout=\${encodeURIComponent(fileUrl)}\`;
           
           console.log('🔗 Shareable link created:', shareableLink);
