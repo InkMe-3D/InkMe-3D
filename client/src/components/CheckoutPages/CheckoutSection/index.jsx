@@ -17,6 +17,9 @@ const CheckoutSection = () => {
     const isReadyForPayment = () => {
         return user?.name && user?.phone && user?.email && context.selectedAddressId;
     };
+    const cartItems = context.cartData || [];
+
+    console.log('🛒 Cart Items trước khi tạo order:', cartItems);
 
     const handlePaymentClick = async () => {
         if (!isReadyForPayment()) return;
@@ -28,10 +31,13 @@ const CheckoutSection = () => {
             // Lấy thông tin cart (giả sử context.cartData)
             const cartItems = context.cartData || [];
             const totalValue = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
+
             // Google Analytics tracking - Begin Checkout
             trackBeginCheckout(cartItems, totalValue);
-            
+
+            // Debug: Kiểm tra cart items trước khi tạo order
+            console.log('🛒 Cart Items trước khi tạo order:', cartItems);
+
             // Tạo dữ liệu order
             const orderData = {
                 fullname: user.name,
@@ -47,6 +53,7 @@ const CheckoutSection = () => {
                     images: item.images,
                     price: item.price,
                     subTotal: item.price * item.quantity,
+                    inkmeFile: item.inkmeFile || null,
                     classifications: item.classifications || []
                 })),
                 orderId: String(Date.now()),
@@ -55,6 +62,9 @@ const CheckoutSection = () => {
                 orderDescription: 'Đơn hàng thanh toán qua QR',
                 status: 'Unpaid',
             };
+
+            // Debug: Kiểm tra order data trước khi gửi
+            console.log('📦 Order Data sẽ gửi:', orderData);
             const res = await postData('/api/orders/create', orderData);
             if (res && !res.error && res._id) {
                 setCreatedOrder(res);

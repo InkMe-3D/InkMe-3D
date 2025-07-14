@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { useState } from 'react';
 import { IoMdCart } from "react-icons/io";
 import DashboardBox from "./components/dashboardBox";
+import LookerStudioReport from "./components/LookerStudioReport";
 import { MdDelete, MdShoppingBag } from "react-icons/md";
 import { GiStarsStack } from "react-icons/gi";
 import { FaPencilAlt, FaUserCircle } from "react-icons/fa";
@@ -137,7 +138,7 @@ const Dashboard = () => {
   return (
     <>
       <div className="right-content w-100">
-        <div className="row dashboardBoxWrapperRow">
+        {/* <div className="row dashboardBoxWrapperRow">
           <div className="col-md-8">
             <div className="dashboardBoxWrapper d-flex">
               <DashboardBox color={['#1da256', '#48d483']} icon={<FaUserCircle />}
@@ -203,6 +204,12 @@ const Dashboard = () => {
             </div>
           </div>
 
+        </div> */}
+
+        {/* Looker Studio Report Section */}
+        <div className='card shadow border-0 p-3 mb-4'>
+          <h3 className='hd mb-3'>Báo cáo chi tiết</h3>
+          <LookerStudioReport />
         </div>
 
         <div className='card shadow border-0 p-3'>

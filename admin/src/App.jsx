@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import Dashboard from './pages/Dashboard';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
