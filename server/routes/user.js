@@ -382,47 +382,54 @@ router.post(`/login`, async (req, res) => {
 router.post(`/google-auth`, async (req, res) => {
   try {
     const { token } = req.body;
-    const payload = await verify(token);
+    if (!token) {
+      return res.status(400).json({ error: true, message: "Missing Google token" });
+    }
+
+    const payload = await verify(token); // verify phải là hàm xác thực Google ID Token
     const { email, name, picture } = payload;
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
+
+    // Nếu user đã đăng ký bằng email/password
+    if (user && user.password) {
+      return res.status(400).json({
+        error: true,
+        message: "Email đã đăng ký bằng phương thức khác. Vui lòng đăng nhập bằng email & mật khẩu.",
+      });
+    }
+
     if (!user) {
-      const result = await User.create({
-        name: name,
-        email: email,
+      user = await User.create({
+        name,
+        email,
         password: null,
         images: [picture],
         isAdmin: false,
         status: "active",
-      });
-
-      const tokenReturn = jwt.sign(
-        { email: result.email, id: result._id },
-        process.env.JSON_WEB_TOKEN_SECRET_KEY
-      );
-
-      res.status(200).send({
-        user: result,
-        token: tokenReturn,
-        msg: "Login successful",
+        isVerified: true, // ✅ Fix: Set verified true cho Google auth users
       });
     } else {
       user.name = name;
       user.images = [picture];
+      user.isVerified = true; // ✅ Fix: Đảm bảo existing users cũng được verified
       await user.save();
-      const tokenReturn = jwt.sign(
-        { email: user.email, id: user._id },
-        process.env.JSON_WEB_TOKEN_SECRET_KEY
-      );
-      res.status(200).send({
-        user,
-        token: tokenReturn,
-        msg: "Login successful",
-      });
     }
+
+    const tokenReturn = jwt.sign(
+      { email: user.email, id: user._id },
+      process.env.JSON_WEB_TOKEN_SECRET_KEY,
+      { expiresIn: '7d' }
+    );
+
+    res.status(200).send({
+      user,
+      token: tokenReturn,
+      msg: "Login successful",
+    });
   } catch (error) {
     res.status(500).json({
       error: true,
-      message: "Something went wrong",
+      message: "Google authentication failed",
       notify: error.message,
     });
   }

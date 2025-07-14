@@ -8491,6 +8491,7 @@ input.main-search-input::placeholder {
 
 .product-section.section-padding {
   padding: 60px;
+  margin: 60px;
 }
 
 @media (max-width: 767px) {

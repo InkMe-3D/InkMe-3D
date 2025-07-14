@@ -12,7 +12,12 @@ function authJwt() {
             req.path === '/api/user/forgotpassword' ||
             req.path === '/api/user/resetpassword' ||
             req.path === '/api/cart/add' ||
-            req.path === '/api/products/upload-file') {
+            req.path === '/api/products/upload-file' ||
+            req.path === '/api/user/google-auth' ||
+            req.path === '/api/user/verify-token' ||
+            req.path === '/api/user/verify-email' ||
+            req.path === '/api/user/:id'    
+        ) {
             return true;
         }
 

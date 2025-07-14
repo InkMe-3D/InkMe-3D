@@ -12,8 +12,7 @@ import { store, persistor } from "./store/index";
 import { Provider } from "react-redux";
 import { MyProvider } from "./context/MyContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-const clientId =
-  "715777490374-ig5f3ufvqdhe4uml8pqmo15n9om6ioej.apps.googleusercontent.com";
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 // Google Analytics đã được setup trong index.html với ID: G-7ZCPCVX6F7
 // Chỉ cần set window.GA_MEASUREMENT_ID để analytics.js sử dụng

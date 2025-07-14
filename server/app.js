@@ -10,8 +10,8 @@ const path = require("path");
 app.use(cors({
     origin: '*',
     allowedHeaders: ['Content-Type', 'Authorization']
-  }));
-  
+}));
+
 app.options("*", cors());
 
 //middleware
