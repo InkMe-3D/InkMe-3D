@@ -59,6 +59,38 @@ const ordersSchema = mongoose.Schema({
             images: [{ type: String }],
             price: { type: Number },
             subTotal: { type: Number },
+            inkmeFile: {
+                url: {
+                    type: String,
+                    required: false
+                },
+                sceneName: {
+                    type: String,
+                    required: false
+                },
+                color: {
+                    type: String,
+                    required: false
+                },
+                bgColor: {
+                    type: String,
+                    required: false
+                },
+                acidWash: {
+                    type: Number,
+                    required: false,
+                    default: 0
+                },
+                puffPrint: {
+                    type: Number,
+                    required: false,
+                    default: 0
+                },
+                timestamp: {
+                    type: String,
+                    required: false
+                }
+            },
             classifications: [
                 {
                     _id: { type: String },
@@ -82,6 +114,10 @@ const ordersSchema = mongoose.Schema({
     dateCreated: {
         type: Date,
         default: Date.now,
+    },
+    isHidden: {
+        type: Boolean,
+        default: false,
     },
 }, { timestamps: true });
 
