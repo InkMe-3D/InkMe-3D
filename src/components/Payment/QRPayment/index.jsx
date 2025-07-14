@@ -9,6 +9,7 @@ const QRPayment = ({ order }) => {
     const [paymentStatus, setPaymentStatus] = useState('waiting'); // waiting, paid, error
     const [paymentMessage, setPaymentMessage] = useState('');
     const [stopMonitoring, setStopMonitoring] = useState(null);
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
 
     // Lấy orderId từ prop order, fallback về context.orderData?.orderId nếu chưa có
     const orderId = order?.orderId || order?._id || context.orderData?.orderId || '';
@@ -48,7 +49,9 @@ const QRPayment = ({ order }) => {
                     productId: item.productId || item.id,
                     productTitle: item.productTitle || item.name,
                     price: item.price,
-                    quantity: item.quantity
+                    quantity: item.quantity,
+                    inkmeFile: item.inkmeFile || null,
+                    classifications: item.classifications || []
                 })) || []
             });
         }
@@ -56,8 +59,7 @@ const QRPayment = ({ order }) => {
         // Cập nhật trạng thái order trong database
         try {
             if (order?._id) {
-                await editData(`/api/orders/${order._id}`, {
-                    status: 'Paid',
+                await editData(`/api/orders/${order._id}/pay`, {
                     paymentTransaction: transaction
                 });
             }
@@ -110,7 +112,7 @@ const QRPayment = ({ order }) => {
                 <div style={{ marginTop: '15px' }}>
                     <button
                         className="btn btn-primary"
-                        onClick={() => window.location.href = '/orders'}
+                        onClick={() => window.location.href = `/user/orders/${user?.userId}`}
                     >
                         Xem đơn hàng
                     </button>
