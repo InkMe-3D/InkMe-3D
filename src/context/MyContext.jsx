@@ -44,37 +44,49 @@ const MyProvider = ({ children }) => {
 
   // Fetch category data
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const categoryRes = await fetchDataFromApi('/api/category');
-        setCategoryData(categoryRes.categoryList || []);
+    // Chỉ fetch khi đã đăng nhập (có token và userId)
+    const token = localStorage.getItem('token');
+    if (token && user?.userId) {
+      // Thêm delay nhỏ để đảm bảo context đã được update
+      const timeoutId = setTimeout(async () => {
+        const fetchData = async () => {
+          try {
+            const categoryRes = await fetchDataFromApi('/api/category');
+            setCategoryData(categoryRes.categoryList || []);
 
-        const productRes = await fetchDataFromApi('/api/products');
-        setProductData(productRes.productList || []);
+            const productRes = await fetchDataFromApi('/api/products');
+            setProductData(productRes.productList || []);
 
-        if (user?.userId) {
-          const cartRes = await fetchDataFromApi(`/api/cart?userId=${user.userId}`);
-          setCartData(Array.isArray(cartRes) ? cartRes : []);
-        } else {
-          setCartData([]);
-        }
+            if (user?.userId) {
+              const cartRes = await fetchDataFromApi(`/api/cart?userId=${user.userId}`);
+              setCartData(Array.isArray(cartRes) ? cartRes : []);
+            } else {
+              setCartData([]);
+            }
 
-        if (user?.userId) {
-          const orderRes = await fetchDataFromApi(`/api/orders/user/${user.userId}`);
-          setOrderData(orderRes || {});
-        } else {
-          setOrderData({});
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setCategoryData([]);
-        setProductData([]);
-        setCartData([]);
-        setOrderData({});
-      }
-    };
+            if (user?.userId) {
+              const orderRes = await fetchDataFromApi(`/api/orders/user/${user.userId}`);
+              setOrderData(orderRes || {});
+            } else {
+              setOrderData({});
+            }
+          } catch (error) {
+            console.error("Error fetching data:", error);
+            // Improved error handling - don't clear data on network errors
+            if (error.response?.status === 401) {
+              // Only clear on auth errors
+              setCategoryData([]);
+              setProductData([]);
+              setCartData([]);
+              setOrderData({});
+            }
+          }
+        };
+        await fetchData();
+      }, 100); // 100ms delay
 
-    fetchData();
+      return () => clearTimeout(timeoutId);
+    }
   }, [user?.userId]);
 
   // Check user token
