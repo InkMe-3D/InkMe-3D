@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../assets/images/logo.webp";
+import logo from "../../assets/images/logo.svg";
 import Button from '@mui/material/Button';
 import { MdMenuOpen } from "react-icons/md";
 import { MdOutlineMenu } from "react-icons/md";
@@ -68,8 +68,8 @@ const Header = () => {
             {/* Logo */}
             <div className="col-sm-2 part1">
               <Link to="/" className="d-flex align-items-center logo">
-                <img src={logo} alt="logo" />
-                <span className="logo-text ml-2">Tien Dat</span>
+                <img src={logo} alt="logo" style={{width: '30px', height: '30px'}} />
+                <span className="logo-text ml-2">INKME-3D</span>
               </Link>
             </div>
 
