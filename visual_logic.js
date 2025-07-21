@@ -13796,23 +13796,27 @@ Thêm Ảnh
               "\n" +
               "function checkLoadedImages() {" +
               "\n" +
-              "  let ready = false;" +
+              "  let loadedCount = 0;" +
+              "\n" +
+              "  " +
+              "\n" +
+              "  // Count how many images are actually loaded" +
               "\n" +
               "  for (let i = 0; i < array.length; i++) {" +
               "\n" +
-              "    if (!array[i].width) {" +
+              "    if (array[i].width && array[i].width > 0) {" +
               "\n" +
-              "      ready = false;" +
-              "\n" +
-              "      break;" +
-              "\n" +
-              "    } else {" +
-              "\n" +
-              "      ready = true;" +
+              "      loadedCount++;" +
               "\n" +
               "    }" +
               "\n" +
               "  }" +
+              "\n" +
+              "  " +
+              "\n" +
+              "  const ready = loadedCount === array.length;" +
+              "\n" +
+              "  console.log('📊 Images loaded (import):', loadedCount, '/', array.length, 'Ready:', ready);" +
               "\n" +
               "" +
               "\n" +
@@ -14424,19 +14428,32 @@ Thêm Ảnh
               }, 500);
     
               function checkLoadedImages() {
-                let ready = false;
                 let loadedCount = 0;
+                
+                // Count how many images are actually loaded
                 for (let i = 0; i < array.length; i++) {
-                  if (!array[i].width) {
-                    ready = false;
-                    break;
-                  } else {
-                    ready = true;
+                  if (array[i].width && array[i].width > 0) {
                     loadedCount++;
                   }
                 }
-    
+                
+                const ready = loadedCount === array.length;
+                
                 console.log('📊 Images loaded:', loadedCount, '/', array.length, 'Ready:', ready);
+                
+                // Enhanced debug for each image status
+                array.forEach((img, index) => {
+                  const imageName = Object.keys(state.readyImages)[index];
+                  const isSticker = imageName && imageName.includes('sticker_');
+                  console.log('📋 Image ' + (index + 1) + ':', {
+                    name: imageName,
+                    isSticker: isSticker,
+                    width: img.width,
+                    height: img.height,
+                    complete: img.complete,
+                    loaded: !!(img.width && img.width > 0)
+                  });
+                });
     
                 if (ready) {
                   console.log('✅ All images loaded, creating canvas drawer...');
@@ -14453,6 +14470,15 @@ Thêm Ảnh
                         const children = layer.children;
                         const stickers = children.filter(child => child.attrs.name && child.attrs.name.includes('sticker_'));
                         console.log('🎯 Stickers found after restoration:', stickers.length, stickers.map(s => s.attrs.name));
+                        
+                        // Additional debugging for missing stickers
+                        const expectedStickers = Object.keys(state.readyImages).filter(name => name.includes('sticker_'));
+                        console.log('🔍 Expected stickers:', expectedStickers);
+                        console.log('🔍 Actual stickers on canvas:', stickers.map(s => s.attrs.name));
+                        
+                        if (expectedStickers.length !== stickers.length) {
+                          console.warn('⚠️ Sticker count mismatch! Expected:', expectedStickers.length, 'Actual:', stickers.length);
+                        }
                       }
                     }
                   }, 1000);
