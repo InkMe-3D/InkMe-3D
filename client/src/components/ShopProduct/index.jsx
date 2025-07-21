@@ -4,7 +4,7 @@ import ShopSidebar from "./ShopSidebar";
 import { trackViewProduct } from "../../utils/analytics";
 
 const ShopProduct = ({ products, addToCartProduct, searchTerm, setSearchTerm,
-     selectedCategory, setSelectedCategory}) => {
+    selectedCategory, setSelectedCategory }) => {
     const ClickHandler = () => {
         window.scrollTo(10, 0);
     };
@@ -22,6 +22,13 @@ const ShopProduct = ({ products, addToCartProduct, searchTerm, setSearchTerm,
     const [sortOption, setSortOption] = useState('1');
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true);
+
+    // New filter states
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(Infinity);
+    const [selectedSizes, setSelectedSizes] = useState([]);
+    const [selectedColors, setSelectedColors] = useState([]);
+
     const resultsPerPage = 12;
     const totalResultsRef = useRef(0);
 
@@ -36,6 +43,8 @@ const ShopProduct = ({ products, addToCartProduct, searchTerm, setSearchTerm,
 
     const handleSortChange = (e) => {
         setSortOption(e.target.value);
+        // Apply sorting logic based on selected option
+        setCurrentPage(1); // Reset to first page when sorting
     };
 
     const handlePageChange = (page) => {
@@ -45,22 +54,82 @@ const ShopProduct = ({ products, addToCartProduct, searchTerm, setSearchTerm,
 
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
+        setCurrentPage(1); // Reset to first page when searching
     };
 
+    // Reset current page when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, selectedCategory, minPrice, maxPrice, selectedSizes, selectedColors]);
+
     const startIndex = (currentPage - 1) * resultsPerPage;
-    const filteredProducts = products && products.products ? products.products.filter(product =>{
-        if(searchTerm){
-            return product.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // Enhanced filtering logic
+    const filteredProducts = products && products.products ? products.products.filter(product => {
+        // Search filter
+        if (searchTerm && !product.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+            return false;
         }
-        if(selectedCategory){
-            console.log( selectedCategory);
-            return product.category._id === selectedCategory;
+
+        // Category filter
+        if (selectedCategory && product.category._id !== selectedCategory) {
+            return false;
         }
-       
-        return product;
-    }
-    ) : [];
-    const currentProducts = filteredProducts.slice(startIndex, startIndex + resultsPerPage);
+
+        // Price filter
+        const productPrice = parseFloat(product.price);
+        if (productPrice < minPrice || productPrice > maxPrice) {
+            return false;
+        }
+
+        // Size filter
+        if (selectedSizes.length > 0 && product.sizes) {
+            const hasMatchingSize = selectedSizes.some(size =>
+                product.sizes.includes(size)
+            );
+            if (!hasMatchingSize) {
+                return false;
+            }
+        }
+
+        // Color filter
+        if (selectedColors.length > 0 && product.colors) {
+            const hasMatchingColor = selectedColors.some(color =>
+                product.colors.includes(color)
+            );
+            if (!hasMatchingColor) {
+                return false;
+            }
+        }
+
+        return true;
+    }) : [];
+
+    // Sort filtered products
+    const sortedProducts = [...filteredProducts].sort((a, b) => {
+        switch (sortOption) {
+            case '1': // Default
+                return 0;
+            case '2': // Price: Low to High
+                return parseFloat(a.price) - parseFloat(b.price);
+            case '3': // Price: High to Low
+                return parseFloat(b.price) - parseFloat(a.price);
+            case '4': // Name: A to Z
+                return a.name.localeCompare(b.name);
+            case '5': // Name: Z to A
+                return b.name.localeCompare(a.name);
+            case '6': // Newest First
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            default:
+                return 0;
+        }
+    });
+
+    const currentProducts = sortedProducts.slice(startIndex, startIndex + resultsPerPage);
+
+    // Update total results for pagination
+    const totalFilteredResults = sortedProducts.length;
+    const totalFilteredPages = Math.ceil(totalFilteredResults / resultsPerPage);
 
     const [activeTab, setActiveTab] = useState('Tab1');
     const openTab = (TabName) => {
@@ -80,14 +149,35 @@ const ShopProduct = ({ products, addToCartProduct, searchTerm, setSearchTerm,
             <div className="container">
                 <div className="row g-4">
                     <div className="col-xl-3 col-lg-4 order-2 order-md-1">
-                        <ShopSidebar searchTerm={searchTerm} setSearchTerm={setSearchTerm} selectedCategory={selectedCategory} 
-                        setSelectedCategory={setSelectedCategory}/>
+                        <ShopSidebar
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                            selectedCategory={selectedCategory}
+                            setSelectedCategory={setSelectedCategory}
+                            minPrice={minPrice}
+                            setMinPrice={setMinPrice}
+                            maxPrice={maxPrice}
+                            setMaxPrice={setMaxPrice}
+                            selectedSizes={selectedSizes}
+                            setSelectedSizes={setSelectedSizes}
+                            selectedColors={selectedColors}
+                            setSelectedColors={setSelectedColors}
+                        />
                     </div>
                     <div className="col-xl-9 col-lg-8 order-1 order-md-2">
                         <div className="woocommerce-notices-wrapper">
-                            <p>Hiển thị <span>{currentProducts.length}</span> trên {totalResultsRef.current} kết quả</p>
+                            <p>Hiển thị <span>{currentProducts.length}</span> trên {totalFilteredResults} kết quả</p>
                             <div className="form-clt">
-                                
+                                <div className="nice-select" style={{ marginRight: '15px' }}>
+                                    <select value={sortOption} onChange={handleSortChange} className="form-select">
+                                        <option value="1">Sắp xếp mặc định</option>
+                                        <option value="2">Giá: Thấp đến Cao</option>
+                                        <option value="3">Giá: Cao đến Thấp</option>
+                                        <option value="4">Tên: A đến Z</option>
+                                        <option value="5">Tên: Z đến A</option>
+                                        <option value="6">Mới nhất</option>
+                                    </select>
+                                </div>
                                 <div className="icon">
                                     <button
                                         className={`tab ${activeTab === 'Tab1' ? 'active' : ''}`}
@@ -109,9 +199,9 @@ const ShopProduct = ({ products, addToCartProduct, searchTerm, setSearchTerm,
 
                         <div className="row">
                             {currentProducts.map((product) => (
-                                <Link 
-                                    to={`/shop-details/Calendar-printing-design/${product._id}`} 
-                                    key={product._id} 
+                                <Link
+                                    to={`/shop-details/Calendar-printing-design/${product._id}`}
+                                    key={product._id}
                                     className="col-lg-4 col-md-6 col-12"
                                     onClick={() => handleProductClick(product)}
                                 >
@@ -170,7 +260,7 @@ const ShopProduct = ({ products, addToCartProduct, searchTerm, setSearchTerm,
                                         <i className="fa-solid fa-chevrons-left"></i>
                                     </button>
                                 </li>
-                                {Array.from({ length: totalPages }, (_, i) => (
+                                {Array.from({ length: totalFilteredPages }, (_, i) => (
                                     <li key={i}>
                                         <button
                                             className={`page-numbers ${currentPage === i + 1 ? 'active' : ''}`}
@@ -183,8 +273,8 @@ const ShopProduct = ({ products, addToCartProduct, searchTerm, setSearchTerm,
                                 <li>
                                     <button
                                         className="page-numbers"
-                                        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                                        disabled={currentPage === totalPages}
+                                        onClick={() => handlePageChange(Math.min(totalFilteredPages, currentPage + 1))}
+                                        disabled={currentPage === totalFilteredPages}
                                     >
                                         <i className="fa-solid fa-chevrons-right"></i>
                                     </button>
