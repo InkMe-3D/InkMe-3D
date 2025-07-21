@@ -12479,24 +12479,62 @@ function createPL(v3d = window.v3d) {
 
                 console.log('✅ Background removal successful!');
 
-                // Load processed image and update Konva node
+                // Load processed image and convert to base64 data URL
                 const newImg = new Image();
                 newImg.crossOrigin = 'anonymous';
 
                 newImg.onload = function () {
-                  // Update the Konva Image with new processed image
-                  imageNode.image(newImg);
+                  try {
+                    // Convert blob image to base64 data URL for permanent storage
+                    const tempCanvas = document.createElement('canvas');
+                    const tempCtx = tempCanvas.getContext('2d');
+                    tempCanvas.width = newImg.naturalWidth || newImg.width;
+                    tempCanvas.height = newImg.naturalHeight || newImg.height;
 
-                  // Redraw layer and update texture
-                  layer.draw();
-                  updateTexture(stage);
-                  window.saveStateToHistory();
+                    // Draw the processed image to canvas
+                    tempCtx.drawImage(newImg, 0, 0);
 
-                  // Cleanup
-                  URL.revokeObjectURL(processedImageUrl);
-                  document.body.removeChild(loadingOverlay);
+                    // Convert to base64 data URL (PNG format to preserve transparency)
+                    const base64DataUrl = tempCanvas.toDataURL('image/png', 1.0);
 
-                  console.log('🎉 Image updated on canvas successfully!');
+                    // Create new image with base64 data URL for permanent storage
+                    const finalImg = new Image();
+                    finalImg.crossOrigin = 'anonymous';
+
+                    finalImg.onload = function () {
+                      // Update the Konva Image with base64 image
+                      imageNode.image(finalImg);
+
+                      // Redraw layer and update texture
+                      layer.draw();
+                      updateTexture(stage);
+                      window.saveStateToHistory();
+
+                      // Cleanup
+                      URL.revokeObjectURL(processedImageUrl);
+                      document.body.removeChild(loadingOverlay);
+
+                      console.log('🎉 Image updated on canvas with base64 data URL successfully!');
+                      console.log('📝 Base64 length:', base64DataUrl.length, 'characters');
+                    };
+
+                    finalImg.onerror = function () {
+                      throw new Error('Không thể load ảnh base64 đã xử lý');
+                    };
+
+                    // Set base64 data URL instead of blob URL
+                    finalImg.src = base64DataUrl;
+
+                  } catch (canvasError) {
+                    console.error('❌ Canvas conversion error:', canvasError);
+                    // Fallback to original method if canvas conversion fails
+                    imageNode.image(newImg);
+                    layer.draw();
+                    updateTexture(stage);
+                    window.saveStateToHistory();
+                    URL.revokeObjectURL(processedImageUrl);
+                    document.body.removeChild(loadingOverlay);
+                  }
                 };
 
                 newImg.onerror = function () {
