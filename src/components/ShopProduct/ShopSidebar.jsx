@@ -2,16 +2,29 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import RangeBarCustom from './RangeBarCustom';
 import FilterSize from './handleCheckboxChange';
-import FilterStarRating from './FilterStarRating';
+import FilterColor from './FilterColor';
 import { getCategorys } from '../../services/ShopServices';
 import { useEffect, useState } from 'react';
+import './ShopFilters.css';
 
 const ClickHandler = () => {
     window.scrollTo(10, 0);
 };
 
-const ShopSidebar = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory,
-   }) => {
+const ShopSidebar = ({
+    searchTerm,
+    setSearchTerm,
+    selectedCategory,
+    setSelectedCategory,
+    minPrice,
+    setMinPrice,
+    maxPrice,
+    setMaxPrice,
+    selectedSizes,
+    setSelectedSizes,
+    selectedColors,
+    setSelectedColors
+}) => {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
@@ -30,6 +43,16 @@ const ShopSidebar = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedC
         setSelectedCategory(categoryId);
     };
 
+    // Clear all filters
+    const clearAllFilters = () => {
+        setSearchTerm('');
+        setSelectedCategory('');
+        setMinPrice(0);
+        setMaxPrice(Infinity);
+        setSelectedSizes([]);
+        setSelectedColors([]);
+    };
+
     return (
         <div className="shop-main-sidebar">
             <div className="single-sidebar-widget">
@@ -38,19 +61,52 @@ const ShopSidebar = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedC
                 </div>
                 <div className="search_widget">
                     <form action="#">
-                        <input type="text" placeholder="Tìm kiếm sản phẩm" value={searchTerm} onChange={handleSearchChange} className="search-input" style={{ textTransform: 'none' }} />
-                        <button type="submit" className="search-button"><i className="fal fa-search"></i></button>
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm sản phẩm"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            className="search-input"
+                            style={{ textTransform: 'none' }}
+                        />
+                        <button type="submit" className="search-button">
+                            <i className="fal fa-search"></i>
+                        </button>
                     </form>
                 </div>
             </div>
+
             <div className="single-sidebar-widget">
                 <div className="wid-title">
                     <h4>Danh mục</h4>
                 </div>
                 <div className="shop-catagory-items">
                     <ul className="category-list">
+                        <li
+                            onClick={() => handleCategorySelect('')}
+                            className={`category-item ${selectedCategory === '' ? 'active' : ''}`}
+                            style={{
+                                cursor: 'pointer',
+                                padding: '10px',
+                                borderRadius: '5px',
+                                backgroundColor: selectedCategory === '' ? '#f0f0f0' : 'transparent'
+                            }}
+                        >
+                            <i className="fa-regular fa-chevron-left"></i>
+                            Tất cả danh mục
+                        </li>
                         {categories.map((category, index) => (
-                            <li key={index} onClick={() => handleCategorySelect(category._id)} className={`category-item ${selectedCategory === category._id ? 'active' : ''}`} style={{ cursor: 'pointer', padding: '10px', borderRadius: '5px', backgroundColor: selectedCategory === category._id ? '#f0f0f0' : 'transparent' }}>
+                            <li
+                                key={index}
+                                onClick={() => handleCategorySelect(category._id)}
+                                className={`category-item ${selectedCategory === category._id ? 'active' : ''}`}
+                                style={{
+                                    cursor: 'pointer',
+                                    padding: '10px',
+                                    borderRadius: '5px',
+                                    backgroundColor: selectedCategory === category._id ? '#f0f0f0' : 'transparent'
+                                }}
+                            >
                                 <i className="fa-regular fa-chevron-left"></i>
                                 {category.name}
                             </li>
@@ -58,25 +114,57 @@ const ShopSidebar = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedC
                     </ul>
                 </div>
             </div>
-            {/* <div className="single-sidebar-widget">
+
+            <div className="single-sidebar-widget">
                 <div className="wid-title">
                     <h4>Lọc theo giá</h4>
                 </div>
-            </div> */}
-            {/* <div className="single-sidebar-widget">
+                <RangeBarCustom
+                    setMinPrice={setMinPrice}
+                    setMaxPrice={setMaxPrice}
+                    minPrice={minPrice}
+                    maxPrice={maxPrice}
+                />
+            </div>
+
+            <div className="single-sidebar-widget">
                 <div className="wid-title">
                     <h4>Lọc theo kích thước</h4>
                 </div>
-                <FilterSize />
-            </div> */}
-            {/* <div className="single-sidebar-widget">
+                <FilterSize
+                    selectedSizes={selectedSizes}
+                    setSelectedSizes={setSelectedSizes}
+                />
+            </div>
+
+            <div className="single-sidebar-widget">
                 <div className="wid-title">
-                    <h4>Lọc theo đánh giá</h4>
+                    <h4>Lọc theo màu sắc</h4>
                 </div>
-                <FilterStarRating/>
-            </div> */}
-            
-            
+                <FilterColor
+                    selectedColors={selectedColors}
+                    setSelectedColors={setSelectedColors}
+                />
+            </div>
+
+            <div className="single-sidebar-widget">
+                <div className="filter-actions" style={{ marginTop: '20px' }}>
+                    <button
+                        onClick={clearAllFilters}
+                        className="theme-btn w-100"
+                        style={{
+                            background: '#dc3545',
+                            border: 'none',
+                            padding: '10px 15px',
+                            borderRadius: '5px',
+                            color: 'white',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Xóa tất cả bộ lọc
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };
