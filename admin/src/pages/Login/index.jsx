@@ -66,10 +66,15 @@ const Login = () => {
 
         setLoading(true);
 
-        postData("/api/user/signin", formfields).then((res) => {
-            try {
+        // Format data to match server endpoint (emailOrPhone instead of email)
+        const loginData = {
+            emailOrPhone: formfields.email,
+            password: formfields.password
+        };
 
-                if (res.error !== true) {
+        postData("/api/user/login", loginData).then((res) => {
+            try {
+                if (res.error !== true && res.token && res.user) {
                     localStorage.setItem("token", res.token);
 
                     const user = {
@@ -86,10 +91,9 @@ const Login = () => {
                     context.setAlterBox({
                         open: true,
                         error: false,
-                        message: "Sign in successfully"
+                        message: res.message || "Sign in successfully"
                     })
                     setTimeout(() => {
-                        // history("/dashboard");
                         setLoading(false);
                         window.location.href = "/dashboard";
                     }, 2000);
@@ -98,18 +102,27 @@ const Login = () => {
                     context.setAlterBox({
                         open: true,
                         error: true,
-                        message: "Sign in failed"
+                        message: res.message || "Sign in failed"
                     })
                 }
 
             } catch (error) {
+                console.error("Login error:", error);
+                setLoading(false);
                 context.setAlterBox({
                     open: true,
                     error: true,
-                    message: "Sign in failed"
+                    message: error.response?.data?.message || error.message || "Sign in failed"
                 })
-                setLoading(false);
             }
+        }).catch((error) => {
+            console.error("Login request error:", error);
+            setLoading(false);
+            context.setAlterBox({
+                open: true,
+                error: true,
+                message: error.response?.data?.message || error.message || "Sign in failed"
+            })
         })
 
     }
