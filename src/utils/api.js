@@ -1,7 +1,7 @@
 import axios from "axios";
 // require('dotenv/config');
 
-export const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+export const baseUrl = import.meta.env.VITE_APP_BASE_URL || "http://localhost:4000";
 
 // Helper function to get auth token from localStorage
 const getAuthToken = () => {

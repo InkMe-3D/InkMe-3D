@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import VideoGuidePopup from './VideoGuidePopup'
 import './Cart.css'
 import { trackDownloadInkmeFile } from '../../utils/analytics'
+const CUSTOM_PAGE_PRODUCTION = import.meta.env.VITE_CUSTOM_PAGE_PRODUCTION;
+
+const CUSTOM_PAGE_DEVELOPMENT = import.meta.env.VITE_CUSTOM_PAGE_DEVELOPMENT;
 
 const InkMeFile = ({ inkmeFile }) => {
     const [showGuide, setShowGuide] = useState(false);
@@ -21,8 +24,8 @@ const InkMeFile = ({ inkmeFile }) => {
             // Create shareable link
             const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
             const baseUrl = isDevelopment
-                ? 'http://0.0.0.0:3000/3d-custom/tshirt-sizingtest.html'
-                : 'https://inkme-3d-page-custom-production.up.railway.app/tshirt-sizingtest.html';
+                ? CUSTOM_PAGE_DEVELOPMENT
+                : CUSTOM_PAGE_PRODUCTION;
             const shareableLink = `${baseUrl}?layout=${encodeURIComponent(inkmeFile.url)}`;
 
             window.open(shareableLink, '_blank');

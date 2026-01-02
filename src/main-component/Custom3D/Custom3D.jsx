@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { trackStart3DDesign, trackComplete3DDesign } from '../../utils/analytics';
 
+const CUSTOM_PAGE_DEVELOPMENT = import.meta.env.VITE_CUSTOM_PAGE_DEVELOPMENT;
+const CUSTOM_PAGE_PRODUCTION = import.meta.env.VITE_CUSTOM_PAGE_PRODUCTION;
+
 const Custom3D = () => {
     const iframeRef = useRef(null);
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const userId = user.userId || '';
     const authorization = localStorage.getItem('token') ? `Bearer ${localStorage.getItem('token')}` : '';
     const [isProcessing, setIsProcessing] = useState(false);
-
     const productId = `Inkme-custom-${Math.floor(1000000000 + Math.random() * 9000000000)}`;
 
     useEffect(() => {
@@ -85,8 +87,8 @@ const Custom3D = () => {
             <iframe
                 ref={iframeRef}
                 src={window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                    ? `http://0.0.0.0:3000/3d-custom/index.html`
-                    : `https://inkme-3d-page-custom-production.up.railway.app/index.html`}
+                    ? CUSTOM_PAGE_DEVELOPMENT
+                    : CUSTOM_PAGE_PRODUCTION}
                 width="100%"
                 height="100%"
                 style={{
