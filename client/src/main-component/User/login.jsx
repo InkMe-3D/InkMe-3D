@@ -12,7 +12,7 @@ import { baseUrl, postData } from "../../utils/api";
 import { CircularProgress } from "@mui/material";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../App.css";
-import { getUsers, loginWithGoogle } from "../../services/UserServices";
+import { loginWithGoogle } from "../../services/UserServices";
 import { MyContext } from "../../context/MyContext";
 import { GoogleLogin } from "@react-oauth/google";
 import { trackLogin } from "../../utils/analytics";
@@ -718,18 +718,8 @@ const LoginScreen = () => {
   //   Login("lan@example.com", "lan123");
   // };
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userList = await getUsers(); // Chờ dữ liệu trả về
-        //  setUser(userList);
-      } catch (error) {
-        console.error("Error fetching users", error);
-      }
-    };
-
-    fetchUser(); // Gọi hàm async bên trong useEffect
-  }, []);
+  // Removed useEffect that was calling getUsers() - not needed on login page
+  // and requires admin privileges which causes errors
 
   // Validation functions
   const validateEmail = (email) => {

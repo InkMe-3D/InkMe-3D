@@ -4,6 +4,8 @@ import './Cart.css';
 const VideoGuidePopup = ({ isVisible, onClose, inkmeFile }) => {
     const [mounted, setMounted] = useState(false);
     const [shareableLink, setShareableLink] = useState(null);
+    const CUSTOM_PAGE_PRODUCTION = import.meta.env.VITE_CUSTOM_PAGE_PRODUCTION;
+    const CUSTOM_PAGE_DEVELOPMENT = import.meta.env.VITE_CUSTOM_PAGE_DEVELOPMENT;
 
     useEffect(() => {
         if (isVisible) {
@@ -12,8 +14,8 @@ const VideoGuidePopup = ({ isVisible, onClose, inkmeFile }) => {
             // Tạo shareable link từ inkmeFile.url
             if (inkmeFile?.url) {
                 const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                    ? 'http://0.0.0.0:3000/3d-custom/tshirt-sizingtest.html'
-                    : 'https://inkme-3d-page-custom-production.up.railway.app/tshirt-sizingtest.html';
+                    ? CUSTOM_PAGE_DEVELOPMENT
+                    : CUSTOM_PAGE_PRODUCTION;
                 const link = `${baseUrl}?layout=${encodeURIComponent(inkmeFile.url)}`;
                 setShareableLink(link);
             }

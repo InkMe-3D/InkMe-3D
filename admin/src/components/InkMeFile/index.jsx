@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 
 const InkMeFile = ({ inkmeFile }) => {
+    const CUSTOM_PAGE_PRODUCTION = import.meta.env.VITE_CUSTOM_PAGE_PRODUCTION;
+    const CUSTOM_PAGE_DEVELOPMENT = import.meta.env.VITE_CUSTOM_PAGE_DEVELOPMENT;
+
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleString('vi-VN');
     };
@@ -9,8 +12,8 @@ const InkMeFile = ({ inkmeFile }) => {
         if (inkmeFile?.url) {
             // Create shareable link
             const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? 'http://0.0.0.0:3000/3d-custom/tshirt-sizingtest.html'
-                : 'https://inkme-3d-page-custom-production.up.railway.app/tshirt-sizingtest.html';
+                ? CUSTOM_PAGE_DEVELOPMENT
+                : CUSTOM_PAGE_PRODUCTION;
             const shareableLink = `${baseUrl}?layout=${encodeURIComponent(inkmeFile.url)}`;
 
             window.open(shareableLink, '_blank');
