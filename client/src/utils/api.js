@@ -17,10 +17,7 @@ const getAuthHeaders = () => {
 export const fetchDataFromApi = async (url) => {
     try {
         const headers = getAuthHeaders();
-        const { data } = await axios.get(baseUrl + url, {
-            headers,
-            withCredentials: true
-        });
+        const { data } = await axios.get(baseUrl + url, { headers });
         return data;
     } catch (error) {
         console.log('API fetch error:', error);
@@ -46,7 +43,6 @@ export const postData = async (url, formData) => {
             method: 'POST',
             headers,
             body: JSON.stringify(formData),
-            credentials: 'include'
         });
 
         if (response.status === 401) {
@@ -92,7 +88,6 @@ export const editData = async (url, updatedData) => {
             method: 'PUT',
             headers,
             body: JSON.stringify(updatedData),
-            credentials: 'include'
         });
 
         if (res.status === 401) {
@@ -115,10 +110,7 @@ export const editData = async (url, updatedData) => {
 export const deleteData = async (url) => {
     try {
         const headers = getAuthHeaders();
-        const response = await axios.delete(`${baseUrl}${url}`, {
-            headers,
-            withCredentials: true
-        });
+        const response = await axios.delete(`${baseUrl}${url}`, { headers });
         return response.data;
     } catch (error) {
         console.log('API delete error:', error);
@@ -145,8 +137,7 @@ export const uploadImage = async (url, formData) => {
             headers: {
                 ...getAuthHeaders(),
                 // Don't set Content-Type for FormData, let browser set it with boundary
-            },
-            withCredentials: true
+            }
         };
 
         const response = await axios.post(baseUrl + url, formData, config);
@@ -167,8 +158,7 @@ export const deleteImages = async (url, image) => {
         const headers = getAuthHeaders();
         const response = await axios.delete(`${baseUrl}${url}`, {
             headers,
-            data: image,
-            withCredentials: true
+            data: image
         });
         return response.data;
     } catch (error) {
