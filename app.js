@@ -9,18 +9,19 @@ const path = require("path");
 
 const corsOptions = {
     origin: [
-      "https://inkme3d.com",
-      "https://www.inkme3d.com",
-      "http://localhost:5173"
+        "https://inkme3d.com",
+        "https://www.inkme3d.com",
+        "http://localhost:5173",
+        "http://localhost:3036",
     ],
     credentials: true, // để an toàn cho login/cookie (nếu không dùng cookie vẫn OK)
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
-  };
-  
-  app.use(cors(corsOptions));
-  app.options("*", cors(corsOptions));
-  
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
 
 //middleware
 app.use(bodyParser.json({ limit: '50mb' }));
