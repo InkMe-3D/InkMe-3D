@@ -7,21 +7,43 @@ require("dotenv/config");
 const authJwt = require("./helper/jwt");
 const path = require("path");
 
+const allowedOrigins = [
+    "https://inkme3d.com",
+    "https://www.inkme3d.com",
+    "http://localhost:5173",
+    "http://localhost:3036",
+];
+
 const corsOptions = {
-    origin: [
-        "https://inkme3d.com",
-        "https://www.inkme3d.com",
-        "http://localhost:5173",
-        "http://localhost:3036",
-    ],
-    credentials: true, // để an toàn cho login/cookie (nếu không dùng cookie vẫn OK)
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps, Postman, or same-origin requests)
+        if (!origin) {
+            return callback(null, true);
+        }
+        // Check if origin is in allowed list
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            // Log the origin for debugging
+            console.log('CORS: Blocked origin:', origin);
+            // For production, uncomment the line below and remove the allow-all line
+            // callback(new Error('Not allowed by CORS'));
+            // Temporarily allow all origins for debugging
+            callback(null, true);
+        }
+    },
+    credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    exposedHeaders: ["Content-Range", "X-Content-Range"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 };
 
+// Apply CORS middleware before all other middleware
 app.use(cors(corsOptions));
+// Explicitly handle OPTIONS requests for all routes
 app.options("*", cors(corsOptions));
-
 
 //middleware
 app.use(bodyParser.json({ limit: '50mb' }));
