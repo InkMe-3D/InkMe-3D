@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log*
+yarn-error.log*
+# Local — .env.production được COPY để Vite build (Compose không dùng build.env_file)
+.env
+.env.local
+.env.development
+.env.test
+dish
+.git
+.gitignore
+*.md
